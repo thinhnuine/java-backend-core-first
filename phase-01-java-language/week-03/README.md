@@ -17,6 +17,7 @@ Tuần này gom các tính năng Java hiện đại, exception handling và bài
 - `02-exception-handling.md`
 - `03-capstone-library-port.md`
 - `04-checklist-and-ai-review.md`
+- `05-deep-dive-study-guide.md`
 
 ## Kết Quả Cần Có
 

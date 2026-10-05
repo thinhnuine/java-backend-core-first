@@ -17,3 +17,4 @@ Thiết kế code Java dễ thay đổi mà không pattern hóa quá tay. Dùng 
 - `02-patterns-refactoring.md`
 - `03-refactor-project.md`
 - `04-checklist-and-ai-review.md`
+- `05-deep-dive-study-guide.md`

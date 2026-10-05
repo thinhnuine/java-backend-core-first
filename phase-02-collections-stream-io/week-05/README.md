@@ -17,3 +17,4 @@ Dùng Stream để code rõ hơn khi phù hợp, tránh lạm dụng Stream cho 
 - `02-java-time-and-nio.md`
 - `03-log-processor-project.md`
 - `04-checklist-and-ai-review.md`
+- `05-deep-dive-study-guide.md`

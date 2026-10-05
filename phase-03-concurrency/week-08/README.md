@@ -17,3 +17,4 @@ Hiểu virtual threads trong Java 21, biết chúng giải quyết vấn đề g
 - `02-classic-concurrency-bugs.md`
 - `03-capstone-threadpool-producer-consumer-rate-limiter.md`
 - `04-checklist-and-ai-review.md`
+- `05-deep-dive-study-guide.md`

@@ -17,3 +17,4 @@ Viết test kiểm tra behavior, dễ đọc khi fail, và biết khi nào cần
 - `02-mockito-parameterized-tests.md`
 - `03-exercises.md`
 - `04-checklist-and-ai-review.md`
+- `05-deep-dive-study-guide.md`

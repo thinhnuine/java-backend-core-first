@@ -17,3 +17,4 @@
 - `02-flyway-integration-test-n-plus-one.md`
 - `03-final-api-project.md`
 - `04-checklist-and-ai-review.md`
+- `05-deep-dive-study-guide.md`

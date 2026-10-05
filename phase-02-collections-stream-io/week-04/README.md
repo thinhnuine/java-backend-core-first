@@ -17,3 +17,4 @@ Hiểu cách các collection phổ biến hoạt động bên trong để chọn
 - `02-ordering-complexity-concurrent-map.md`
 - `03-exercises.md`
 - `04-checklist-and-ai-review.md`
+- `05-deep-dive-study-guide.md`

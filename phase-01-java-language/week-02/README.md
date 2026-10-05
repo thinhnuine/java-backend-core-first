@@ -17,6 +17,7 @@ Tuần này tập trung vào các phần làm Java mạnh nhưng cũng dễ khó
 - `02-enum-and-nested-class.md`
 - `03-exercises.md`
 - `04-checklist-and-ai-review.md`
+- `05-deep-dive-study-guide.md`
 
 ## Kết Quả Cần Có
 

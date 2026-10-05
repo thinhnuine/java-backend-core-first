@@ -17,3 +17,4 @@ Dùng công cụ để quan sát app Java và hiểu các cơ chế mà framewor
 - `02-reflection-annotation-proxy.md`
 - `03-exercises.md`
 - `04-checklist-and-ai-review.md`
+- `05-deep-dive-study-guide.md`

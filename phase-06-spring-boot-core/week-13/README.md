@@ -17,3 +17,4 @@ Tạo Spring Boot app đầu tiên và hiểu luồng cơ bản: request vào co
 - `02-rest-validation-error-handling.md`
 - `03-in-memory-task-api-project.md`
 - `04-checklist-and-ai-review.md`
+- `05-deep-dive-study-guide.md`

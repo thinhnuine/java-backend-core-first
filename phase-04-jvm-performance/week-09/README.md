@@ -17,3 +17,4 @@ Biết các vùng memory chính của JVM, hiểu class loading ở mức cơ b�
 - `02-jit-gc-logs.md`
 - `03-exercises.md`
 - `04-checklist-and-ai-review.md`
+- `05-deep-dive-study-guide.md`
