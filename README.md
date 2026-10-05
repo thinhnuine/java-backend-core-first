@@ -1,23 +1,51 @@
 # Java Backend Core-First
 
-Repo học cá nhân cho lộ trình Java Backend theo hướng core-first.
+A 14-week Java Backend learning roadmap for frontend developers, focused on Java core, JVM, concurrency, testing, and Spring Boot fundamentals.
 
-Folder này có đủ roadmap **14 tuần**, từ Java language đến Spring Boot cốt lõi. Mục tiêu là giúp bạn đi theo hướng core-first: hiểu Java, JVM và cách thiết kế code trước khi dựa vào framework.
+This repo is built for a React/Next.js developer who wants to move into Java Backend without jumping straight into framework magic. The path starts with Java language fundamentals, then moves through collections, concurrency, JVM internals, testing, design, and finally Spring Boot.
 
-## Cấu Trúc
+## Start Here
 
-- `phase-01-java-language/`: Tuần 1-3, Java language, OOP, generics, Java 17/21 và exception.
-- `phase-02-collections-stream-io/`: Tuần 4-5, collections, Stream, Optional, `java.time`, NIO.2.
-- `phase-03-concurrency/`: Tuần 6-8, thread, lock, executor, CompletableFuture, virtual threads.
-- `phase-04-jvm-performance/`: Tuần 9-10, JVM memory, GC, profiling, reflection, proxy.
-- `phase-05-testing-design/`: Tuần 11-12, JUnit 5, Mockito, AssertJ, SOLID, design patterns.
-- `phase-06-spring-boot-core/`: Tuần 13-14, IoC/DI, REST API, JPA, transaction, integration test.
+- Read the full roadmap: [ROADMAP.md](ROADMAP.md)
+- Begin week 1: [phase-01-java-language/week-01](phase-01-java-language/week-01/README.md)
+- Study each week in order: read the lesson files, do the exercises, then use the checklist and AI review prompt.
 
-## Cách Học Mỗi Tuần
+## Structure
 
-- Đọc `README.md` của tuần trước để nắm mục tiêu.
-- Học file lý thuyết theo thứ tự đánh số.
-- Làm bài trong file exercises/capstone.
-- Cuối tuần dùng checklist để tự review và nhờ AI review code.
+| Phase | Weeks | Focus |
+| --- | --- | --- |
+| [Phase 01](phase-01-java-language/README.md) | 1-3 | Java language, OOP, generics, modern Java, exceptions |
+| [Phase 02](phase-02-collections-stream-io/README.md) | 4-5 | Collections, Stream, Optional, `java.time`, NIO.2 |
+| [Phase 03](phase-03-concurrency/README.md) | 6-8 | Threads, locks, executors, CompletableFuture, virtual threads |
+| [Phase 04](phase-04-jvm-performance/README.md) | 9-10 | JVM memory, GC, profiling, reflection, proxy |
+| [Phase 05](phase-05-testing-design/README.md) | 11-12 | JUnit 5, Mockito, AssertJ, SOLID, design patterns |
+| [Phase 06](phase-06-spring-boot-core/README.md) | 13-14 | Spring Boot, REST API, JPA, transaction, integration testing |
 
-Không cần học quá nhiều tài liệu ngoài trong giai đoạn này. Ưu tiên viết code, đọc lỗi compiler, viết test và tự giải thích lại bằng lời của mình.
+## Weekly Rhythm
+
+- 2h learning concepts.
+- 4h coding exercises.
+- 1h testing, debugging, benchmarking, or refactoring.
+- 1h AI review and learning log.
+
+The goal is not to finish files quickly. The goal is to write code, hit compiler/runtime errors, debug them, and explain the design decisions in your own words.
+
+## Requirements
+
+- Java 21, while keeping Java 17 compatibility in mind.
+- Maven.
+- Git.
+- IntelliJ IDEA Community or another Java-friendly IDE.
+
+## AI Usage
+
+Use AI as a mentor and reviewer, not as a code generator for the full solution.
+
+Good prompts:
+
+- "Review this Java code for immutability and equals/hashCode correctness."
+- "Explain this concurrency bug with a thread timeline."
+- "What test cases am I missing?"
+- "Does this Spring transaction boundary make sense?"
+
+Avoid asking AI to write the whole exercise before you have tried it yourself.
