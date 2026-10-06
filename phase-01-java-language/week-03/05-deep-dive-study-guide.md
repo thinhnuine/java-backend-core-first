@@ -1,46 +1,16 @@
-# Deep Dive Tuần 3: Modern Java, Exception Và Capstone
+# Mentor Guide Tuần 3: Modern Java, Exception Và Capstone
 
-## Cách Học Tuần Này
+## 1. Ý chính
 
-Tuần này nối hai thứ: cú pháp Java hiện đại và khả năng thiết kế một thư viện nhỏ. Bạn không cần dùng mọi feature mới ở mọi nơi. Mục tiêu là biết feature nào làm model rõ hơn.
+Tuần này học các feature Java hiện đại như `record`, `sealed class`, `pattern matching`, `switch expression` và cách xử lý exception. Mục tiêu không phải dùng feature mới cho "ngầu", mà là biết khi nào chúng làm domain model rõ hơn. Cuối tuần bạn chọn một capstone nhỏ để gom lại kiến thức tuần 1-3.
 
-Tư duy chính:
+## 2. Giải thích code
 
-- Record dùng cho data carrier immutable.
-- Sealed type dùng cho tập biến thể hữu hạn.
-- Switch expression dùng cho mapping rõ ràng.
-- Exception là một phần của contract.
-- Capstone là bài tổng hợp, không phải bài khoe nhiều feature.
-
-## Record
-
-Record giúp viết value/data object ngắn hơn.
-
-Class thường:
+Ví dụ `record`:
 
 ```java
-public final class UserDto {
-    private final String id;
-    private final String email;
-}
-```
+package dev.thinh.javacore;
 
-Record:
-
-```java
-public record UserDto(String id, String email) {
-}
-```
-
-Record tự sinh constructor, accessor, `equals`, `hashCode`, `toString`.
-
-Dùng record khi object chủ yếu để mang dữ liệu. Không dùng record nếu object có lifecycle mutable phức tạp.
-
-## Compact Constructor
-
-Record vẫn validate được:
-
-```java
 public record EmailAddress(String value) {
     public EmailAddress {
         if (value == null || value.isBlank()) {
@@ -50,13 +20,14 @@ public record EmailAddress(String value) {
 }
 ```
 
-Bạn không cần viết `this.value = value`; record tự làm sau block validation.
+Giải thích:
 
-## Sealed Type
+- `record`: class đặc biệt cho data carrier immutable.
+- `EmailAddress(String value)`: component của record. Java tự tạo field private final, constructor, accessor `value()`, `equals`, `hashCode`, `toString`.
+- `public EmailAddress { ... }`: compact constructor, dùng để validate.
+- Không cần viết `this.value = value`; record tự gán sau block validation.
 
-Sealed type hợp khi bạn biết toàn bộ biến thể hợp lệ.
-
-Ví dụ parser:
+Ví dụ sealed result:
 
 ```java
 public sealed interface ParseResult<T>
@@ -70,86 +41,125 @@ public sealed interface ParseResult<T>
 }
 ```
 
-Lợi ích: code đọc thấy rõ result chỉ có success hoặc failure.
+- `sealed interface`: chỉ các class/record trong `permits` được implement.
+- `permits`: liệt kê biến thể hợp lệ.
+- `record Success<T>` và `record Failure<T>` là hai kết quả có thể xảy ra.
 
-## Switch Expression
-
-Switch expression trả value:
+Ví dụ switch expression:
 
 ```java
-int priority = switch (status) {
-    case TODO -> 1;
-    case IN_PROGRESS -> 2;
-    case DONE -> 0;
+String label = switch (status) {
+    case TODO -> "Todo";
+    case IN_PROGRESS -> "In progress";
+    case DONE -> "Done";
 };
 ```
 
-Nó giảm lỗi quên `break` so với switch statement cũ.
+`switch` này trả về value, giảm lỗi quên `break`.
 
-## Exception Là Contract
+## 3. Vì sao thiết kế như vậy
 
-Exception không chỉ là "báo lỗi". Nó nói cho caller biết method có thể fail như thế nào.
-
-Unchecked exception hợp với lỗi do caller dùng sai API:
+Không dùng `record`, bạn phải viết nhiều boilerplate cho DTO/value object:
 
 ```java
-throw new IllegalArgumentException("currency must match");
-```
+public final class UserDto {
+    private final String id;
+    private final String email;
 
-Checked exception hợp khi caller có khả năng recover rõ ràng, ví dụ file user chọn không tồn tại.
+    public UserDto(String id, String email) {
+        this.id = id;
+        this.email = email;
+    }
 
-Quy tắc thực dụng giai đoạn này:
+    public String id() {
+        return id;
+    }
 
-- Validate argument sai: `IllegalArgumentException`.
-- State object sai: `IllegalStateException`.
-- Parse input sai: custom unchecked exception cũng ổn cho bài nhỏ.
-- I/O thật: dùng hoặc wrap `IOException` có chủ đích.
-
-## Try-With-Resources
-
-Resource cần close nên dùng try-with-resources:
-
-```java
-try (BufferedReader reader = Files.newBufferedReader(path)) {
-    return reader.readLine();
+    public String email() {
+        return email;
+    }
 }
 ```
 
-Java sẽ close resource kể cả khi có exception.
+`record` giúp code ngắn nhưng vẫn rõ.
 
-## Capstone Nên Chọn Gì?
+Không dùng sealed type, bạn có thể model parse result bằng `null`:
 
-Nếu muốn học type system và generics: chọn LRU cache.
+```java
+JsonValue value = parser.parse(input);
+if (value == null) {
+    // parse failed, but why?
+}
+```
 
-Nếu muốn học sealed/record/parser thinking: chọn JSON parser.
+Thiết kế này mơ hồ. `ParseResult.Success`/`Failure` nói rõ success hay failure và mang data phù hợp.
 
-Nếu muốn gần frontend/event mindset: chọn Event Emitter.
+## 4. Liên hệ với Frontend
 
-Không chọn bài quá to. Một thư viện nhỏ, API rõ, test tốt đáng giá hơn một project ôm đồm.
+`record` hơi giống TypeScript object type ở mặt data shape:
 
-## Bài Tập Theo Bước
+```ts
+type UserDto = {
+  id: string
+  email: string
+}
+```
 
-1. Chọn capstone.
-2. Viết README trước: thư viện làm gì, API dự kiến.
-3. Viết public API tối thiểu.
-4. Viết test happy path.
-5. Implement phần nhỏ nhất.
-6. Thêm edge case.
-7. Viết note tradeoff.
+Nhưng Java record là class thật, có constructor validation và method runtime.
 
-## Lỗi Thường Gặp
+`sealed interface` gần với discriminated union trong TypeScript:
 
-- Dùng record cho object cần mutable lifecycle.
-- Dùng sealed type chỉ vì mới, dù enum đủ.
-- Catch exception rồi nuốt mất lỗi.
-- Custom exception message quá chung chung.
-- Capstone scope quá lớn.
+```ts
+type ParseResult<T> =
+  | { kind: "success"; value: T }
+  | { kind: "failure"; message: string }
+```
 
-## Câu Hỏi Tự Kiểm Tra
+Điểm khác: Java dùng type hierarchy thay vì field `kind`.
 
-- Record tự sinh những method nào?
-- Record có immutable tuyệt đối không nếu field là `List` mutable?
-- Sealed type khác enum ở đâu?
-- Exception nào là do caller sai input?
-- Try-with-resources giải quyết vấn đề gì?
-- Capstone của bạn có public API đủ nhỏ chưa?
+## 5. Khi nào dùng và không dùng
+
+| Feature | Khi dùng | Khi tránh |
+| --- | --- | --- |
+| `record` | DTO, value object đơn giản, data carrier | Object cần mutable lifecycle |
+| `sealed` | Tập biến thể hữu hạn như result/state | Khi extension bên ngoài là yêu cầu |
+| pattern matching | Check type rồi dùng luôn biến typed | Logic quá phức tạp nên refactor |
+| switch expression | Mapping enum/sealed type sang value | Branch có side effect dài |
+| checked exception | Caller có thể recover rõ ràng | Lỗi programming/invalid argument |
+| unchecked exception | Invalid argument/state, domain error nhỏ | Lỗi I/O caller cần xử lý |
+
+## 6. Bẫy hay gặp
+
+- Dùng record nhưng component là mutable list rồi tưởng object immutable tuyệt đối.
+- Dùng sealed type cho case enum là đủ.
+- Catch exception rồi không log/không rethrow.
+- Throw `Exception` chung chung.
+- Custom exception message quá mơ hồ.
+- Capstone scope quá lớn, chưa xong được.
+
+## 7. Thuật ngữ mới
+
+- `record`: class data carrier immutable do Java sinh bớt boilerplate.
+- `compact constructor`: constructor ngắn của record để validate.
+- `sealed`: giới hạn class nào được extend/implement.
+- `pattern matching`: check type và bind biến trong một bước.
+- `switch expression`: switch trả value.
+- `checked exception`: exception bắt buộc catch hoặc declare.
+- `unchecked exception`: exception runtime không bắt buộc catch.
+
+## 8. Bài tập nhỏ để tự gõ lại
+
+Chọn một capstone:
+
+1. JSON parser đơn giản: hợp học `record` + `sealed`.
+2. LRU cache: hợp học generics + collections.
+3. Event emitter: hợp học interface + functional style.
+
+Trước khi code, viết README ngắn:
+
+- API public dự kiến.
+- Scope làm và không làm.
+- Exception nào sẽ throw.
+- Test case đầu tiên.
+
+Học tiếp theo: nếu chọn JSON parser, hãy viết model `JsonValue` bằng sealed interface trước. Nếu chọn LRU, bắt đầu bằng `LinkedHashMap` rồi mới tự viết linked list sau.

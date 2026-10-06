@@ -1,59 +1,63 @@
-# Deep Dive Tuần 6: Thread, Race Condition Và Memory Model
+# Mentor Guide Tuần 6: Thread, Race Condition Và Memory Model
 
-## Cách Học Tuần Này
+## 1. Ý chính
 
-Concurrency không học bằng cách đọc định nghĩa. Bạn phải tự tạo bug, thấy kết quả sai, rồi sửa. Nếu đến từ JavaScript, cú sốc lớn là: nhiều thread có thể thật sự chạy cùng lúc và cùng đọc/ghi memory.
+Java có thể chạy nhiều thread thật sự cùng lúc, và các thread có thể cùng đọc/ghi object trên heap. Vì vậy bạn phải học `race condition`, `synchronized`, `volatile` và Java Memory Model. Đây là phần rất khác với JavaScript frontend vì JS thường chạy logic app trên một main thread.
 
-Mục tiêu tuần này:
+## 2. Giải thích code
 
-- Hiểu `start()` khác `run()`.
-- Tự tạo được race condition.
-- Hiểu `synchronized` bảo vệ critical section.
-- Hiểu `volatile` là visibility, không phải atomicity.
-- Biết vì sao `wait` nên nằm trong `while`.
-
-## Thread Mental Model
-
-Một process Java có thể có nhiều thread. Mỗi thread có call stack riêng, nhưng cùng thấy heap chung.
-
-```text
-Thread A stack ----\
-Thread B stack ----- > shared heap objects
-Thread C stack ----/
-```
-
-Bug thường đến từ nhiều thread cùng sửa object trên heap.
-
-## `start()` Vs `run()`
+Ví dụ race condition:
 
 ```java
-Thread t = new Thread(task);
-t.start();
+package dev.thinh.javacore;
+
+public class UnsafeCounter {
+    private int count;
+
+    public void increment() {
+        count++;
+    }
+
+    public int count() {
+        return count;
+    }
+}
 ```
 
-`start()` yêu cầu JVM tạo thread mới.
+Giải thích:
+
+- `private int count`: shared mutable state.
+- `increment()`: tăng count.
+- `count++`: nhìn như một thao tác nhưng thật ra gồm read, add, write.
+
+Chạy nhiều thread:
 
 ```java
-t.run();
+UnsafeCounter counter = new UnsafeCounter();
+
+Thread t1 = new Thread(() -> {
+    for (int i = 0; i < 100_000; i++) {
+        counter.increment();
+    }
+});
+
+Thread t2 = new Thread(() -> {
+    for (int i = 0; i < 100_000; i++) {
+        counter.increment();
+    }
+});
+
+t1.start();
+t2.start();
+t1.join();
+t2.join();
+
+System.out.println(counter.count());
 ```
 
-`run()` chỉ gọi method bình thường trong thread hiện tại.
+Bạn kỳ vọng `200000`, nhưng có thể nhỏ hơn.
 
-## Race Condition
-
-`count++` nhìn như một thao tác nhưng thật ra là 3 bước:
-
-```text
-read count
-add 1
-write count
-```
-
-Nếu 2 thread cùng đọc `count = 10`, cả hai cùng tính 11, rồi cùng ghi 11. Một lần increment bị mất.
-
-## `synchronized`
-
-`synchronized` đảm bảo chỉ một thread vào critical section cùng monitor tại một thời điểm.
+Sửa bằng `synchronized`:
 
 ```java
 public synchronized void increment() {
@@ -61,67 +65,73 @@ public synchronized void increment() {
 }
 ```
 
-Nó cũng tạo visibility guarantee: thread sau khi lấy lock thấy được thay đổi của thread trước khi nhả lock.
+`synchronized` khóa method để mỗi thời điểm chỉ một thread vào method đó trên cùng object.
 
-## `volatile`
+## 3. Vì sao thiết kế như vậy
 
-`volatile` giúp thread thấy giá trị mới nhất của field.
+`count++` không atomic:
 
-```java
-private volatile boolean running = true;
+```text
+Thread A read count = 10
+Thread B read count = 10
+Thread A write 11
+Thread B write 11
 ```
 
-Nhưng `volatile int count` vẫn không làm `count++` atomic. Nó chỉ giúp đọc/ghi một field visible hơn.
+Hai lần increment nhưng kết quả chỉ tăng một.
 
-## Happens-Before
-
-Happens-before là cách Java nói: nếu A happens-before B, thì B phải thấy effect của A.
-
-Một vài nguồn:
-
-- `Thread.start()`
-- `Thread.join()`
-- unlock rồi lock cùng monitor
-- write volatile rồi read volatile cùng field
-
-Bạn chưa cần thuộc spec. Chỉ cần biết: nếu không có happens-before, code nhìn đúng vẫn có thể sai.
-
-## `wait/notifyAll`
-
-`wait` phải kiểm tra condition trong `while`, không phải `if`.
+`volatile` không sửa được bug này:
 
 ```java
-synchronized (lock) {
-    while (queue.isEmpty()) {
-        lock.wait();
-    }
-    return queue.removeFirst();
-}
+private volatile int count;
 ```
 
-Vì thread có thể wake up nhưng condition vẫn chưa đúng.
+`volatile` giúp visibility, tức thread thấy giá trị mới hơn, nhưng `count++` vẫn gồm nhiều bước. Muốn atomic, dùng `synchronized`, `Lock`, hoặc `AtomicInteger`.
 
-## Bài Tập Theo Bước
+## 4. Liên hệ với Frontend
 
-1. Viết `UnsafeCounter`.
-2. Chạy 10 thread increment.
-3. Ghi lại expected và actual.
-4. Sửa bằng `synchronized`.
-5. Thử `volatile` và giải thích vì sao vẫn sai.
-6. Viết bounded buffer bằng `wait/notifyAll`.
+Trong JS frontend, bạn hay lo async race kiểu request A về sau request B. Nhưng code JS của bạn thường vẫn chạy trên một thread chính. Java backend có race ở memory thật: hai thread có thể cùng sửa một field tại cùng thời điểm.
 
-## Lỗi Thường Gặp
+React state update cũng dạy bạn tránh dựa vào state cũ không an toàn:
+
+```javascript
+setCount(prev => prev + 1)
+```
+
+Trong Java multi-thread, vấn đề còn sâu hơn vì có shared memory và visibility.
+
+## 5. Khi nào dùng và không dùng
+
+| Công cụ | Khi dùng | Khi tránh |
+| --- | --- | --- |
+| `synchronized` | Critical section nhỏ, rule đơn giản | Lock giữ quá lâu |
+| `volatile` | Flag stop/start, visibility đơn giản | Compound operation như `count++` |
+| `AtomicInteger` | Counter/state đơn giản | Invariant nhiều field |
+| `wait/notifyAll` | Học coordination căn bản | Code production phức tạp nếu có library tốt hơn |
+
+## 6. Bẫy hay gặp
 
 - Gọi `run()` thay vì `start()`.
-- Nghĩ `volatile` thay được lock.
-- Lock trên object public hoặc thay đổi được.
-- Dùng `if` khi `wait`.
-- Test chạy pass một lần rồi tưởng concurrent code đúng.
+- Nghĩ `volatile` làm `count++` atomic.
+- Dùng `if` thay `while` khi `wait`.
+- Lock trên object public.
+- Test pass vài lần rồi tưởng concurrency code đúng.
 
-## Câu Hỏi Tự Kiểm Tra
+## 7. Thuật ngữ mới
 
-- Shared mutable state trong bài của bạn nằm ở đâu?
-- Operation nào không atomic?
-- Lock object là object nào?
-- `volatile` giải quyết visibility hay atomicity?
-- Nếu thread bị stuck, bạn sẽ nhìn gì đầu tiên?
+- `thread`: luồng thực thi.
+- `race condition`: kết quả phụ thuộc timing giữa thread.
+- `critical section`: đoạn code cần bảo vệ.
+- `visibility`: thread này có thấy write của thread khác không.
+- `atomicity`: thao tác không bị chen ngang giữa chừng.
+- `happens-before`: quan hệ đảm bảo visibility trong Java Memory Model.
+
+## 8. Bài tập nhỏ để tự gõ lại
+
+1. Viết `UnsafeCounter`.
+2. Chạy 2 thread, mỗi thread increment 100k lần.
+3. Sửa bằng `synchronized`.
+4. Thử đổi sang `volatile int` và chứng minh vẫn sai.
+5. Viết learning log: bug đến từ atomicity hay visibility?
+
+Học tiếp theo: chỉ khi bạn tự thấy counter sai, phần `synchronized` mới thật sự "ngấm".

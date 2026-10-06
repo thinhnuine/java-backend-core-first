@@ -1,129 +1,139 @@
-# Deep Dive Tuần 4: Collections Internals
+# Mentor Guide Tuần 4: Collections Internals
 
-## Cách Học Tuần Này
+## 1. Ý chính
 
-Collections là nền rất quan trọng vì backend gần như lúc nào cũng biến đổi dữ liệu: list user, map config, set permission, group log, cache result. Đừng chỉ học thuộc Big-O. Hãy học cách chọn collection theo câu hỏi: cần lookup nhanh, giữ thứ tự, sort, unique, hay thread-safe?
+Collections là bộ công cụ lưu và tìm dữ liệu trong Java. Backend code hầu như lúc nào cũng dùng collection: list task, map config, set permission, cache response. Học phần này để chọn đúng cấu trúc dữ liệu thay vì dùng `ArrayList` và `HashMap` theo thói quen.
 
-## ArrayList
+## 2. Giải thích code
 
-`ArrayList` giống mảng có thể tự resize.
-
-Mạnh ở:
-
-- đọc theo index nhanh
-- iterate nhanh
-- thêm cuối thường nhanh
-
-Yếu ở:
-
-- insert đầu list
-- remove giữa list
-- `contains` trên list lớn
-
-Mental model:
-
-```text
-[a][b][c][ ][ ][ ]
-```
-
-Khi đầy, nó tạo array lớn hơn rồi copy dữ liệu sang.
-
-## HashMap
-
-`HashMap` dùng hash của key để tìm bucket. Muốn `HashMap` đúng, key phải có `equals/hashCode` đúng và ổn định.
-
-Key mutable là nguồn bug rất đau:
+Ví dụ so sánh lookup:
 
 ```java
-map.put(userKey, value);
-userKey.changeEmail("new@example.com");
-map.get(userKey); // có thể không tìm thấy
+package dev.thinh.javacore;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+public class CollectionLookupDemo {
+    public static void main(String[] args) {
+        List<Integer> list = new ArrayList<>();
+        Set<Integer> set = new HashSet<>();
+
+        for (int i = 0; i < 100_000; i++) {
+            list.add(i);
+            set.add(i);
+        }
+
+        System.out.println(list.contains(99_999));
+        System.out.println(set.contains(99_999));
+    }
+}
+```
+
+Giải thích:
+
+- `List<Integer>`: danh sách có thứ tự, cho phép duplicate.
+- `ArrayList`: implementation dựa trên array.
+- `Set<Integer>`: tập unique, không quan tâm duplicate.
+- `HashSet`: implementation dựa trên hash table.
+- `list.contains(...)`: phải duyệt tuần tự, thường O(n).
+- `set.contains(...)`: dùng hash, trung bình O(1).
+
+Ví dụ `HashMap` key:
+
+```java
+Map<UserId, String> names = new HashMap<>();
+names.put(new UserId("u1"), "Thinh");
+System.out.println(names.get(new UserId("u1")));
+```
+
+Code này chỉ hoạt động đúng nếu `UserId` có `equals/hashCode` đúng.
+
+## 3. Vì sao thiết kế như vậy
+
+Mỗi collection tối ưu cho một kiểu thao tác.
+
+Nếu bạn dùng `List` để check membership lặp đi lặp lại:
+
+```java
+for (User user : users) {
+    if (blockedIdsList.contains(user.id())) {
+        // ...
+    }
+}
+```
+
+Nếu `blockedIdsList` lớn, mỗi `contains` lại quét list. Dùng `HashSet` hợp hơn:
+
+```java
+Set<UserId> blockedIds = new HashSet<>(blockedIdsList);
+```
+
+Nếu key mutable, `HashMap` có thể hỏng:
+
+```java
+MutableUserKey key = new MutableUserKey("a@example.com");
+map.put(key, "A");
+key.changeEmail("b@example.com");
+System.out.println(map.get(key)); // có thể null
 ```
 
 Vì hash bucket ban đầu dựa trên email cũ.
 
-## HashSet
+## 4. Liên hệ với Frontend
 
-`HashSet` gần như `HashMap` chỉ dùng key. Nó hợp cho membership:
+JavaScript cũng có `Array`, `Map`, `Set`:
 
-```java
-if (blockedUserIds.contains(userId)) {
-}
+```javascript
+const ids = new Set(["u1", "u2"])
+ids.has("u1")
 ```
 
-Nếu bạn đang dùng `List.contains` trên list lớn chỉ để check tồn tại, hãy nghĩ tới `HashSet`.
-
-## TreeMap Và TreeSet
-
-`TreeMap` giữ key sorted. Đổi lại operation là O(log n), không phải O(1) trung bình như `HashMap`.
-
-Dùng khi:
-
-- cần sorted iteration
-- cần range query
-- cần floor/ceiling key
-
-Không dùng chỉ vì "nghe có thứ tự". Nếu chỉ cần sort lúc output, có thể dùng `HashMap` rồi sort sau.
-
-## LinkedHashMap
-
-`LinkedHashMap` giữ insertion order hoặc access order. Nó là công cụ tốt để hiểu LRU cache.
-
-Nếu dùng access order:
+Java tương tự về ý tưởng, nhưng strict hơn về type:
 
 ```java
-new LinkedHashMap<>(16, 0.75f, true)
+Set<String> ids = new HashSet<>();
 ```
 
-mỗi lần `get`, entry được xem là vừa dùng.
+Bạn phải chọn type của item ngay từ đầu.
 
-## ConcurrentHashMap
+## 5. Khi nào dùng và không dùng
 
-`ConcurrentHashMap` thread-safe cho operation đơn lẻ. Nhưng logic nhiều bước vẫn có thể race.
+| Collection | Khi dùng | Khi tránh |
+| --- | --- | --- |
+| `ArrayList` | Danh sách có thứ tự, đọc/iterate nhiều | Lookup membership nhiều lần |
+| `HashSet` | Check tồn tại, unique item | Cần giữ sorted order |
+| `HashMap` | Lookup value theo key | Key mutable hoặc thiếu equals/hashCode |
+| `TreeMap` | Cần key sorted/range query | Chỉ cần lookup nhanh |
+| `LinkedHashMap` | Cần giữ insertion/access order | Không cần order |
+| `ConcurrentHashMap` | Nhiều thread đọc/ghi | Muốn né thiết kế concurrency |
 
-Sai:
+## 6. Bẫy hay gặp
 
-```java
-if (!map.containsKey(key)) {
-    map.put(key, load(key));
-}
-```
+- Dùng `ArrayList.contains` trong loop lớn.
+- Dùng object mutable làm key trong `HashMap`.
+- Override `equals` nhưng quên `hashCode`.
+- Nghĩ `HashMap` giữ thứ tự.
+- Dùng `ConcurrentHashMap` nhưng logic nhiều bước vẫn race.
 
-Tốt hơn:
+## 7. Thuật ngữ mới
 
-```java
-map.computeIfAbsent(key, this::load);
-```
+- `Big-O`: cách mô tả độ phức tạp khi input lớn.
+- `lookup`: tìm dữ liệu.
+- `hash`: số tính từ object để tìm bucket.
+- `bucket`: vùng lưu item trong hash table.
+- `mutable key`: key có thể đổi state sau khi đưa vào map.
+- `iteration order`: thứ tự khi duyệt collection.
 
-## Cách Chọn Collection
+## 8. Bài tập nhỏ để tự gõ lại
 
-Hỏi theo thứ tự:
+Tự viết `CollectionLookupDemo`, rồi:
 
-- Có cần duplicate không? Không thì `Set`.
-- Có cần lookup by key không? Có thì `Map`.
-- Có cần giữ thứ tự insert không? `LinkedHashMap` hoặc `ArrayList`.
-- Có cần sorted không? `TreeMap`/`TreeSet` hoặc sort lúc output.
-- Có nhiều thread ghi không? Nghĩ tới concurrent structure hoặc lock.
-
-## Bài Tập Theo Bước
-
-1. Tạo list 100k integer.
+1. Tạo 100k số.
 2. So sánh `ArrayList.contains` và `HashSet.contains`.
-3. Tạo key class đúng `equals/hashCode`.
-4. Tạo key mutable để thấy bug.
-5. Viết note chọn collection cho 6 tình huống thực tế.
+3. Tạo `UserId` đúng `equals/hashCode`.
+4. Dùng `UserId` làm key trong `HashMap`.
 
-## Lỗi Thường Gặp
-
-- Dùng `List` cho lookup lặp lại nhiều lần.
-- Dùng `HashMap` nhưng key mutable.
-- Nghĩ `ConcurrentHashMap` giải quyết mọi vấn đề concurrency.
-- Chọn `TreeMap` khi không cần sorted behavior.
-
-## Câu Hỏi Tự Kiểm Tra
-
-- Vì sao `ArrayList.get(index)` nhanh?
-- Vì sao `HashMap` cần `hashCode`?
-- Khi nào `TreeMap` đáng dùng?
-- `LinkedHashMap` giúp gì cho LRU?
-- Operation đơn lẻ thread-safe khác gì flow thread-safe?
+Học tiếp theo: nếu thấy `HashMap` vẫn mơ hồ, quay lại bài `equals/hashCode` tuần 1 và thử phá nó bằng key mutable.

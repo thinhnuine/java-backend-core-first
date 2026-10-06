@@ -1,94 +1,101 @@
-# Deep Dive Tuần 8: Virtual Threads Và Concurrency Capstone
+# Mentor Guide Tuần 8: Virtual Threads Và Concurrency Capstone
 
-## Cách Học Tuần Này
+## 1. Ý chính
 
-Tuần này không phải để thuộc API mới nhất. Mục tiêu là hiểu virtual thread giải quyết pain nào, và hoàn thành ba bài tổng hợp concurrency: thread pool, producer-consumer, rate limiter.
+`Virtual threads` là feature Java 21 giúp chạy rất nhiều task blocking I/O với chi phí thread thấp hơn platform thread. Nó làm code blocking dễ viết hơn, nhưng không làm shared mutable state tự an toàn. Tuần này bạn cũng làm capstone concurrency: thread pool, producer-consumer và rate limiter.
 
-## Platform Thread Vs Virtual Thread
+## 2. Giải thích code
 
-Platform thread gần với OS thread. Tạo quá nhiều sẽ tốn tài nguyên.
+Ví dụ virtual thread executor:
 
-Virtual thread nhẹ hơn, do JVM quản lý. Bạn có thể tạo rất nhiều virtual thread cho blocking I/O.
+```java
+try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+    Future<String> future = executor.submit(() -> {
+        Thread.sleep(100);
+        return "done";
+    });
 
-Nhưng virtual thread không biến shared mutable state thành an toàn. Race condition vẫn là race condition.
+    System.out.println(future.get());
+}
+```
 
-## Use Case Tốt Cho Virtual Thread
+Giải thích:
 
-Hợp:
+- `var`: Java tự suy luận type local variable.
+- `newVirtualThreadPerTaskExecutor()`: mỗi task chạy trên một virtual thread.
+- `try (...)`: executor được close tự động.
+- `Thread.sleep(100)`: mô phỏng blocking I/O.
+- `future.get()`: chờ kết quả.
 
-- request handler gọi DB/service ngoài blocking
-- nhiều task chờ I/O
-- muốn code tuần tự dễ đọc
+Producer-consumer mental model:
 
-Không hợp để kỳ vọng:
+```text
+producer -> bounded queue -> consumer
+```
 
-- CPU-bound nhanh hơn
-- lock contention biến mất
-- code shared state tự đúng
+Nếu queue đầy, producer chờ. Nếu queue rỗng, consumer chờ.
 
-## Structured Concurrency
+## 3. Vì sao thiết kế như vậy
 
-Ý tưởng: task con có scope rõ ràng với task cha. Nếu một task fail, scope có thể cancel task còn lại. Code async trở nên có cấu trúc hơn.
+Platform thread tốn tài nguyên hơn. Nếu mỗi request blocking DB/API cần một platform thread, hệ thống có thể bị giới hạn bởi số thread. Virtual thread giúp bạn giữ style code tuần tự mà vẫn scale tốt hơn cho blocking I/O.
 
-Bạn chỉ cần hiểu concept, vì API có thể thay đổi theo Java version.
+Nhưng virtual thread không sửa bug này:
 
-## Thread Pool Tự Viết
+```java
+count++;
+```
 
-Thread pool đơn giản gồm:
+Nếu 1000 virtual threads cùng gọi `count++`, race condition vẫn tồn tại. Virtual thread giải quyết chi phí thread, không giải quyết correctness của shared state.
 
-- task queue
-- worker threads
-- submit method
-- shutdown flag
+## 4. Liên hệ với Frontend
 
-Câu hỏi quan trọng:
+Frontend JS dùng event loop và async/await:
 
-- Shutdown xong có nhận task mới không?
-- Task đã submit trước shutdown có chạy hết không?
-- Task throw exception thì worker có chết không?
-- Queue có bounded không?
+```javascript
+const user = await fetchUser()
+```
 
-## Producer-Consumer
+Virtual thread cho phép Java backend viết code blocking nhìn cũng tuần tự:
 
-Producer thêm item, consumer lấy item.
+```java
+User user = userClient.getUser();
+```
 
-Nếu queue đầy, producer chờ.
+Nhưng runtime bên dưới khác nhau. JS async không tạo hàng nghìn OS thread, còn Java virtual thread do JVM schedule.
 
-Nếu queue rỗng, consumer chờ.
+## 5. Khi nào dùng và không dùng
 
-Pattern này giúp bạn hiểu blocking coordination rất tốt.
+| Công cụ | Khi dùng | Khi tránh |
+| --- | --- | --- |
+| Virtual thread | Blocking I/O nhiều, code tuần tự | CPU-bound task |
+| Platform thread pool | Control worker cố định | Tạo quá nhiều thread |
+| Producer-consumer | Điều phối tốc độ producer/consumer | Logic đơn giản không cần queue |
+| Rate limiter | Giới hạn request/action | Không định nghĩa rõ window/rule |
+| Token bucket | Cho phép burst nhỏ | Muốn rule cực đơn giản ban đầu |
 
-## Rate Limiter
+## 6. Bẫy hay gặp
 
-Rate limiter trả lời: request này có được phép qua không?
-
-Thuật toán:
-
-- Fixed window: dễ, nhưng burst ở ranh giới window.
-- Sliding window: chính xác hơn, phức tạp hơn.
-- Token bucket: cân bằng, cho burst nhỏ.
-
-## Bài Tập Theo Bước
-
-1. Viết API trước, chưa implement.
-2. Viết test đơn luồng.
-3. Implement bản đơn giản.
-4. Thêm test nhiều thread.
-5. Ghi bug gặp được.
-6. Nhờ AI review race/deadlock.
-
-## Lỗi Thường Gặp
-
-- Shutdown flag không volatile/không lock.
-- Worker chết khi task throw exception.
+- Nghĩ virtual thread làm CPU-bound nhanh hơn.
+- Dùng virtual thread để né học lock/thread safety.
+- Thread pool tự viết không shutdown rõ.
 - Producer-consumer dùng `if` thay `while`.
-- Rate limiter test chỉ đơn luồng.
-- Tin concurrent test pass là chứng minh tuyệt đối.
+- Rate limiter chỉ test single-thread.
 
-## Câu Hỏi Tự Kiểm Tra
+## 7. Thuật ngữ mới
 
-- Virtual thread giúp gì và không giúp gì?
-- Thread pool xử lý exception trong task thế nào?
-- Shutdown behavior được định nghĩa rõ chưa?
-- Rate limiter dùng thuật toán nào?
-- Bug concurrency khó nhất bạn gặp là gì?
+- `virtual thread`: thread nhẹ do JVM quản lý.
+- `platform thread`: thread gần với OS thread.
+- `blocking I/O`: operation chờ network/file/DB.
+- `bounded queue`: queue có capacity giới hạn.
+- `rate limiter`: cơ chế giới hạn tần suất request.
+- `token bucket`: thuật toán rate limit dùng token refill.
+
+## 8. Bài tập nhỏ để tự gõ lại
+
+1. Tạo demo 1000 task sleep 100ms bằng fixed pool 10 thread.
+2. Tạo demo 1000 task sleep 100ms bằng virtual thread executor.
+3. Ghi thời gian chạy.
+4. Viết `BoundedQueue<T>`.
+5. Viết rate limiter fixed window.
+
+Học tiếp theo: khi test concurrent code, chạy test nhiều lần và cố tình tạo contention.

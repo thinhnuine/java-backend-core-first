@@ -1,117 +1,64 @@
-# Deep Dive Tuần 2: Generics, Enum Và Nested Class
+# Mentor Guide Tuần 2: Generics, Enum Và Nested Class
 
-## Cách Học Tuần Này
+## 1. Ý chính
 
-Tuần 2 bắt đầu có cảm giác "Java rất Java": generics dài, wildcard khó đọc, enum mạnh hơn bạn tưởng, nested class thì nhìn hơi lạ. Đừng cố thuộc cú pháp ngay. Hãy học theo hướng: mỗi cú pháp giải quyết vấn đề gì, và khi nào không nên dùng.
+Tuần này học cách Java biểu diễn type linh hoạt mà vẫn an toàn. `Generics` giúp bạn viết class/method dùng được với nhiều type nhưng compiler vẫn bắt lỗi sớm. `enum` giúp mô hình hóa tập giá trị hữu hạn, còn `nested class` giúp đặt class phụ vào đúng ngữ cảnh.
 
-Mục tiêu cuối tuần:
+Nếu đến từ TypeScript, bạn có thể xem generics Java giống `Array<T>` hoặc `Promise<T>`, nhưng Java có thêm giới hạn runtime do `type erasure`.
 
-- Đọc được chữ ký generic mà không hoảng.
-- Viết được generic class/method nhỏ.
-- Hiểu `? extends` và `? super` bằng ví dụ đọc/ghi.
-- Biết type erasure giới hạn bạn ở runtime.
-- Dùng enum để gom behavior, không chỉ thay string constant.
+## 2. Giải thích code
 
-## Mental Model Cho Generics
-
-Generics là cách nói với compiler: "class/method này làm việc với một type nào đó, nhưng tôi muốn type đó vẫn an toàn".
-
-Không generic:
+Ví dụ generic repository:
 
 ```java
-Object value = box.get();
-String text = (String) value;
-```
+package dev.thinh.javacore;
 
-Bạn phải cast, lỗi có thể nổ runtime.
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
-Generic:
+public final class InMemoryRepository<ID, T> {
+    private final Map<ID, T> storage = new HashMap<>();
 
-```java
-Box<String> box = new Box<>();
-String text = box.get();
-```
-
-Compiler biết `box` chứa `String`, nên bạn ít lỗi hơn.
-
-## Generic Class Vs Generic Method
-
-Generic class dùng khi cả object xoay quanh type đó:
-
-```java
-public final class Repository<ID, T> {
-}
-```
-
-Generic method dùng khi chỉ một method cần type linh hoạt:
-
-```java
-public static <T> T first(List<T> values) {
-    return values.get(0);
-}
-```
-
-Câu hỏi tự hỏi:
-
-- Type parameter này có cần tồn tại ở cấp class không?
-- Hay chỉ một method cần nó?
-
-## PECS Nói Chậm
-
-PECS: Producer Extends, Consumer Super.
-
-Nếu collection là nguồn để bạn đọc ra `T`, dùng `extends`:
-
-```java
-public double total(List<? extends Number> numbers) {
-    double sum = 0;
-    for (Number number : numbers) {
-        sum += number.doubleValue();
+    public void save(ID id, T value) {
+        if (id == null) {
+            throw new IllegalArgumentException("id is required");
+        }
+        if (value == null) {
+            throw new IllegalArgumentException("value is required");
+        }
+        storage.put(id, value);
     }
-    return sum;
+
+    public Optional<T> findById(ID id) {
+        return Optional.ofNullable(storage.get(id));
+    }
 }
 ```
 
-Bạn có thể truyền `List<Integer>`, `List<Long>`, `List<Double>`. Nhưng bạn không nên add item vào đó, vì compiler không biết list thật sự là list của subtype nào.
+Giải thích:
 
-Nếu collection là nơi bạn ghi `T` vào, dùng `super`:
+- `InMemoryRepository<ID, T>`: class có hai type parameter. `ID` là type của id, `T` là type của value.
+- `Map<ID, T>`: map có key type là `ID`, value type là `T`.
+- `new HashMap<>()`: diamond operator, Java tự suy luận type từ vế trái.
+- `save(ID id, T value)`: method nhận đúng type đã chọn khi tạo repository.
+- `Optional<T>`: kết quả có thể có hoặc không có value.
+- `Optional.ofNullable(...)`: nếu value null thì trả `Optional.empty()`, nếu không null thì trả `Optional` chứa value.
+
+Cách gọi:
 
 ```java
-public void addDefaults(List<? super Integer> values) {
-    values.add(1);
-    values.add(2);
-}
+InMemoryRepository<String, UserId> users = new InMemoryRepository<>();
+users.save("u1", new UserId("u1"));
+
+UserId userId = users.findById("u1")
+    .orElseThrow(() -> new IllegalArgumentException("user not found"));
 ```
 
-Bạn có thể truyền `List<Integer>`, `List<Number>`, hoặc `List<Object>`.
-
-## Type Erasure
-
-Generics trong Java chủ yếu bảo vệ ở compile time. Runtime không giữ đủ thông tin generic.
-
-Vì vậy không thể:
+Ví dụ enum:
 
 ```java
-// if (value instanceof List<String>) {}
-// T item = new T();
-```
-
-Khi cần biết type ở runtime, thường truyền thêm:
-
-```java
-Class<T> type
-```
-
-Điều này sẽ gặp lại khi học JSON parser, reflection, JPA, Jackson.
-
-## Enum Nên Học Kỹ
-
-Trong Java, enum không chỉ là constant. Nó có thể có field, constructor, method.
-
-Ví dụ tốt:
-
-```java
-public enum TaskStatus {
+public enum WorkflowStatus {
     TODO,
     IN_PROGRESS,
     DONE;
@@ -122,53 +69,102 @@ public enum TaskStatus {
 }
 ```
 
-Enum giúp bạn tránh string rải rác:
+- `enum`: khai báo tập giá trị hữu hạn.
+- `TODO`, `IN_PROGRESS`, `DONE`: các instance cố định.
+- `this == DONE`: enum có thể so sánh bằng `==` vì mỗi enum constant là singleton.
+
+## 3. Vì sao thiết kế như vậy
+
+Nếu không dùng generics, bạn sẽ phải dùng `Object` và cast thủ công:
 
 ```java
-if (status.equals("done")) {}
+Map storage = new HashMap();
+storage.put("u1", new UserId("u1"));
+
+String value = (String) storage.get("u1"); // runtime ClassCastException
 ```
 
-String dễ typo, khó refactor, khó biết toàn bộ giá trị hợp lệ.
+Code compile được nhưng chạy lỗi vì object thật là `UserId`, không phải `String`. Generics chuyển lỗi này thành lỗi compile-time.
 
-## Nested Class
-
-Static nested class hợp khi class phụ chỉ có nghĩa trong context class ngoài.
-
-Ví dụ:
+Nếu không dùng enum, bạn có thể dùng string:
 
 ```java
-public final class ApiResponse<T> {
-    public static final class Error {
-    }
+String status = "done";
+```
+
+Vấn đề:
+
+- typo như `"donne"` vẫn compile.
+- không biết toàn bộ status hợp lệ.
+- logic transition dễ rải rác nhiều nơi.
+
+Enum gom tập giá trị và behavior vào một nơi.
+
+## 4. Liên hệ với Frontend
+
+TypeScript generic:
+
+```ts
+type Repository<ID, T> = {
+  save(id: ID, value: T): void
+  findById(id: ID): T | undefined
 }
 ```
 
-Inner class ít dùng hơn vì nó giữ reference tới outer object. Nếu không cần reference đó, ưu tiên static nested class.
+Java generic tương tự ở ý tưởng, nhưng cú pháp verbose hơn và có `type erasure`: runtime không luôn biết `T` là gì.
 
-## Bài Tập Theo Bước
+TypeScript union:
 
-1. Viết `Repository<ID, T>` interface.
-2. Implement `InMemoryRepository<ID, T>` bằng `HashMap`.
-3. Thêm validation null cho id/value.
-4. Viết `WorkflowStatus` enum.
-5. Viết test cho `canMoveTo`.
-6. Viết `LruCache<K, V>`, trước tiên dùng `LinkedHashMap`.
-7. Nếu còn sức, tự viết LRU bằng `HashMap + doubly linked list`.
+```ts
+type Status = "TODO" | "IN_PROGRESS" | "DONE"
+```
 
-## Lỗi Thường Gặp
+Java thường dùng enum:
 
-- Đặt tên generic quá mơ hồ khi API phức tạp.
-- Dùng wildcard dù generic method đơn giản hơn.
-- Dùng `Optional.get()` bừa bãi.
-- Enum chỉ chứa constant nhưng logic transition lại nằm rải rác ở service.
-- Dùng inner class trong khi static nested class đủ.
+```java
+WorkflowStatus status = WorkflowStatus.TODO;
+```
 
-## Câu Hỏi Tự Kiểm Tra
+Enum Java có thể chứa method, nên mạnh hơn string union ở phần behavior.
 
-- Khi nào dùng generic class?
-- Khi nào dùng generic method?
-- Vì sao `List<Integer>` không phải subtype trực tiếp của `List<Number>`?
-- `? extends Number` đọc được gì và ghi được gì?
-- Type erasure khiến bạn không làm được gì ở runtime?
-- Enum Java hơn string constant ở điểm nào?
-- Nested class có giúp API rõ hơn không, hay làm code khó đọc hơn?
+## 5. Khi nào dùng và không dùng
+
+| Công cụ | Khi dùng | Khi tránh |
+| --- | --- | --- |
+| Generic class | Class lưu/xử lý nhiều type khác nhau | Khi type cố định, không cần linh hoạt |
+| Generic method | Chỉ một method cần type linh hoạt | Khi làm signature khó đọc |
+| `? extends T` | Collection là producer để đọc ra T | Khi bạn cần add item vào collection |
+| `? super T` | Collection là consumer để ghi T vào | Khi bạn cần đọc ra subtype cụ thể |
+| Enum | Tập giá trị hữu hạn có ý nghĩa domain | Giá trị đến từ user/config không cố định |
+| Static nested class | Class phụ chỉ có nghĩa trong class ngoài | Khi class phụ cần tái sử dụng rộng |
+
+## 6. Bẫy hay gặp
+
+- Dùng `List<Object>` rồi nghĩ có thể thay `List<String>`.
+- Không hiểu `? extends` đọc tốt nhưng ghi hạn chế.
+- Gọi `Optional.get()` mà không check.
+- Dùng string cho status thay vì enum.
+- Dùng inner class trong khi static nested class là đủ.
+- Cố kiểm tra `instanceof List<String>` dù Java không cho vì type erasure.
+
+## 7. Thuật ngữ mới
+
+- `generic`: cơ chế dùng type parameter như `T`, `ID`.
+- `type parameter`: tên type giả định trong class/method generic.
+- `wildcard`: dấu `?`, nghĩa là type chưa biết cụ thể.
+- `type erasure`: Java xóa nhiều thông tin generic ở runtime.
+- `enum`: tập instance cố định, hữu hạn.
+- `nested class`: class khai báo bên trong class khác.
+- `static nested class`: nested class không giữ reference tới outer object.
+
+## 8. Bài tập nhỏ để tự gõ lại
+
+Tự gõ:
+
+1. `InMemoryRepository<ID, T>` với `save`, `findById`, `existsById`, `deleteById`.
+2. `WorkflowStatus` enum có `canMoveTo` và `isTerminal`.
+3. `LruCache<K, V>` bản đầu dùng `LinkedHashMap`.
+
+Không dùng AI sinh code. Sau khi viết xong, hãy hỏi AI review với prompt trong `04-checklist-and-ai-review.md`.
+
+Học tiếp theo: đọc lại `01-generics.md`, rồi làm `03-exercises.md`. Nếu wildcard vẫn mơ hồ, chỉ cần nắm PECS ở mức đọc/ghi trước, đừng cố thuộc mọi trường hợp.

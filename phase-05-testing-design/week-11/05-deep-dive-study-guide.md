@@ -1,112 +1,120 @@
-# Deep Dive Tuần 11: Testing Với JUnit, AssertJ Và Mockito
+# Mentor Guide Tuần 11: Testing Với JUnit, AssertJ Và Mockito
 
-## Cách Học Tuần Này
+## 1. Ý chính
 
-Testing không phải để đạt coverage đẹp. Testing là cách bạn khóa behavior để tự tin sửa code. Với Java backend, test tốt giúp bạn refactor service/domain mà không run app thủ công liên tục.
+Testing trong Java không chỉ để đạt coverage. Test giúp bạn khóa behavior để refactor tự tin. Tuần này bạn học `JUnit 5`, `AssertJ`, `Mockito`, parameterized test và cách viết test đọc như tài liệu behavior.
 
-## Test Behavior
+## 2. Giải thích code
 
-Test nên đọc như câu mô tả behavior:
-
-```java
-void rejectsNegativeAmount()
-void evictsLeastRecentlyUsedEntry()
-void returnsEmptyWhenUserNotFound()
-```
-
-Tên test kiểu `testAdd` thường thiếu thông tin.
-
-## Arrange, Act, Assert
+Ví dụ test `Money`:
 
 ```java
-// arrange
-Money usd100 = new Money(100, "USD");
-Money usd50 = new Money(50, "USD");
+package dev.thinh.javacore;
 
-// act
-Money result = usd100.add(usd50);
+import org.junit.jupiter.api.Test;
 
-// assert
-assertThat(result.amount()).isEqualTo(150);
-```
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-Nếu test khó chia 3 phần, có thể code đang làm quá nhiều.
+class MoneyTest {
+    @Test
+    void addsMoneyWithSameCurrency() {
+        Money a = new Money(100, "USD");
+        Money b = new Money(50, "USD");
 
-## AssertJ
+        Money result = a.add(b);
 
-AssertJ giúp assertion rõ hơn JUnit assert truyền thống.
+        assertThat(result.amount()).isEqualTo(150);
+        assertThat(result.currency()).isEqualTo("USD");
+    }
 
-```java
-assertThat(users)
-    .extracting(User::email)
-    .containsExactly("a@example.com");
-```
+    @Test
+    void rejectsDifferentCurrency() {
+        Money usd = new Money(100, "USD");
+        Money vnd = new Money(100, "VND");
 
-Exception:
-
-```java
-assertThatThrownBy(() -> new Money(-1, "USD"))
-    .isInstanceOf(IllegalArgumentException.class)
-    .hasMessageContaining("amount");
-```
-
-## Parameterized Test
-
-Khi cùng behavior với nhiều input:
-
-```java
-@ParameterizedTest
-@ValueSource(strings = {"", " ", "\t"})
-void rejectsBlankCurrency(String currency) {
+        assertThatThrownBy(() -> usd.add(vnd))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("currency");
+    }
 }
 ```
 
-Nó giảm duplicate mà vẫn rõ.
+Giải thích:
 
-## Mockito
+- `@Test`: đánh dấu method là test.
+- `assertThat`: AssertJ assertion đọc tự nhiên.
+- `assertThatThrownBy`: kiểm tra exception.
+- Test name `addsMoneyWithSameCurrency`: mô tả behavior.
+- Arrange: tạo `a`, `b`.
+- Act: gọi `a.add(b)`.
+- Assert: kiểm result.
 
-Mock dependency khó hoặc chậm:
+## 3. Vì sao thiết kế như vậy
 
-- API client
-- database gateway
-- email sender
-- payment gateway
+Test nên kiểm behavior, không kiểm implementation detail.
 
-Đừng mock value object hoặc class quá đơn giản.
+Test xấu:
 
-Nếu fake dễ viết, fake thường dễ hiểu hơn mock.
+```java
+assertThat(cache.internalMap().size()).isEqualTo(2);
+```
 
-## Test Pyramid Nhỏ
+Nếu sau này bạn đổi implementation không dùng map nữa, test fail dù behavior đúng.
 
-Ở giai đoạn này:
+Test tốt hơn:
 
-- nhiều unit test cho domain class
-- một số service test với fake/mock
-- Spring phase mới thêm integration test
+```java
+cache.put("a", 1);
+cache.put("b", 2);
+cache.put("c", 3);
 
-Đừng bật Spring context cho mọi test nếu không cần.
+assertThat(cache.get("a")).isEmpty();
+```
 
-## Bài Tập Theo Bước
+Nó kiểm behavior eviction, không khóa internal structure.
 
-1. Viết test cho `Money`.
-2. Viết test cho `LruCache`.
-3. Thêm parameterized test cho invalid input.
-4. Viết fake sender.
-5. Viết cùng test bằng Mockito.
-6. So sánh fake vs mock trong learning log.
+## 4. Liên hệ với Frontend
 
-## Lỗi Thường Gặp
+Nếu bạn từng dùng Jest/React Testing Library, tư duy giống nhau: test behavior người dùng/consumer thấy, không test internal state quá sâu.
 
-- Test implementation detail.
+React Testing Library khuyên test như user dùng app. Java unit test cũng nên test public API của class.
+
+## 5. Khi nào dùng và không dùng
+
+| Công cụ | Khi dùng | Khi tránh |
+| --- | --- | --- |
+| JUnit `@Test` | Mọi unit test cơ bản | Không có |
+| AssertJ | Assertion collection/exception/object | Team không dùng dependency này |
+| Parameterized test | Cùng behavior nhiều input | Test quá khác nhau |
+| Mockito | Dependency khó dựng/gọi external | Value object/class đơn giản |
+| Fake | Dependency đơn giản tự viết được | Fake phức tạp hơn mock |
+
+## 6. Bẫy hay gặp
+
+- Test name mơ hồ như `testAdd`.
 - Mock quá nhiều.
-- Assertion chung chung.
-- Test name không nói behavior.
-- Test phụ thuộc thứ tự không cần thiết.
+- Test private method.
+- Assertion quá chung chung.
+- Không test edge case.
+- Test phụ thuộc thứ tự ngẫu nhiên.
 
-## Câu Hỏi Tự Kiểm Tra
+## 7. Thuật ngữ mới
 
-- Test fail thì message có dễ hiểu không?
-- Test đang bảo vệ behavior nào?
-- Mock này có cần thiết không?
-- Có edge case null/blank/empty/boundary chưa?
-- Refactor code có làm test vẫn pass không?
+- `unit test`: test một unit nhỏ như class/method.
+- `assertion`: điều kiện test kỳ vọng đúng.
+- `mock`: object giả do framework tạo.
+- `fake`: implementation giả tự viết.
+- `behavior`: hành vi quan sát từ public API.
+- `parameterized test`: test chạy nhiều input.
+
+## 8. Bài tập nhỏ để tự gõ lại
+
+1. Viết `MoneyTest`.
+2. Test constructor reject amount âm.
+3. Test currency blank/null.
+4. Test add cùng currency.
+5. Test add khác currency.
+6. Viết parameterized test cho blank currency.
+
+Học tiếp theo: nếu test khó viết, đừng chỉ trách test; có thể design class đang khó dùng.

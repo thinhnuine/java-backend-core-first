@@ -1,117 +1,100 @@
-# Deep Dive Tuần 9: JVM Memory, Class Loading, JIT Và GC
+# Mentor Guide Tuần 9: JVM Memory, Class Loading, JIT Và GC
 
-## Cách Học Tuần Này
+## 1. Ý chính
 
-Tuần này học cách nhìn Java như một runtime, không chỉ là ngôn ngữ. Bạn không cần thành performance engineer ngay. Bạn cần biết khi app chậm, ăn RAM, GC nhiều, hoặc lỗi classpath thì nên nhìn theo hướng nào.
+Tuần này bạn học Java như một runtime, không chỉ là syntax. JVM quản lý memory, load class, tối ưu code bằng JIT và dọn rác bằng GC. Hiểu phần này giúp bạn đọc lỗi production kiểu OOM, GC nhiều, app chậm, classpath lỗi.
 
-## Heap, Stack, Metaspace
+## 2. Giải thích code
 
-Heap chứa object.
-
-Stack chứa frame của từng method call theo từng thread.
-
-Metaspace chứa metadata class.
-
-Nói đơn giản:
-
-```text
-object sống lâu -> nghĩ tới heap
-call stack sâu -> nghĩ tới stack
-class loading nhiều -> nghĩ tới metaspace
-```
-
-## StackOverflowError
-
-Thường do recursion quá sâu:
+Ví dụ tạo nhiều object:
 
 ```java
-void call() {
-    call();
+package dev.thinh.javacore;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class MemoryDemo {
+    public static void main(String[] args) throws InterruptedException {
+        List<byte[]> store = new ArrayList<>();
+
+        while (true) {
+            store.add(new byte[1024 * 1024]);
+            System.out.println("Allocated " + store.size() + " MB");
+            Thread.sleep(100);
+        }
+    }
 }
 ```
 
-Mỗi lần gọi method thêm frame vào stack. Quá sâu thì tràn stack.
+Giải thích:
 
-## OutOfMemoryError
+- `new byte[1024 * 1024]`: tạo mảng khoảng 1MB trên heap.
+- `store.add(...)`: giữ reference, nên GC không thu hồi được.
+- `while (true)`: allocation liên tục.
+- Chạy với heap nhỏ có thể gây `OutOfMemoryError`.
 
-Không phải lúc nào cũng giống nhau:
-
-- Java heap space
-- Metaspace
-- Direct buffer memory
-- Unable to create native thread
-
-Thông điệp lỗi cho bạn biết vùng nào có vấn đề.
-
-## Class Loading
-
-Classpath là nơi JVM tìm class. Maven dependency cuối cùng cũng trở thành classpath lúc chạy.
-
-Hai lỗi dễ gặp:
-
-- `ClassNotFoundException`: runtime tìm class theo tên nhưng không có.
-- `NoClassDefFoundError`: compile từng thấy class, nhưng runtime không load được.
-
-## JIT
-
-JIT tối ưu code nóng khi app chạy.
-
-Vì vậy benchmark tự viết dễ sai:
-
-- chưa warm-up
-- input quá nhỏ
-- JVM optimize mất code
-- đo một lần rồi kết luận
-
-Nếu thật sự microbenchmark, dùng JMH. Ở giai đoạn này, chỉ cần biết đừng overclaim.
-
-## Garbage Collector
-
-GC thu hồi object không còn reachable từ GC roots.
-
-Leak trong Java thường là object vẫn reachable nhưng không còn cần nữa.
-
-Ví dụ:
-
-- static list giữ object
-- cache không eviction
-- listener không unsubscribe
-
-## GC Log
-
-Chạy với:
+Command:
 
 ```bash
-java -Xlog:gc* -jar app.jar
+java -Xmx128m -Xlog:gc* dev.thinh.javacore.MemoryDemo
 ```
 
-Đọc các ý:
+- `-Xmx128m`: giới hạn heap max 128MB.
+- `-Xlog:gc*`: bật GC log.
 
-- GC xảy ra thường không?
-- pause time bao lâu?
-- heap before/after thế nào?
-- có Full GC không?
+## 3. Vì sao thiết kế như vậy
 
-## Bài Tập Theo Bước
+Java tự quản lý memory bằng GC, nhưng GC chỉ thu hồi object không còn reachable. Nếu bạn vẫn giữ reference trong list/static cache, object không được dọn.
 
-1. Tạo object ngắn hạn nhiều.
-2. Chạy với heap nhỏ.
+Ví dụ leak:
+
+```java
+private static final List<byte[]> STORE = new ArrayList<>();
+```
+
+Nếu app cứ add vào `STORE` mà không remove, object vẫn reachable từ static field. GC không dọn vì về mặt kỹ thuật object vẫn đang được dùng.
+
+## 4. Liên hệ với Frontend
+
+JavaScript cũng có garbage collector. Memory leak frontend thường là listener không remove, timer không clear, closure giữ reference. Java tương tự: object còn reachable thì GC không dọn.
+
+Khác biệt là Java backend thường cần đọc heap dump, GC log, thread dump để debug production.
+
+## 5. Khi nào dùng và không dùng
+
+| Công cụ/khái niệm | Khi dùng | Khi tránh |
+| --- | --- | --- |
+| GC log | App pause/chậm/OOM | Đọc một dòng rồi kết luận |
+| Heap dump | Cần biết object nào giữ memory | Dump production bừa bãi, file rất lớn |
+| JIT awareness | Benchmark/performance | Tự benchmark thiếu warm-up |
+| Classpath check | Lỗi class not found | Đoán mò dependency |
+
+## 6. Bẫy hay gặp
+
+- Nghĩ GC dọn mọi thứ không cần nữa theo ý mình.
+- Không hiểu object còn reference thì không được dọn.
+- Benchmark bằng một lần chạy.
+- Nhầm stack overflow với heap OOM.
+- Không đọc message OOM cụ thể.
+
+## 7. Thuật ngữ mới
+
+- `heap`: vùng chứa object.
+- `stack`: vùng chứa call frame của thread.
+- `metaspace`: vùng chứa metadata class.
+- `GC`: garbage collector.
+- `reachable`: còn được tham chiếu từ GC roots.
+- `JIT`: compiler tối ưu code nóng lúc runtime.
+- `classpath`: nơi JVM tìm class.
+
+## 8. Bài tập nhỏ để tự gõ lại
+
+1. Viết `MemoryDemo`.
+2. Chạy với `-Xmx128m`.
 3. Bật GC log.
-4. Tạo static list giữ object.
-5. So sánh log.
-6. Viết note cẩn trọng, không kết luận quá tay.
+4. Quan sát OOM.
+5. Sửa code để không giữ object trong list nữa.
+6. So sánh GC behavior.
 
-## Lỗi Thường Gặp
-
-- Nghĩ GC log đọc một dòng là biết hết.
-- Benchmark không warm-up.
-- Nhầm memory leak với memory usage cao hợp lệ.
-- Không phân biệt heap OOM và metaspace OOM.
-
-## Câu Hỏi Tự Kiểm Tra
-
-- Object thường nằm ở đâu?
-- Stack overflow khác heap OOM thế nào?
-- Classpath lỗi biểu hiện ra sao?
-- JIT ảnh hưởng benchmark thế nào?
-- Object leak trong Java nghĩa là gì?
+Học tiếp theo: khi thấy OOM, câu hỏi đầu tiên là "OOM vùng nào?" và "object nào còn reachable?".

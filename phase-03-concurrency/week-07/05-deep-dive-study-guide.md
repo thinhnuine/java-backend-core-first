@@ -1,132 +1,114 @@
-# Deep Dive Tuần 7: Executor, CompletableFuture, Lock Và Atomic
+# Mentor Guide Tuần 7: Executor, CompletableFuture, Lock Và Atomic
 
-## Cách Học Tuần Này
+## 1. Ý chính
 
-Tuần 6 bạn tự quản lý thread. Tuần 7 bạn học abstraction production hơn. Trong code backend thật, bạn hiếm khi `new Thread` lung tung. Bạn dùng executor, future, lock, atomic class và concurrent collections.
+Tuần này bạn chuyển từ tự tạo thread sang dùng abstraction thực tế hơn. `ExecutorService` quản lý thread pool, `CompletableFuture` giúp compose async task, `Lock` cho control rõ hơn `synchronized`, còn `Atomic*` xử lý state đơn giản theo cách thread-safe.
 
-## ExecutorService
+## 2. Giải thích code
 
-Executor tách "task cần chạy" khỏi "thread nào chạy".
+Ví dụ Executor:
 
 ```java
 ExecutorService executor = Executors.newFixedThreadPool(4);
-```
-
-Bạn submit task:
-
-```java
-Future<Integer> result = executor.submit(() -> 42);
-```
-
-Và nhớ shutdown:
-
-```java
-executor.shutdown();
-```
-
-Thread pool không shutdown có thể làm app không dừng.
-
-## Future
-
-`Future` là lời hứa: sau này sẽ có kết quả hoặc lỗi.
-
-```java
-Integer value = future.get();
-```
-
-`get()` block thread hiện tại. Dùng quá nhiều blocking có thể làm mất lợi ích async.
-
-## CompletableFuture
-
-`CompletableFuture` giúp compose task.
-
-```java
-userFuture.thenCombine(orderFuture, UserProfile::new);
-```
-
-Method hay gặp:
-
-- `thenApply`: transform value.
-- `thenCompose`: chain future.
-- `thenCombine`: combine hai future.
-- `exceptionally`: recover khi lỗi.
-- `handle`: xử lý cả success/failure.
-
-## Lock
-
-`ReentrantLock` giống lock explicit.
-
-```java
-lock.lock();
 try {
-    // critical section
+    Future<Integer> future = executor.submit(() -> 42);
+    Integer value = future.get();
+    System.out.println(value);
 } finally {
-    lock.unlock();
+    executor.shutdown();
 }
 ```
 
-Luôn unlock trong `finally`.
+Giải thích:
 
-## Atomic
+- `Executors.newFixedThreadPool(4)`: tạo pool có 4 worker thread.
+- `submit(() -> 42)`: gửi task vào pool.
+- `Future<Integer>`: đại diện kết quả sẽ có sau.
+- `future.get()`: block chờ kết quả.
+- `finally`: đảm bảo shutdown kể cả khi có lỗi.
+- `executor.shutdown()`: không nhận task mới và cho pool dừng dần.
 
-Atomic class hợp cho state đơn giản:
+Ví dụ Atomic:
 
 ```java
 AtomicInteger count = new AtomicInteger();
 count.incrementAndGet();
 ```
 
-Nếu state gồm nhiều field phải giữ invariant cùng nhau, lock thường rõ hơn.
+`incrementAndGet` là atomic operation, an toàn hơn `count++` trong multi-thread.
 
-## ConcurrentHashMap
+## 3. Vì sao thiết kế như vậy
 
-Đừng viết check-then-act:
+Tự `new Thread` liên tục dễ tạo quá nhiều thread:
 
 ```java
-if (!map.containsKey(key)) {
-    map.put(key, value);
+for (Task task : tasks) {
+    new Thread(() -> process(task)).start();
 }
 ```
 
-Dùng operation atomic:
+Nếu có 10k task, bạn có thể tạo 10k thread và làm hệ thống nghẹt. Thread pool giới hạn số worker và queue task.
+
+Với `CompletableFuture`, nếu bạn gọi `get()` quá sớm:
 
 ```java
-map.computeIfAbsent(key, this::load);
-map.merge(key, 1, Integer::sum);
+User user = userFuture.get();
+List<Order> orders = orderFuture.get();
 ```
 
-## Deadlock
+bạn có thể làm code async thành gần như sync. Hãy compose bằng `thenCombine` khi có thể.
 
-Deadlock thường là hai thread giữ lock và chờ nhau.
+## 4. Liên hệ với Frontend
 
-Giảm bằng:
+`CompletableFuture` có cảm giác hơi giống `Promise`:
 
-- lock ordering
-- timeout với `tryLock`
-- không giữ lock khi gọi code ngoài
-- critical section nhỏ
+```javascript
+Promise.all([fetchUser(), fetchOrders()])
+```
 
-## Bài Tập Theo Bước
+Java:
 
-1. Viết service gọi fake user và fake order song song.
-2. Combine bằng `thenCombine`.
-3. Thêm error handling.
-4. Viết word counter bằng `ConcurrentHashMap.merge`.
-5. Tạo deadlock demo.
-6. Sửa bằng lock ordering.
+```java
+userFuture.thenCombine(ordersFuture, UserProfile::new)
+```
 
-## Lỗi Thường Gặp
+Khác biệt: Java còn phải nghĩ tới executor/thread pool nào chạy task. JavaScript Promise thường chạy trên event loop/runtime abstraction.
 
-- Quên shutdown executor.
-- Dùng common pool mà không hiểu workload.
-- Gọi `get()` quá sớm làm mất parallelism.
-- Lock rồi quên unlock khi exception.
-- Dùng `ConcurrentHashMap` nhưng update không atomic.
+## 5. Khi nào dùng và không dùng
 
-## Câu Hỏi Tự Kiểm Tra
+| Công cụ | Khi dùng | Khi tránh |
+| --- | --- | --- |
+| `ExecutorService` | Chạy nhiều task có kiểm soát | Quên shutdown |
+| `Future` | Cần kết quả task đơn giản | Compose phức tạp |
+| `CompletableFuture` | Combine async task | Pipeline khó đọc, block sớm |
+| `Lock` | Cần `tryLock`, timeout, condition | `synchronized` đủ đơn giản |
+| `AtomicInteger` | Counter đơn giản | State nhiều field cần invariant |
+| `ConcurrentHashMap` | Nhiều thread update map | Logic nhiều bước không atomic |
 
-- Task của bạn CPU-bound hay I/O-bound?
-- Executor size chọn dựa trên gì?
-- CompletableFuture pipeline có block sớm không?
-- Exception async được xử lý ở đâu?
-- Lock ordering của bạn là gì?
+## 6. Bẫy hay gặp
+
+- Quên `executor.shutdown()`.
+- Dùng common pool cho blocking I/O nặng.
+- Gọi `future.get()` quá sớm.
+- `lock.lock()` nhưng quên `unlock()` trong `finally`.
+- Dùng `ConcurrentHashMap` nhưng vẫn check-then-act sai.
+
+## 7. Thuật ngữ mới
+
+- `thread pool`: nhóm thread tái sử dụng để chạy task.
+- `Future`: handle cho kết quả tương lai.
+- `blocking`: thread dừng chờ kết quả.
+- `compose`: ghép nhiều async operation.
+- `atomic operation`: thao tác không bị chen ngang.
+- `deadlock`: các thread chờ nhau mãi.
+
+## 8. Bài tập nhỏ để tự gõ lại
+
+1. Viết `AsyncUserProfileService`.
+2. Fake `UserClient` sleep 200ms.
+3. Fake `OrderClient` sleep 200ms.
+4. Chạy tuần tự rồi chạy song song bằng `CompletableFuture`.
+5. So sánh thời gian.
+6. Thêm `exceptionally` để handle lỗi.
+
+Học tiếp theo: sau khi dùng executor, luôn tự hỏi "pool này shutdown ở đâu?".

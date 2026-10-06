@@ -1,111 +1,121 @@
-# Deep Dive Tuần 12: SOLID, Pattern Và Refactoring
+# Mentor Guide Tuần 12: SOLID, Pattern Và Refactoring
 
-## Cách Học Tuần Này
+## 1. Ý chính
 
-Đừng học pattern như bộ sưu tập tên gọi. Học theo câu hỏi: code đang đau ở đâu, pattern nào giảm đau, và tradeoff là gì?
+Tuần này học thiết kế code dễ sửa. `SOLID` và design pattern không phải luật tôn giáo, mà là ngôn ngữ để nhận diện vấn đề và chọn cách refactor. Mục tiêu là dùng pattern khi nó giảm complexity thật, không phải để code trông "senior".
 
-## SOLID Thực Dụng
+## 2. Giải thích code
 
-Single Responsibility không có nghĩa là mỗi class chỉ có một method. Nó nghĩa là class có một lý do chính để thay đổi.
-
-Open/Closed không có nghĩa là không bao giờ sửa code cũ. Nó nghĩa là thiết kế cho phép thêm behavior mới mà không phá nhiều code ổn định.
-
-Dependency Inversion không có nghĩa là mọi class đều cần interface. Nó nghĩa là high-level policy không bị trói vào low-level detail.
-
-## Khi Nào Refactor
-
-Refactor khi có tín hiệu:
-
-- test khó viết
-- method quá dài
-- class biết quá nhiều
-- thêm feature phải sửa nhiều chỗ
-- bug lặp lại quanh cùng vùng code
-- duplication mang ý nghĩa business
-
-Không refactor chỉ vì "cho sạch" nếu bạn không mô tả được vấn đề.
-
-## Builder
-
-Builder hợp khi object có nhiều optional field hoặc constructor quá dài.
-
-Không cần builder cho:
+Ví dụ Strategy:
 
 ```java
-new Money(100, "USD")
+package dev.thinh.javacore;
+
+public interface DiscountPolicy {
+    Money discountFor(ShoppingCart cart);
+}
 ```
 
-Cần cân nhắc builder cho:
+Implementation:
 
 ```java
-UserProfile.builder()
-    .id("u1")
-    .email("a@example.com")
-    .displayName("Thinh")
-    .timezone("Asia/Ho_Chi_Minh")
-    .build();
+public final class NoDiscountPolicy implements DiscountPolicy {
+    @Override
+    public Money discountFor(ShoppingCart cart) {
+        return new Money(0, "USD");
+    }
+}
 ```
 
-## Strategy
+Service dùng strategy:
 
-Strategy hợp khi bạn có nhiều thuật toán thay thế nhau.
+```java
+public final class CheckoutService {
+    private final DiscountPolicy discountPolicy;
 
-Ví dụ:
+    public CheckoutService(DiscountPolicy discountPolicy) {
+        this.discountPolicy = discountPolicy;
+    }
 
-- discount policy
-- retry policy
-- pricing rule
-- rate limiter algorithm
+    public Money discountFor(ShoppingCart cart) {
+        return discountPolicy.discountFor(cart);
+    }
+}
+```
 
-Nếu bạn thấy `switch`/`if` dài theo type thuật toán, nghĩ tới Strategy.
+Giải thích:
 
-## Factory
+- `DiscountPolicy`: abstraction cho rule giảm giá.
+- `NoDiscountPolicy`: một implementation.
+- `CheckoutService` phụ thuộc interface, không phụ thuộc class cụ thể.
+- Thay policy không cần sửa service.
 
-Factory hợp khi logic tạo object phức tạp hoặc bạn muốn ẩn concrete class.
+## 3. Vì sao thiết kế như vậy
 
-Nhưng factory quá sớm có thể làm code vòng vèo. Nếu `new` rõ ràng và ổn, cứ `new`.
+Nếu dùng `if/else` khắp nơi:
 
-## Observer
+```java
+if (customerType.equals("VIP")) {
+    discount = total.multiply(20).divide(100);
+} else if (customerType.equals("NEW")) {
+    discount = total.multiply(10).divide(100);
+}
+```
 
-Observer hợp cho event/listener. Event emitter của bạn là bài tập tự nhiên.
+Khi thêm rule mới, bạn phải sửa nhiều chỗ. Strategy gom từng rule thành class riêng và service chỉ gọi contract.
 
-Câu hỏi quan trọng:
+Nhưng nếu chỉ có một rule đơn giản và không có dấu hiệu thay đổi, tạo Strategy có thể là over-engineering.
 
-- Listener chạy theo thứ tự nào?
-- Listener lỗi thì emit có dừng không?
-- Unsubscribe có thật sự remove không?
+## 4. Liên hệ với Frontend
 
-## Refactoring Workflow
+Strategy giống việc truyền function/prop để thay behavior:
 
-1. Viết test bảo vệ behavior.
-2. Chọn một code smell cụ thể.
-3. Sửa nhỏ.
-4. Chạy test.
-5. Commit.
-6. Lặp lại.
+```tsx
+<PriceCalculator discountStrategy={vipDiscount} />
+```
 
-## Bài Tập Theo Bước
+Builder hơi giống tạo config object nhiều option:
 
-1. Chọn một bài cũ.
-2. Viết `refactoring-notes.md`.
-3. Liệt kê 2 code smell.
-4. Viết/bổ sung test.
-5. Refactor một phần.
-6. Chạy test.
-7. Ghi tradeoff.
+```javascript
+createUser({ email, displayName, timezone })
+```
 
-## Lỗi Thường Gặp
+Nhưng Java dùng class/method rõ ràng hơn vì không có object literal linh hoạt như JS.
 
-- Pattern hóa quá tay.
+## 5. Khi nào dùng và không dùng
+
+| Pattern/Nguyên tắc | Khi dùng | Khi tránh |
+| --- | --- | --- |
+| SRP | Class có nhiều lý do thay đổi | Tách quá nhỏ làm khó đọc |
+| Strategy | Nhiều thuật toán thay thế | Chỉ có một rule đơn giản |
+| Builder | Object nhiều optional field | Object 2-3 field |
+| Factory | Logic tạo object phức tạp | `new` rõ ràng là đủ |
+| Observer | Event/listener | Flow sync đơn giản |
+
+## 6. Bẫy hay gặp
+
 - Tạo interface cho mọi class.
+- Dùng pattern trước khi có vấn đề.
 - Refactor không có test.
+- Tách class quá nhỏ, flow bị vỡ vụn.
 - Đổi public API mà không ghi lý do.
-- Tách class quá nhỏ làm flow khó đọc.
 
-## Câu Hỏi Tự Kiểm Tra
+## 7. Thuật ngữ mới
 
-- Vấn đề cụ thể trước refactor là gì?
-- Pattern này giảm complexity hay tăng ceremony?
-- Test có bảo vệ behavior quan trọng chưa?
-- Public API sau refactor dễ dùng hơn không?
-- Tradeoff bạn chấp nhận là gì?
+- `SOLID`: nhóm nguyên tắc thiết kế OOP.
+- `Strategy`: pattern tách thuật toán thành object thay thế được.
+- `Builder`: pattern tạo object nhiều option.
+- `Factory`: pattern gom logic tạo object.
+- `Observer`: pattern event/listener.
+- `refactoring`: đổi cấu trúc code mà giữ behavior.
+
+## 8. Bài tập nhỏ để tự gõ lại
+
+1. Chọn `LogProcessor`, `LruCache` hoặc `EventEmitter`.
+2. Viết test trước.
+3. Ghi 2 code smell.
+4. Refactor một phần nhỏ.
+5. Chạy test.
+6. Viết `refactoring-notes.md`: vấn đề, thay đổi, tradeoff.
+
+Học tiếp theo: mỗi lần muốn dùng pattern, viết một câu "pattern này giảm đau ở đâu?".
