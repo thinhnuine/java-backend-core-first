@@ -1,51 +1,30 @@
-# Java Backend Core-First
+# Từ Frontend Đến Fullstack Java
 
-A 14-week Java Backend learning roadmap for frontend developers, focused on Java core, JVM, concurrency, testing, and Spring Boot fundamentals.
+Tài liệu dành cho lập trình viên frontend có khoảng 4 năm kinh nghiệm, mới bắt đầu Java và backend. Bạn đã biết lập trình; phần cần xây thêm là cách Java chạy, cách server xử lý yêu cầu và cách dữ liệu được bảo vệ trong database.
 
-This repo is built for a React/Next.js developer who wants to move into Java Backend without jumping straight into framework magic. The path starts with Java language fundamentals, then moves through collections, concurrency, JVM internals, testing, design, and finally Spring Boot.
+## Bắt đầu ở đâu?
 
-## Start Here
+1. Xem [chuẩn đầu ra](COURSE_OUTCOMES.md), rồi đọc [nhận xét tài liệu hiện tại](REVIEW.md) để hiểu những điểm cần đổi.
+2. Theo [lộ trình 24 tuần](ROADMAP.md), dự kiến 8 giờ/tuần và điều chỉnh theo kết quả thực hành.
+3. Làm [buổi đầu tiên: chạy và debug Java](learning-path/00-first-java-program.md).
+4. Phát triển [Task Manager xuyên suốt](learning-path/03-task-manager-project.md), từ Java thuần đến ứng dụng fullstack.
 
-- Read the full roadmap: [ROADMAP.md](ROADMAP.md)
-- Begin week 1: [phase-01-java-language/week-01](phase-01-java-language/week-01/README.md)
-- Study each week in order: read the lesson files, do the exercises, then use the checklist and AI review prompt.
+## Cách dùng bộ bài cũ
 
-## Structure
+Các thư mục `phase-*` và `week-*` giữ nguyên địa chỉ để bạn tra cứu. **Số tuần trong tên thư mục là mã của giáo trình cũ, không phải lịch mới.** Dùng bảng trong [ROADMAP.md](ROADMAP.md) để biết lúc nào đọc phần nào. Lịch 8h và checklist cũ là tài liệu tham khảo, không phải yêu cầu hoàn thành hết trong một tuần mới.
 
-| Phase | Weeks | Focus |
-| --- | --- | --- |
-| [Phase 01](phase-01-java-language/README.md) | 1-3 | Java language, OOP, generics, modern Java, exceptions |
-| [Phase 02](phase-02-collections-stream-io/README.md) | 4-5 | Collections, Stream, Optional, `java.time`, NIO.2 |
-| [Phase 03](phase-03-concurrency/README.md) | 6-8 | Threads, locks, executors, CompletableFuture, virtual threads |
-| [Phase 04](phase-04-jvm-performance/README.md) | 9-10 | JVM memory, GC, profiling, reflection, proxy |
-| [Phase 05](phase-05-testing-design/README.md) | 11-12 | JUnit 5, Mockito, AssertJ, SOLID, design patterns |
-| [Phase 06](phase-06-spring-boot-core/README.md) | 13-14 | Spring Boot, REST API, JPA, transaction, integration testing |
+| Bạn đang cần | Đọc |
+| --- | --- |
+| Cài đặt, compile, chạy, debug | [Buổi đầu tiên](learning-path/00-first-java-program.md) |
+| Hiểu request đi từ FE tới DB | [HTTP và trách nhiệm backend](learning-path/01-http-and-backend.md) |
+| Session, ownership và luồng security | [Security căn bản](learning-path/05-security-basics.md) |
+| JAR, config, container và CI | [Chạy ứng dụng](learning-path/06-running-and-ci.md) |
+| Học database trước ORM | [SQL căn bản](learning-path/02-sql-before-jpa.md) |
+| Biết phải làm và kiểm tra gì mỗi giai đoạn | [Project và tiêu chí nghiệm thu](learning-path/03-task-manager-project.md) |
+| Java, collections, Spring và các bài chuyên sâu | [Bản đồ đọc bài](ROADMAP.md) |
 
-## Weekly Rhythm
+## Cách học
 
-- 2h learning concepts.
-- 4h coding exercises.
-- 1h testing, debugging, benchmarking, or refactoring.
-- 1h AI review and learning log.
+Mỗi buổi: dự đoán kết quả → tự gõ ví dụ → chạy → sửa một đầu vào để tạo lỗi → giải thích lại bằng lời của bạn. Đọc 20–30 phút rồi viết code. Dùng AI để giải thích lỗi và review bài đã thử, tránh lấy nguyên lời giải trước khi làm.
 
-The goal is not to finish files quickly. The goal is to write code, hit compiler/runtime errors, debug them, and explain the design decisions in your own words.
-
-## Requirements
-
-- Java 21, while keeping Java 17 compatibility in mind.
-- Maven.
-- Git.
-- IntelliJ IDEA Community or another Java-friendly IDE.
-
-## AI Usage
-
-Use AI as a mentor and reviewer, not as a code generator for the full solution.
-
-Good prompts:
-
-- "Review this Java code for immutability and equals/hashCode correctness."
-- "Explain this concurrency bug with a thread timeline."
-- "What test cases am I missing?"
-- "Does this Spring transaction boundary make sense?"
-
-Avoid asking AI to write the whole exercise before you have tried it yourself.
+Bản học này dùng Java 21 làm mốc cho ví dụ. Khi tạo Spring project, ghi rõ phiên bản vào README, dùng dependency management và Maven Wrapper của project. Không cần học đồng thời Java 17/21 hay nhiều major version Spring.

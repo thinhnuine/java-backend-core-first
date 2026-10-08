@@ -97,3 +97,9 @@ Thiết kế API:
 - `DELETE /tasks/{id}`.
 
 Ghi request/response/error mẫu vào README project.
+
+Các snippet cần import jakarta.validation.Valid và jakarta.validation.constraints.*, org.springframework.web.bind.annotation.*, org.springframework.http.*; TaskService/ApiError/TaskNotFoundException phải do project định nghĩa. @NotBlank cần Validation dependency và @Valid trên request để kích hoạt kiểm tra trong flow này.
+
+Service chuẩn hóa title rồi kiểm độ dài 1–100, vì rule của project là độ dài sau trim. @Size(max=100) kiểm raw String, có thể cho kết quả khác; chọn contract nhất quán và test case chứa khoảng trắng hai đầu. Handler mẫu chỉ xử lý not found; bổ sung lỗi validation, JSON sai/status sai và lỗi ngoài dự kiến theo cùng schema.
+
+Nếu dùng Spring Security ở chặng sau, lỗi authentication/authorization/CSRF xảy ra ở filter chain có thể không đi qua controller advice; cấu hình error handling riêng ở tầng security. Khi tạo thành công, thêm Location tới resource vừa tạo như contract HTTP của project.

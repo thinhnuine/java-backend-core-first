@@ -28,8 +28,8 @@ List<String> values = new ArrayList<>(100_000);
 
 `LinkedList` là doubly linked list.
 
-- Add/remove khi đã có node reference có thể O(1).
-- Nhưng tìm tới index vẫn O(n).
+- Thêm/xóa ở đầu/cuối là O(1); thêm/xóa qua `ListIterator` đã đứng đúng vị trí cũng không cần duyệt lại. API `LinkedList` không đưa node reference nội bộ cho caller.
+- Truy cập hoặc xóa theo index vẫn cần duyệt tới vị trí đó, nên là O(n).
 - Trong thực tế backend, `ArrayList` thường thắng vì cache locality tốt hơn.
 
 Không chọn `LinkedList` chỉ vì "xóa giữa nhanh"; hãy đo hoặc có lý do rõ.
@@ -92,3 +92,5 @@ Tạo `CollectionChoice.md`, ghi collection bạn chọn cho từng case:
 - Lưu config key/value.
 - Lấy item theo key và cần giữ thứ tự insert.
 - Đếm số lần action xuất hiện trong log.
+
+Nguồn: [LinkedList API Java 21](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/LinkedList.html).

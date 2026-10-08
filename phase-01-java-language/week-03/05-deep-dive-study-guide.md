@@ -1,5 +1,7 @@
 # Mentor Guide Tuần 3: Modern Java, Exception Và Capstone
 
+> **Đọc sau:** đây là mentor guide mở rộng của giáo trình cũ, không phải điểm bắt đầu hay checklist bắt buộc. Học theo [README mới](README.md) và hoàn thành bài cơ bản trước.
+
 ## 1. Ý chính
 
 Tuần này học các feature Java hiện đại như `record`, `sealed class`, `pattern matching`, `switch expression` và cách xử lý exception. Mục tiêu không phải dùng feature mới cho "ngầu", mà là biết khi nào chúng làm domain model rõ hơn. Cuối tuần bạn chọn một capstone nhỏ để gom lại kiến thức tuần 1-3.
@@ -22,7 +24,7 @@ public record EmailAddress(String value) {
 
 Giải thích:
 
-- `record`: class đặc biệt cho data carrier immutable.
+- `record`: data carrier có component field final; bất biến chỉ ở mức nông nếu component tham chiếu object mutable.
 - `EmailAddress(String value)`: component của record. Java tự tạo field private final, constructor, accessor `value()`, `equals`, `hashCode`, `toString`.
 - `public EmailAddress { ... }`: compact constructor, dùng để validate.
 - Không cần viết `this.value = value`; record tự gán sau block validation.
@@ -139,7 +141,7 @@ type ParseResult<T> =
 
 ## 7. Thuật ngữ mới
 
-- `record`: class data carrier immutable do Java sinh bớt boilerplate.
+- `record`: data carrier với component field final; Java sinh constructor/accessor/equality/toString, không tự validate hoặc deep-freeze.
 - `compact constructor`: constructor ngắn của record để validate.
 - `sealed`: giới hạn class nào được extend/implement.
 - `pattern matching`: check type và bind biến trong một bước.
@@ -163,3 +165,5 @@ Trước khi code, viết README ngắn:
 - Test case đầu tiên.
 
 Học tiếp theo: nếu chọn JSON parser, hãy viết model `JsonValue` bằng sealed interface trước. Nếu chọn LRU, bắt đầu bằng `LinkedHashMap` rồi mới tự viết linked list sau.
+
+Phân loại checked/unchecked dựa trên hierarchy exception, không chỉ dựa vào khả năng recover: RuntimeException/Error và subclass là unchecked. Dòng hướng dẫn “có thể recover” là gợi ý thiết kế, không phải quy tắc compiler.

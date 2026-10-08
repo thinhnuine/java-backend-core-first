@@ -1,5 +1,7 @@
 # Capstone: Port Một Thư Viện Nhỏ Sang Java
 
+> **Tự chọn sau nền collections.** Project bắt buộc theo lịch mới là [Task Manager](../../learning-path/03-task-manager-project.md). Không cần tự viết parser/LRU trước khi bắt đầu HTTP và Spring.
+
 ## Mục Tiêu
 
 Bạn chọn một thư viện nhỏ từng quen ở JS/Python, rồi viết lại bằng Java. Mục tiêu không phải làm nhiều feature, mà là luyện API design, type system, OOP, generics, exception và test.

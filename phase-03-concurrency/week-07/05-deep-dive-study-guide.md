@@ -1,5 +1,7 @@
 # Mentor Guide Tuần 7: Executor, CompletableFuture, Lock Và Atomic
 
+> **Chọn phạm vi:** làm phần được chỉ định trong [README module](README.md) và roadmap. Benchmark, log processor lớn, tự viết pool/queue/rate limiter, GC/reflection/proxy là bài mở rộng; checklist đầy đủ dưới đây không bắt buộc trước khi qua mốc học mới.
+
 ## 1. Ý chính
 
 Tuần này bạn chuyển từ tự tạo thread sang dùng abstraction thực tế hơn. `ExecutorService` quản lý thread pool, `CompletableFuture` giúp compose async task, `Lock` cho control rõ hơn `synchronized`, còn `Atomic*` xử lý state đơn giản theo cách thread-safe.
@@ -47,7 +49,7 @@ for (Task task : tasks) {
 }
 ```
 
-Nếu có 10k task, bạn có thể tạo 10k thread và làm hệ thống nghẹt. Thread pool giới hạn số worker và queue task.
+Nếu có 10k task, bạn có thể tạo 10k thread và làm hệ thống nghẹt. Fixed pool giới hạn số worker, nhưng queue mặc định không giới hạn. Muốn giới hạn backlog phải cấu hình bounded queue và chính sách khi quá tải.
 
 Với `CompletableFuture`, nếu bạn gọi `get()` quá sớm:
 
@@ -56,7 +58,7 @@ User user = userFuture.get();
 List<Order> orders = orderFuture.get();
 ```
 
-bạn có thể làm code async thành gần như sync. Hãy compose bằng `thenCombine` khi có thể.
+Nếu cả hai future đã submit trước đoạn get, chúng vẫn có thể chạy song song; get chỉ chặn caller. Mất song song khi chờ user xong rồi mới submit orders. thenCombine giúp compose kết quả mà không chặn caller tại đây; nó không tự tạo song song nếu trước đó công việc chưa được lên lịch đúng.
 
 ## 4. Liên hệ với Frontend
 

@@ -1,18 +1,13 @@
-# Giai Đoạn 3: Concurrency (Tuần 6-8)
+# Concurrency Theo Nhu Cầu
 
-## Mục Tiêu
+Đọc ở **shared state tuần 8/22; chuyên sâu sau dự án** theo [roadmap](../ROADMAP.md). Mã phase/week giữ để tra cứu; không dùng lịch 14 tuần cũ để quyết định tiến độ.
 
-Hiểu concurrency đa luồng của Java: thread, visibility, locking, executor, future, concurrent data structure và virtual threads. Đây là phần cần học chậm hơn vì khác hẳn mô hình JS single-thread event loop.
+| Module | Phạm vi |
+| --- | --- |
+| [week-06](week-06/README.md) | Thread/race; wait/notify và JMM chi tiết học sau |
+| [week-07](week-07/README.md) | Executor/Future/async/lock, mở rộng |
+| [week-08](week-08/README.md) | Virtual thread và coordination capstone, mở rộng |
 
-## Tuần Học
+Đường bắt buộc: giải thích shared state và demo conflict khi cập nhật task. Tự viết pool/queue/rate limiter không phải chuẩn đầu ra toàn khóa.
 
-- `week-06`: Thread, `synchronized`, `volatile`, Java Memory Model.
-- `week-07`: ExecutorService, CompletableFuture, Lock, Atomic, ConcurrentHashMap.
-- `week-08`: Virtual threads, structured concurrency, bài tập thread pool/rate limiter.
-
-## Deliverable
-
-- Producer-consumer queue.
-- Thread pool đơn giản.
-- Rate limiter.
-- Learning log mô tả ít nhất 3 bug concurrency bạn đã tạo và sửa.
+Tiếp theo: đối chiếu [Task Manager](../learning-path/03-task-manager-project.md) và [chuẩn đầu ra](../COURSE_OUTCOMES.md).

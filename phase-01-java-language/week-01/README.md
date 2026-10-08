@@ -1,26 +1,24 @@
-# Tuần 1: Type System Và OOP Kiểu Java
+# Module week-01: Java: Type, Object Và Composition
 
-## Mục Tiêu Tuần
+Tên week trong đường dẫn là mã tài liệu, không phải tuần theo lịch mới. Vị trí học: **tuần 2–4** trong [ROADMAP.md](../../ROADMAP.md). Mỗi tuần mới có tổng 8 giờ cho mọi tài liệu được chọn, không phải 8 giờ cho mỗi module.
 
-Tuần này giúp bạn bỏ thói quen nhìn Java như TypeScript có kiểu dài hơn. Bạn sẽ học cách Java mô hình hóa dữ liệu, object identity, reference, inheritance và contract của object.
+## Cần biết trước
 
-## Lịch 8h
+Chạy được main, biết method/if/loop từ buổi đầu.
 
-- Buổi 1, 2h: type system, primitive/reference, class/object/package.
-- Buổi 2, 2h: interface, abstract class, composition vs inheritance.
-- Buổi 3, 2h: `equals`, `hashCode`, `toString`, immutability.
-- Buổi 4, 2h: làm bài tập, viết test, AI review.
+## Lượt học bắt buộc hoặc phạm vi được chọn
 
-## File Cần Học
+Type/class/constructor ở tuần 2; interface/composition và immutable đơn giản ở tuần 3; equals/hashCode ở tuần 4 khi dùng key.
 
-- `01-type-system.md`
-- `02-oop-and-object-contract.md`
-- `03-exercises.md`
-- `04-checklist-and-ai-review.md`
+Bắt đầu [bài thứ nhất](01-type-system.md), sau đó [bài thứ hai](02-oop-and-object-contract.md) theo phần roadmap chỉ định. Đọc một ví dụ → đoán output → tự chạy → đổi input → giải thích bằng lời của mình. Có thể dành thêm buổi khi chưa qua mốc; không đọc hết để chạy theo thời hạn.
 
-## Kết Quả Cần Có
+## Đọc sau hoặc tự chọn
 
-- Viết được class Java có field, constructor, method, access modifier đúng.
-- Biết khi nào dùng interface, abstract class, inheritance hoặc composition.
-- Override đúng `equals`, `hashCode`, `toString`.
-- Tạo được object immutable đơn giản.
+Abstract class, Money đầy đủ và ShoppingCart là bài tự chọn.
+
+Các file bài tập/checklist/mentor guide bên dưới dùng trong phạm vi được chọn, không phải yêu cầu làm hết:
+
+- [03-exercises.md](03-exercises.md)
+- [04-checklist-and-ai-review.md](04-checklist-and-ai-review.md)
+
+Tiếp theo: đối chiếu đầu ra tuần trong [roadmap](../../ROADMAP.md) và [chuẩn đầu ra](../../COURSE_OUTCOMES.md).

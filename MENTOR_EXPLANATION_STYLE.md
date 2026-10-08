@@ -2,7 +2,7 @@
 
 Use this style when writing or rewriting lesson files in this repo.
 
-The learner is a frontend developer with React/Next.js experience who knows JavaScript and Python, but is still new to Java. The writing should feel like a Java Backend mentor explaining slowly enough that the learner does not need to leave the document and ask AI again for the basics.
+The learner has four years of frontend experience, is new to Java and backend, and studies about eight hours per week. Do not assume prior Python, SQL, server-side Node.js, Docker, or authentication knowledge. Use the frontend stack they already know for comparisons. The writing should feel like a Java Backend mentor explaining slowly enough that the learner does not need to leave the document and ask AI again for the basics.
 
 ## Required Structure For Each Concept
 
@@ -104,3 +104,21 @@ Requirements:
 ## Short Answer Exception
 
 When the learner asks "ngắn gọn thôi" or asks a quick factual question, answer briefly instead of using the full structure.
+
+## Learning Path And Prerequisites
+
+- Follow ROADMAP.md for the new sequence. Old week-* directory names identify modules, not the current study calendar.
+- Introduce unfamiliar backend terms before using them; distinguish required material from optional depth.
+- State prerequisites, where each runnable example goes, how to run it, expected output, and one observable completion criterion.
+- Label incomplete code as a snippet and name its missing context. Never imply every block compiles alone.
+- Build Task Manager incrementally. Use library/parser/thread-pool projects as optional practice after their prerequisites.
+- Teach basic tests alongside Java behavior, SQL before JPA, and HTTP before framework annotations.
+- Explain the limits of JS/TS analogies, especially nullability, String equality, shared state, and shallow immutability.
+
+## Course Outcomes And Evidence
+
+- COURSE_OUTCOMES.md defines required competencies. A local DB API is a midpoint, not the end of this fullstack course.
+- Use one eight-hour budget for the selected material each new week. Do not imply every old module, checklist, or lab is required on top of that budget.
+- A race demo passing repeatedly is not a proof of thread safety. Explain synchronization and separate observed evidence from correctness reasoning.
+- Distinguish complete runnable examples, partial class sketches, intentionally invalid examples, and framework snippets with external prerequisites.
+- Record what was actually verified. Reading or compiling a snippet does not establish API/DB/security/container behavior.

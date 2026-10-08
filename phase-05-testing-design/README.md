@@ -1,19 +1,12 @@
-# Giai Đoạn 5: Testing Và Thiết Kế Code (Tuần 11-12)
+# Testing Và Thiết Kế
 
-## Mục Tiêu
+Đọc ở **test tuần 3/15; refactor tuần 23** theo [roadmap](../ROADMAP.md). Mã phase/week giữ để tra cứu; không dùng lịch 14 tuần cũ để quyết định tiến độ.
 
-Viết Java dễ test, dễ đọc, dễ sửa. Học JUnit 5, Mockito, AssertJ, parameterized test, SOLID thực dụng, design pattern phổ biến và refactoring.
+| Module | Phạm vi |
+| --- | --- |
+| [week-11](week-11/README.md) | JUnit căn bản sớm; unit/HTTP/DB test khi đã có app |
+| [week-12](week-12/README.md) | SOLID/refactor vấn đề cụ thể với test |
 
-## Tuần Học
+Test behavior của Task Manager và refactor một chỗ có bằng chứng. Không cần tạo thêm parser/LRU hay áp dụng đủ pattern.
 
-- `week-11`: Testing với JUnit 5, AssertJ, Mockito.
-- `week-12`: SOLID, design pattern, refactoring.
-
-## Deliverable
-
-Refactor một bài cũ như LRU cache, event emitter hoặc log processor:
-
-- Thêm test rõ ràng.
-- Tách responsibility.
-- Áp dụng pattern khi có lý do thật.
-- Viết note giải thích thay đổi.
+Tiếp theo: đối chiếu [Task Manager](../learning-path/03-task-manager-project.md) và [chuẩn đầu ra](../COURSE_OUTCOMES.md).

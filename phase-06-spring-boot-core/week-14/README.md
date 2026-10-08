@@ -1,20 +1,25 @@
-# Tuần 14: JPA, Transaction, N+1 Và Final API Project
+# Module week-14: Từ In-Memory Sang PostgreSQL
 
-## Mục Tiêu Tuần
+Tên week trong đường dẫn là mã tài liệu, không phải tuần theo lịch mới. Vị trí học: **tuần 12–15** trong [ROADMAP.md](../../ROADMAP.md). Mỗi tuần mới có tổng 8 giờ cho mọi tài liệu được chọn, không phải 8 giờ cho mỗi module.
 
-Đưa REST API từ in-memory sang database, hiểu JPA/Hibernate ở mức dùng cẩn thận, biết transaction boundary và nhận diện N+1 query.
+## Cần biết trước
 
-## Lịch 8h
+SQL/JOIN/key/constraint/transaction và API in-memory.
 
-- 2h: JPA entity, repository, relationship.
-- 2h: transaction, lazy loading, N+1.
-- 2h: PostgreSQL, Flyway, config.
-- 2h: integration test, README, final review.
+## Lượt học bắt buộc hoặc phạm vi được chọn
 
-## Nội Dung Chính
+Tuần 12 entity/repository; tuần 13 migration/rollback; tuần 14 relation/pagination/query; tuần 15 test PostgreSQL.
 
-- `01-jpa-hibernate-transaction.md`
-- `02-flyway-integration-test-n-plus-one.md`
-- `03-final-api-project.md`
-- `04-checklist-and-ai-review.md`
-- `05-deep-dive-study-guide.md`
+Bắt đầu [bài thứ nhất](01-jpa-hibernate-transaction.md), sau đó [bài thứ hai](02-flyway-integration-test-n-plus-one.md) theo phần roadmap chỉ định. Đọc một ví dụ → đoán output → tự chạy → đổi input → giải thích bằng lời của mình. Có thể dành thêm buổi khi chưa qua mốc; không đọc hết để chạy theo thời hạn.
+
+## Đọc sau hoặc tự chọn
+
+Đây là mốc API với DB, chưa phải kết thúc khóa; tiếp tục FE/security/demo theo project xuyên suốt.
+
+Các file bài tập/checklist/mentor guide bên dưới dùng trong phạm vi được chọn, không phải yêu cầu làm hết:
+
+- [03-final-api-project.md](03-final-api-project.md)
+- [04-checklist-and-ai-review.md](04-checklist-and-ai-review.md)
+- [05-deep-dive-study-guide.md](05-deep-dive-study-guide.md)
+
+Tiếp theo: đối chiếu đầu ra tuần trong [roadmap](../../ROADMAP.md) và [chuẩn đầu ra](../../COURSE_OUTCOMES.md).

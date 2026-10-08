@@ -1,5 +1,7 @@
 # Mentor Guide Tuần 9: JVM Memory, Class Loading, JIT Và GC
 
+> **Chọn phạm vi:** làm phần được chỉ định trong [README module](README.md) và roadmap. Benchmark, log processor lớn, tự viết pool/queue/rate limiter, GC/reflection/proxy là bài mở rộng; checklist đầy đủ dưới đây không bắt buộc trước khi qua mốc học mới.
+
 ## 1. Ý chính
 
 Tuần này bạn học Java như một runtime, không chỉ là syntax. JVM quản lý memory, load class, tối ưu code bằng JIT và dọn rác bằng GC. Hiểu phần này giúp bạn đọc lỗi production kiểu OOM, GC nhiều, app chậm, classpath lỗi.
@@ -37,11 +39,11 @@ Giải thích:
 Command:
 
 ```bash
-java -Xmx128m -Xlog:gc* dev.thinh.javacore.MemoryDemo
+java -Xmx128m '-Xlog:gc*' dev.thinh.javacore.MemoryDemo
 ```
 
 - `-Xmx128m`: giới hạn heap max 128MB.
-- `-Xlog:gc*`: bật GC log.
+- `'-Xlog:gc*'`: bật GC log.
 
 ## 3. Vì sao thiết kế như vậy
 

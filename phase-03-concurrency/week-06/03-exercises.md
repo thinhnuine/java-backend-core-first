@@ -1,5 +1,7 @@
 # Bài Tập Tuần 6
 
+> **Chọn phạm vi:** làm phần được chỉ định trong [README module](README.md) và roadmap. Benchmark, log processor lớn, tự viết pool/queue/rate limiter, GC/reflection/proxy là bài mở rộng; checklist đầy đủ dưới đây không bắt buộc trước khi qua mốc học mới.
+
 ## Bài 1: Counter Race
 
 Yêu cầu:
@@ -62,3 +64,7 @@ Trả lời:
 - `volatile` giúp gì và không giúp gì?
 - Tại sao `wait` phải nằm trong `while`?
 - Bạn sẽ tránh shared mutable state bằng cách nào?
+
+## Quan sát và chứng minh là hai việc khác nhau
+
+UnsafeCounter có thể cho đúng kết quả trong một lần chạy; điều đó không chứng minh an toàn. Hãy phân tích lịch xen kẽ read–modify–write và chỉ ra quan hệ đồng bộ bảo vệ bản sửa. Đợi join của mọi worker trước khi đọc kết quả. Stop-flag demo có thể treo: chạy trong process riêng có thời gian dừng; tránh println/sleep dùng như “cách sửa visibility”. Trong lab coordination, xử lý InterruptedException rõ ràng và bảo đảm worker thoát khi kết thúc demo.

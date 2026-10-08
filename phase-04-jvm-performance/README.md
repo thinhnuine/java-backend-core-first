@@ -1,17 +1,12 @@
-# Giai Đoạn 4: JVM Và Hiệu Năng (Tuần 9-10)
+# JVM Và Chẩn Đoán Lỗi
 
-## Mục Tiêu
+Đọc ở **căn bản tuần 23; chuyên sâu sau dự án** theo [roadmap](../ROADMAP.md). Mã phase/week giữ để tra cứu; không dùng lịch 14 tuần cũ để quyết định tiến độ.
 
-Hiểu Java chạy như thế nào: memory layout, class loading, JIT, GC, profiling, heap dump, reflection và dynamic proxy. Đây là nền để sau này đọc lỗi production và hiểu Spring bớt "ma thuật".
+| Module | Phạm vi |
+| --- | --- |
+| [week-09](week-09/README.md) | Heap/stack/classpath; JIT/GC lab là mở rộng |
+| [week-10](week-10/README.md) | Tooling/heap dump/reflection/proxy theo vấn đề cần điều tra |
 
-## Tuần Học
+Đọc stack trace và phân biệt nhóm lỗi memory/classpath ở mức căn bản. Không yêu cầu đạt năng lực tuning JVM production.
 
-- `week-09`: JVM memory, class loading, JIT, GC.
-- `week-10`: JFR, VisualVM, `jcmd`, heap dump, reflection, annotation, dynamic proxy.
-
-## Deliverable
-
-- Một app nhỏ có memory leak có chủ đích.
-- Một note phân tích heap dump/profiling.
-- Mini annotation scanner.
-- Mini dynamic proxy logger.
+Tiếp theo: đối chiếu [Task Manager](../learning-path/03-task-manager-project.md) và [chuẩn đầu ra](../COURSE_OUTCOMES.md).

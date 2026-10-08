@@ -42,7 +42,7 @@ Task:
 ## Test
 
 - Service unit test không cần Spring.
-- Controller slice/integration test nếu kịp.
+- Có ít nhất một HTTP test cho create/validation/not found; chọn slice test hoặc full context phù hợp.
 - Test validation error.
 - Test not found.
 

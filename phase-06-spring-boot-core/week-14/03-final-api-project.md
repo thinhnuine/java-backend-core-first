@@ -64,3 +64,5 @@ Task:
 - Test pass.
 - README đủ để người khác clone về chạy.
 - Bạn giải thích được từng annotation chính đang dùng.
+
+Đây là mốc API dùng DB ở tuần 12–15 mới, chưa phải nghiệm thu cuối toàn khóa. Sau mốc này tiếp tục FE integration, security, chạy demo và bài tốt nghiệp trong [Task Manager](../../learning-path/03-task-manager-project.md).

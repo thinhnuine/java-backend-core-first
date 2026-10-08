@@ -1,5 +1,7 @@
 # Capstone Concurrency: Thread Pool, Producer-Consumer, Rate Limiter
 
+> **Chọn phạm vi:** làm phần được chỉ định trong [README module](README.md) và roadmap. Benchmark, log processor lớn, tự viết pool/queue/rate limiter, GC/reflection/proxy là bài mở rộng; checklist đầy đủ dưới đây không bắt buộc trước khi qua mốc học mới.
+
 ## Bài 1: Simple Thread Pool
 
 Yêu cầu:

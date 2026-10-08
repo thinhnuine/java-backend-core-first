@@ -29,7 +29,7 @@ private final Object lock = new Object();
 
 ## `volatile`
 
-`volatile` đảm bảo thread đọc thấy giá trị mới nhất theo memory model.
+Một write volatile happens-before read tiếp theo của cùng biến theo Java Memory Model, giúp truyền khả năng nhìn thấy dữ liệu. Đây không phải phép chụp nhất quán nhiều field và không biến chuỗi read–modify–write thành atomic.
 
 ```java
 private volatile boolean running = true;

@@ -1,5 +1,7 @@
 # Bài Tập Tuần 4
 
+> **Chọn phạm vi:** làm phần được chỉ định trong [README module](README.md) và roadmap. Benchmark, log processor lớn, tự viết pool/queue/rate limiter, GC/reflection/proxy là bài mở rộng; checklist đầy đủ dưới đây không bắt buộc trước khi qua mốc học mới.
+
 ## Bài 1: Collection Playground
 
 Tạo chương trình `CollectionPlayground`.
@@ -28,14 +30,14 @@ public final class UserKey {
 
 Làm 2 version:
 
-- Version sai: mutable field, `equals/hashCode` chưa đúng.
+- Version sai: equals/hashCode nhất quán nhưng cùng dựa trên email mutable; có method đổi email. Đây là bug do mutate key, không trộn với bug quên hashCode.
 - Version đúng: immutable, `equals/hashCode` đúng.
 
 Yêu cầu:
 
 - Put key vào `HashMap`.
 - Mutate key sai sau khi put.
-- Quan sát map không tìm lại được key.
+- Ghi hashCode trước/sau đổi email; chọn hai email cho hash khác nhau và quan sát get có thể không tìm lại được key. Nếu kết quả chưa đổi, phân tích bucket/hash thay vì kết luận mutable key an toàn.
 - Viết note giải thích.
 
 ## Bài 3: Collection Choice Notes

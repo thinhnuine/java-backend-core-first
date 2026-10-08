@@ -72,3 +72,9 @@ Viết `TaskRunner`:
 - Chạy bằng fixed thread pool.
 - Trả list kết quả theo thứ tự input.
 - Nếu task lỗi, giữ cause trong custom result type.
+
+## Queue, timeout và interruption
+
+newFixedThreadPool giới hạn worker nhưng dùng queue không giới hạn: submit nhanh hơn xử lý vẫn có thể làm backlog tăng và hết bộ nhớ. Khi học production, tìm hiểu ThreadPoolExecutor với bounded queue và rejection policy. [Executors API Java 21](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/Executors.html).
+
+get(timeout, unit) hết hạn chỉ dừng chờ ở caller; task có thể vẫn chạy. cancel(true)/shutdownNow yêu cầu interruption, không cưỡng bức mọi task dừng. Khi catch InterruptedException mà không truyền tiếp, khôi phục interrupt flag với Thread.currentThread().interrupt() và kết thúc luồng xử lý phù hợp. shutdown không chờ mọi task xong; cần awaitTermination nếu caller cần biết đã dừng, và kiểm tra lại sau shutdownNow.

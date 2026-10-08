@@ -1,5 +1,7 @@
 # Mentor Guide Tuần 10: Tooling, Heap Dump, Reflection Và Proxy
 
+> **Chọn phạm vi:** làm phần được chỉ định trong [README module](README.md) và roadmap. Benchmark, log processor lớn, tự viết pool/queue/rate limiter, GC/reflection/proxy là bài mở rộng; checklist đầy đủ dưới đây không bắt buộc trước khi qua mốc học mới.
+
 ## 1. Ý chính
 
 Tuần này học cách quan sát JVM và hiểu cơ chế phía sau framework. `jcmd`, JFR, VisualVM, heap dump giúp bạn debug runtime. `reflection`, `annotation`, `dynamic proxy` giúp bạn hiểu vì sao Spring có thể scan class, inject bean, bọc transaction.
@@ -59,7 +61,7 @@ Dynamic proxy giúp bọc behavior:
 caller -> proxy -> target
 ```
 
-Spring transaction cũng theo tinh thần này: trước khi gọi method thì mở transaction, method xong thì commit, lỗi thì rollback.
+Spring transaction thường được áp dụng qua proxy: tạo hoặc tham gia transaction theo propagation; commit/rollback phụ thuộc ranh giới và rollback rules. Không phải mọi exception đều mặc định rollback, cũng không phải mọi lời gọi nội bộ đi qua proxy. Xem bài @Transactional trước khi suy từ mental model sang behavior thực.
 
 ## 4. Liên hệ với Frontend
 

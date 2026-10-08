@@ -1,5 +1,7 @@
 # Mentor Guide Tuần 6: Thread, Race Condition Và Memory Model
 
+> **Chọn phạm vi:** làm phần được chỉ định trong [README module](README.md) và roadmap. Benchmark, log processor lớn, tự viết pool/queue/rate limiter, GC/reflection/proxy là bài mở rộng; checklist đầy đủ dưới đây không bắt buộc trước khi qua mốc học mới.
+
 ## 1. Ý chính
 
 Java có thể chạy nhiều thread thật sự cùng lúc, và các thread có thể cùng đọc/ghi object trên heap. Vì vậy bạn phải học `race condition`, `synchronized`, `volatile` và Java Memory Model. Đây là phần rất khác với JavaScript frontend vì JS thường chạy logic app trên một main thread.
@@ -134,4 +136,4 @@ Trong Java multi-thread, vấn đề còn sâu hơn vì có shared memory và vi
 4. Thử đổi sang `volatile int` và chứng minh vẫn sai.
 5. Viết learning log: bug đến từ atomicity hay visibility?
 
-Học tiếp theo: chỉ khi bạn tự thấy counter sai, phần `synchronized` mới thật sự "ngấm".
+Học tiếp theo: mô tả một lịch xen kẽ làm mất increment rồi giải thích synchronized chặn lịch đó ra sao. Demo có thể chưa biểu hiện lỗi trên máy bạn; không cần cố chạy đến khi sai mới được học tiếp.

@@ -1,143 +1,110 @@
-# Enum Và Nested Class
+# Enum: Chọn Trạng Thái Từ Một Tập Hợp Cố Định
 
-## 1. Enum Cơ Bản
+**Lượt đầu: khoảng 45–60 phút.** Cần biết class, method, `if` và cách chạy Java. Tên file giữ nguyên để không làm hỏng liên kết, nhưng nested class chuyển sang phần đọc sau.
 
-Enum dùng cho tập giá trị hữu hạn.
+## 1. Ý chính
 
-```java
-public enum OrderStatus {
-    NEW,
-    PAID,
-    SHIPPED,
-    CANCELLED
-}
-```
+Enum định nghĩa một kiểu chỉ có những giá trị đã đặt tên. Task của bài này có ba trạng thái: TODO, IN_PROGRESS và DONE. Viết thành enum giúp compiler phát hiện việc dùng sai kiểu thay vì để một chuỗi sai chính tả đi sâu vào chương trình.
 
-Không nên dùng string tự do cho trạng thái quan trọng vì dễ typo và khó refactor.
+## 2. Giải thích code
 
-## 2. Enum Có Field Và Behavior
-
-Enum trong Java có thể có field, constructor và method.
-
-```java
-public enum Plan {
-    FREE(0),
-    PRO(20),
-    ENTERPRISE(100);
-
-    private final int monthlyPrice;
-
-    Plan(int monthlyPrice) {
-        this.monthlyPrice = monthlyPrice;
-    }
-
-    public int monthlyPrice() {
-        return monthlyPrice;
-    }
-
-    public boolean isPaid() {
-        return monthlyPrice > 0;
-    }
-}
-```
-
-## 3. Enum Cho State Transition
+Trong một thư mục ví dụ mới, tạo `TaskStatus.java`:
 
 ```java
 public enum TaskStatus {
     TODO,
     IN_PROGRESS,
-    DONE;
+    DONE
+}
+```
 
-    public boolean canMoveTo(TaskStatus next) {
-        return switch (this) {
-            case TODO -> next == IN_PROGRESS;
-            case IN_PROGRESS -> next == DONE || next == TODO;
-            case DONE -> false;
-        };
+Tạo `EnumDemo.java` cùng thư mục:
+
+```java
+public class EnumDemo {
+    public static void main(String[] args) {
+        TaskStatus status = TaskStatus.TODO;
+        System.out.println(status);
+
+        status = TaskStatus.DONE;
+        System.out.println(isFinished(status));
+    }
+
+    static boolean isFinished(TaskStatus status) {
+        return status == TaskStatus.DONE;
     }
 }
 ```
 
-## 4. Static Nested Class
+Chạy:
 
-Static nested class không giữ reference tới instance bên ngoài.
-
-```java
-public class ApiResponse<T> {
-    private final T data;
-    private final Error error;
-
-    public ApiResponse(T data, Error error) {
-        this.data = data;
-        this.error = error;
-    }
-
-    public static class Error {
-        private final String code;
-        private final String message;
-
-        public Error(String code, String message) {
-            this.code = code;
-            this.message = message;
-        }
-    }
-}
+```sh
+javac -encoding UTF-8 TaskStatus.java EnumDemo.java
+java EnumDemo
 ```
 
-Dùng khi class phụ chỉ có nghĩa trong context class ngoài.
+Kết quả:
 
-## 5. Inner Class
-
-Inner class không static và giữ reference tới instance bên ngoài. Dùng ít hơn static nested class.
-
-```java
-public class Counter {
-    private int value;
-
-    public class Snapshot {
-        public int value() {
-            return value;
-        }
-    }
-}
+```text
+TODO
+true
 ```
 
-Cẩn thận: vì inner class giữ reference tới outer object, dùng sai có thể làm object sống lâu hơn cần thiết.
+- `public enum TaskStatus`: khai báo một kiểu enum tên TaskStatus, giống như `class` khai báo một kiểu class.
+- `TODO`, `IN_PROGRESS`, `DONE`: ba hằng enum được đặt tên; cách viết hoa là quy ước.
+- `TaskStatus status`: biến có kiểu TaskStatus, không còn là String.
+- `TaskStatus.TODO`: truy cập một giá trị đã định nghĩa; không viết `new TaskStatus()`.
+- `status = TaskStatus.DONE`: đổi giá trị mà biến status giữ, không sửa định nghĩa enum.
+- `static boolean isFinished(...)`: method không cần tạo EnumDemo để gọi, trả true hoặc false.
+- Với enum, dùng `==` so sánh các hằng là đúng. Điều này không thay quy tắc dùng `.equals()` để so nội dung String.
 
-## 6. Anonymous Class
+## 3. Vì sao thiết kế như vậy
 
-Anonymous class tạo implementation inline.
-
-```java
-Runnable task = new Runnable() {
-    @Override
-    public void run() {
-        System.out.println("running");
-    }
-};
-```
-
-Với functional interface, lambda thường gọn hơn:
+Ví dụ dùng chuỗi sai chính tả, đặt trong main để thử:
 
 ```java
-Runnable task = () -> System.out.println("running");
+String status = "DONNE";
+System.out.println("DONE".equals(status));
 ```
 
-Anonymous class vẫn hữu ích khi cần override nhiều method hoặc cần class nhỏ dùng một lần.
+Java vẫn compile, nhưng in false. Chương trình không biết DONNE là lỗi đánh máy.
 
-## 7. Bài Tập Nhanh
+Còn đoạn dưới cố ý không compile:
 
-Thiết kế `WorkflowStatus` cho task:
+```java
+TaskStatus status = TaskStatus.DONNE;
+```
 
-- `TODO`
-- `IN_PROGRESS`
-- `BLOCKED`
-- `DONE`
-- `CANCELLED`
+Vì enum không khai báo DONNE, compiler chỉ ra lỗi ngay. Tuy nhiên reference enum vẫn có thể null; khi đọc JSON vào Java, bạn vẫn phải validate đầu vào.
 
-Yêu cầu:
+## 4. Liên hệ với frontend
 
-- Có method `canMoveTo`.
-- Có method `isTerminal`.
-- Có test cho transition hợp lệ và không hợp lệ.
+Trong TS, bạn có thể viết `type TaskStatus = "TODO" | "IN_PROGRESS" | "DONE"`. Mục đích giới hạn giá trị khá giống nhau. Java enum tồn tại ở runtime và có thể có method; string union của TS không tự tạo một object runtime hay validate dữ liệu từ mạng.
+
+## 5. Khi nào dùng và không dùng
+
+Dùng enum cho status hoặc tập lựa chọn ổn định do code định nghĩa. Không dùng enum cho danh sách project, người dùng hay danh mục mà người quản trị có thể thêm tùy ý trong DB.
+
+Lượt đầu chỉ cần biết khai báo, truyền tham số và so sánh enum. Constructor, field riêng và state transition trong enum có thể học sau. Task Manager cơ bản vẫn cho chuyển qua lại giữa ba trạng thái; chưa có rule “DONE không bao giờ đổi được”.
+
+## 6. Bẫy hay gặp
+
+- Gán `"DONE"` cho biến TaskStatus: String và TaskStatus là hai kiểu khác nhau.
+- Lưu `ordinal()` làm mã trạng thái bền vững: đổi thứ tự hằng có thể làm thay đổi ý nghĩa số cũ.
+- Gọi `TaskStatus.valueOf("done")` và mong tự đổi chữ hoa: tên không khớp gây IllegalArgumentException. Chưa cần dùng valueOf trong bài đầu.
+- Ghép enum, switch expression và workflow phức tạp vào một bài khi chưa hiểu từng thứ.
+
+## 7. Thuật ngữ mới
+
+**Enum constant** là một giá trị đặt tên trong enum. **Tập hữu hạn** là tập có số lựa chọn xác định. **Runtime** là lúc code chạy, khác compile time là lúc kiểm tra và dịch code.
+
+## 8. Bài tập nhỏ để tự gõ lại
+
+1. Đoán rồi chạy `isFinished` với cả ba status.
+2. Viết `label(TaskStatus status)` trả “Cần làm”, “Đang làm”, “Hoàn thành”; dùng if/else bạn đã biết.
+3. Tự chọn cách xử lý null rõ ràng cho label; viết test cho lựa chọn đó nếu đã học JUnit.
+4. Viết một method nhận TaskStatus, cố gọi bằng String rồi giải thích lỗi compile.
+
+**Đạt khi:** truyền được enum qua method và giải thích vì sao nó chặn typo tốt hơn String.
+
+Tiếp theo: [bài tập cơ bản](03-exercises.md). Nested/inner/anonymous class nằm trong [tra cứu nâng cao](06-advanced-reference.md), chưa phải điều kiện qua bài.

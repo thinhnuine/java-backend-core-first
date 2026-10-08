@@ -1,20 +1,26 @@
-# Tuần 5: Stream, Optional, Date/Time Và I/O
+# Module week-05: Stream, Optional Và Thời Gian
 
-## Mục Tiêu Tuần
+Tên week trong đường dẫn là mã tài liệu, không phải tuần theo lịch mới. Vị trí học: **tuần 5; I/O khi làm JDBC** trong [ROADMAP.md](../../ROADMAP.md). Mỗi tuần mới có tổng 8 giờ cho mọi tài liệu được chọn, không phải 8 giờ cho mỗi module.
 
-Dùng Stream để code rõ hơn khi phù hợp, tránh lạm dụng Stream cho logic khó debug, xử lý thời gian bằng `java.time`, và xử lý file bằng NIO.2.
+## Cần biết trước
 
-## Lịch 8h
+Collection, loop, exception và enum.
 
-- 2h: Stream API, lambda, method reference, Collector.
-- 2h: Optional và functional interface.
-- 2h: `java.time`, `Path`, `Files`.
-- 2h: bài tập xử lý log lớn và report.
+## Lượt học bắt buộc hoặc phạm vi được chọn
 
-## Nội Dung Chính
+Một ví dụ loop/Stream, Optional return, Instant cho timestamp và LocalDate cho dueDate.
 
-- `01-stream-optional-functional.md`
-- `02-java-time-and-nio.md`
-- `03-log-processor-project.md`
-- `04-checklist-and-ai-review.md`
-- `05-deep-dive-study-guide.md`
+Bắt đầu [bài thứ nhất](01-stream-optional-functional.md), sau đó [bài thứ hai](02-java-time-and-nio.md) theo phần roadmap chỉ định. Đọc một ví dụ → đoán output → tự chạy → đổi input → giải thích bằng lời của mình. Có thể dành thêm buổi khi chưa qua mốc; không đọc hết để chạy theo thời hạn.
+
+## Đọc sau hoặc tự chọn
+
+Collector/flatMap/parallel stream và Log Processor triệu dòng là mở rộng; NIO học với file/JDBC.
+
+Các file bài tập/checklist/mentor guide bên dưới dùng trong phạm vi được chọn, không phải yêu cầu làm hết:
+
+- [03-log-processor-project.md](03-log-processor-project.md)
+- [04-checklist-and-ai-review.md](04-checklist-and-ai-review.md)
+- [05-deep-dive-study-guide.md](05-deep-dive-study-guide.md)
+- [06-stream-reference.md](06-stream-reference.md)
+
+Tiếp theo: đối chiếu đầu ra tuần trong [roadmap](../../ROADMAP.md) và [chuẩn đầu ra](../../COURSE_OUTCOMES.md).

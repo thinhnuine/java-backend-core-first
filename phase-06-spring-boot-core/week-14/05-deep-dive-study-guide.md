@@ -64,7 +64,7 @@ public TaskResponse updateTask(Long id, UpdateTaskRequest request) {
 }
 ```
 
-`@Transactional` mở transaction quanh method.
+`@Transactional` áp dụng transaction khi lời gọi đi qua proxy trong cấu hình mặc định; có thể tạo hoặc tham gia transaction. Commit/rollback theo propagation và rollback rules, không tự có hiệu lực khi new service hoặc self-invocation. Xem bài JPA chính cho các giới hạn.
 
 ## 3. Vì sao thiết kế như vậy
 

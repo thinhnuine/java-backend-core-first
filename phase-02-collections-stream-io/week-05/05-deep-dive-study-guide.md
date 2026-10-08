@@ -1,5 +1,7 @@
 # Mentor Guide Tuần 5: Stream, Optional, Date/Time Và I/O
 
+> **Chọn phạm vi:** làm phần được chỉ định trong [README module](README.md) và roadmap. Benchmark, log processor lớn, tự viết pool/queue/rate limiter, GC/reflection/proxy là bài mở rộng; checklist đầy đủ dưới đây không bắt buộc trước khi qua mốc học mới.
+
 ## 1. Ý chính
 
 `Stream` giúp bạn xử lý collection như một pipeline dữ liệu: lọc, biến đổi, gom kết quả. `Optional` giúp biểu diễn kết quả có thể vắng mặt mà không phải trả `null`. `java.time` và NIO.2 giúp bạn xử lý thời gian và file theo cách hiện đại hơn.
@@ -90,7 +92,7 @@ users
   .sort()
 ```
 
-Optional hơi giống kiểu `User | undefined` trong TypeScript, nhưng Java buộc bạn xử lý qua API như `map`, `orElse`, `orElseThrow`.
+Optional biểu diễn có/không có giá trị, gần ý tưởng `User | undefined`. Java cung cấp map/orElse/orElseThrow, nhưng không buộc bạn xử lý an toàn: get() trên Optional rỗng vẫn compile rồi lỗi runtime.
 
 `Instant` giống timestamp chuẩn để backend lưu event time. Khi hiển thị cho user, frontend mới format theo locale/timezone.
 

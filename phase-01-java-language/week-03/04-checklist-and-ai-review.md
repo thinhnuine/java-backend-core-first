@@ -1,49 +1,24 @@
-# Checklist Và AI Review Tuần 3
+# Checklist Cơ Bản: Record, Switch Và Exception
 
-## Checklist
+- [ ] Tạo được record, gọi accessor và nêu những method Java sinh hộ.
+- [ ] Biết record không tự validate null, không tự làm mọi object bên trong immutable.
+- [ ] Viết được switch expression trên enum ba giá trị; thử lỗi thiếu case.
+- [ ] Dự đoán đúng luồng chạy của try/throw/catch với input hợp lệ và sai.
+- [ ] Phân biệt throw, throws và catch bằng code đã chạy.
+- [ ] Giải thích checked exception yêu cầu catch/declare, nhưng vẫn phát sinh khi chạy.
+- [ ] Hoàn thành [bài summary](03-task-practice.md) và test các case biên.
 
-- [ ] Dùng được record cho data carrier immutable.
-- [ ] Biết record tự sinh method gì.
-- [ ] Hiểu sealed class/interface dùng để giới hạn hierarchy.
-- [ ] Dùng được pattern matching cho `instanceof`.
-- [ ] Dùng được switch expression với enum hoặc sealed type.
-- [ ] Biết khi nào dùng text block.
-- [ ] Phân biệt checked và unchecked exception.
-- [ ] Dùng được try-with-resources.
-- [ ] Có bản capstone chạy được.
-- [ ] Có README và test cho capstone.
+Sealed type, pattern matching, custom exception và capstone thư viện chưa phải điều kiện qua bài. Try-with-resources học khi làm I/O/JDBC.
 
-## Prompt AI Review Capstone
+## Prompt review
 
 ```text
-Bạn là mentor Java Backend. Hãy review capstone Java core của tôi.
-
-Bối cảnh:
-- Tôi là FE dev học Java.
-- Đây là bài cuối Giai đoạn 1: Java language.
-- Tôi muốn review sâu về API design và cách viết Java đúng tinh thần Java.
-
-Hãy tập trung vào:
-- public API có rõ và nhỏ không
-- type system/generics dùng có hợp lý không
-- record/sealed class/enum có dùng đúng chỗ không
-- exception checked/unchecked có hợp lý không
-- object có immutable đúng không
-- equals/hashCode/toString có cần không
-- test case còn thiếu
-- code smell và refactor nhỏ
-
-Không viết lại toàn bộ project. Hãy đưa findings theo mức độ nghiêm trọng và gợi ý từng bước sửa.
-
-Code:
+Tôi là FE 4 năm, mới học Java. Bài hiện tại chỉ dùng record, enum,
+switch expression và exception cơ bản. Đây là code và test tôi tự viết.
+Hãy kiểm tra validation, luồng throw/catch, chỗ tôi hiểu sai record và case test còn thiếu.
+Chỉ chọn tối đa 2 vấn đề mỗi lượt, giải thích theo input → dòng code → output.
+Chưa thêm sealed class, generic result, framework hoặc viết lại toàn bộ bài.
+Hỏi tôi một câu kiểm tra hiểu sau mỗi gợi ý.
 ```
 
-## Câu Hỏi Tự Vấn Cuối Giai Đoạn
-
-- Nếu đưa thư viện này cho người khác dùng, họ có hiểu public API trong 5 phút không?
-- Class nào đang làm quá nhiều việc?
-- Có chỗ nào dùng inheritance trong khi composition tốt hơn không?
-- Exception message có đủ giúp debug không?
-- Test đang kiểm tra behavior hay kiểm tra implementation?
-- Nếu rewrite lại từ đầu, bạn sẽ giữ quyết định thiết kế nào?
-- Bạn vẫn còn mơ hồ nhất ở concept nào: generics, exception, OOP, record/sealed, hay immutability?
+Tiếp theo: quay về [roadmap](../../ROADMAP.md). Nếu chưa giải thích được một mục, chạy lại đúng ví dụ của mục đó trước khi mở [tra cứu nâng cao](06-advanced-reference.md).

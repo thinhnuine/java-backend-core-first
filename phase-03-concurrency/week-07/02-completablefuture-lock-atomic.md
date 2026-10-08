@@ -82,3 +82,5 @@ Cách giảm:
 ## Bài Tập Nhanh
 
 Viết deadlock demo với 2 lock, sau đó sửa bằng lock ordering.
+
+Các supplyAsync không truyền executor ở ví dụ dùng common pool; bài gọi blocking I/O nên chọn executor phù hợp và có lifecycle rõ. Timeout của CompletableFuture không mặc nhiên hủy công việc I/O bên dưới; vẫn cần timeout ở HTTP/DB client. Bản đồ executor và chính sách timeout là một phần của thiết kế, không phải chỉ thêm exceptionally là xong.

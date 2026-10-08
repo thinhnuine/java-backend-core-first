@@ -1,5 +1,7 @@
 # Bài Tập Tuần 9
 
+> **Chọn phạm vi:** làm phần được chỉ định trong [README module](README.md) và roadmap. Benchmark, log processor lớn, tự viết pool/queue/rate limiter, GC/reflection/proxy là bài mở rộng; checklist đầy đủ dưới đây không bắt buộc trước khi qua mốc học mới.
+
 ## Bài 1: Memory Regions Demo
 
 Tạo demo:
@@ -19,7 +21,7 @@ Ghi lại:
 Chạy app với:
 
 ```bash
-java -Xms128m -Xmx128m -Xlog:gc* -jar app.jar
+java -Xms128m -Xmx128m '-Xlog:gc*' -jar app.jar
 ```
 
 Thử:

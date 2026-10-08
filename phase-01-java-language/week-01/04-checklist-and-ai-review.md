@@ -1,5 +1,7 @@
 # Checklist Và AI Review Tuần 1
 
+> Theo [lộ trình mới](../../ROADMAP.md), đây là ngân hàng bài tập/checklist cho tuần 2–4. Ưu tiên Task Manager và test title trước; Money/Notification là bài thêm, ShoppingCart và abstract class có thể học sau. Không cần hoàn thành tất cả để qua tuần 1 mới.
+
 ## Checklist
 
 - [ ] Phân biệt được primitive và reference type.

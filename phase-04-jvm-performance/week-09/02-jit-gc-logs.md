@@ -52,7 +52,7 @@ ZGC hướng tới pause time thấp:
 Chạy app với:
 
 ```bash
-java -Xlog:gc* -jar app.jar
+java '-Xlog:gc*' -jar app.jar
 ```
 
 Set heap nhỏ để quan sát:

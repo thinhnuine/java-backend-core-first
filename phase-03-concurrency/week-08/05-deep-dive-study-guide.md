@@ -1,5 +1,7 @@
 # Mentor Guide Tuần 8: Virtual Threads Và Concurrency Capstone
 
+> **Chọn phạm vi:** làm phần được chỉ định trong [README module](README.md) và roadmap. Benchmark, log processor lớn, tự viết pool/queue/rate limiter, GC/reflection/proxy là bài mở rộng; checklist đầy đủ dưới đây không bắt buộc trước khi qua mốc học mới.
+
 ## 1. Ý chính
 
 `Virtual threads` là feature Java 21 giúp chạy rất nhiều task blocking I/O với chi phí thread thấp hơn platform thread. Nó làm code blocking dễ viết hơn, nhưng không làm shared mutable state tự an toàn. Tuần này bạn cũng làm capstone concurrency: thread pool, producer-consumer và rate limiter.

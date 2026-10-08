@@ -1,80 +1,40 @@
-# Bài Tập Tuần 2
+# Bài Tập Nhỏ: Từ Biết Đọc Đến Tự Viết
 
-## Bài 1: Generic In-Memory Repository
+Làm lần lượt sau hai bài [generics](01-generics.md) và [enum](02-enum-and-nested-class.md). Không có yêu cầu repository hay LRU ở lượt đầu. Mỗi bài dành khoảng 20–40 phút; nếu vướng hơn 15 phút, ghi input, điều dự đoán và lỗi thực tế trước khi hỏi mentor.
 
-Implement generic repository.
+## Bài 1 — Dùng kiểu có sẵn
 
-Interface:
+Tạo List<String>, thêm hai title, in title đầu tiên. Thử thêm một số nguyên, ghi lỗi compiler rồi khôi phục.
 
-```java
-public interface Repository<ID, T> {
-    void save(ID id, T value);
-    Optional<T> findById(ID id);
-    List<T> findAll();
-    boolean existsById(ID id);
-    void deleteById(ID id);
-}
-```
+Tự trả lời: vì sao compiler biết `get(0)` trả String? Danh sách rỗng mà gọi get(0) thì sao? Generics có bảo đảm danh sách không rỗng không?
 
-Implementation:
+## Bài 2 — Tự dùng Box
 
-- `InMemoryRepository<ID, T>`.
-- Dùng `HashMap<ID, T>`.
-- Không trả mutable internal collection trực tiếp.
-- Validate id/value không null.
+Không nhìn code mẫu, viết lại Box<T> với constructor và get. Tạo class TaskTitle có field text và accessor, rồi đặt một TaskTitle vào Box.
 
-Test cần có:
+Kết quả cần quan sát: `box.get().text()` in đúng title bạn truyền; gán `box.get()` vào Integer bị compiler từ chối. Không cần setter hoặc generic method.
 
-- Save rồi find được.
-- Find id không tồn tại trả `Optional.empty`.
-- Delete id xong không còn tồn tại.
-- `findAll` không cho caller sửa state bên trong.
+## Bài 3 — Trạng thái task
 
-## Bài 2: LRU Cache
+Dùng enum gồm TODO, IN_PROGRESS, DONE. Viết method label bằng if/else, với bảng kết quả:
 
-Viết `LruCache<K, V>`.
+| Input | Output |
+| --- | --- |
+| TODO | Cần làm |
+| IN_PROGRESS | Đang làm |
+| DONE | Hoàn thành |
+| null | IllegalArgumentException với thông báo rõ |
 
-Yêu cầu:
+Bài này chỉ ánh xạ nhãn, không cần cài state machine hoặc cấm chuyển từ DONE về TODO.
 
-- Constructor nhận `capacity`.
-- `put(K key, V value)`.
-- `Optional<V> get(K key)`.
-- Khi quá capacity, remove item ít được dùng gần đây nhất.
-- Không nhận null key.
-- Có test cho eviction order.
+## Bài 4 — Ghép hai điều đã học
 
-Gợi ý:
+Tạo class Task tối giản với title và TaskStatus, constructor và accessor; chưa cần ID, DB hoặc HTTP. Tạo List<Task> chứa hai task, dùng vòng for in title và label status của mỗi task.
 
-- Cách dễ: dùng `LinkedHashMap`.
-- Cách học sâu hơn: tự viết doubly linked list + `HashMap<K, Node<K, V>>`.
-- Nếu muốn port thư viện nhỏ cuối giai đoạn, bài này là ứng viên tốt.
+Nếu đã học JUnit, viết test cho label với ba status và null. Nếu chưa biết cách chạy test, làm [unit test đầu tiên](../../learning-path/04-first-unit-test.md) trước. Không cần Mockito.
 
-## Bài 3: Workflow Status
+## Tự kể lại sau khi làm
 
-Dùng enum để mô hình hóa trạng thái task.
+Giải thích trong 3–5 câu: generics kiểm tra điều gì, enum giới hạn điều gì, và vì sao chúng không tự kiểm tra mọi quy tắc dữ liệu như title không rỗng.
 
-Yêu cầu:
-
-- Enum `WorkflowStatus`.
-- Method `canMoveTo(WorkflowStatus next)`.
-- Method `isTerminal()`.
-- Method `label()` trả text hiển thị.
-- Test state transition.
-
-Rule gợi ý:
-
-- `TODO -> IN_PROGRESS/CANCELLED`.
-- `IN_PROGRESS -> BLOCKED/DONE/CANCELLED`.
-- `BLOCKED -> IN_PROGRESS/CANCELLED`.
-- `DONE` không chuyển nữa.
-- `CANCELLED` không chuyển nữa.
-
-## Learning Log Cuối Tuần
-
-Trả lời:
-
-- Khi nào dùng generic class, khi nào dùng generic method?
-- `? extends T` khác `? super T` ở đâu?
-- Type erasure ảnh hưởng gì tới runtime?
-- Enum Java mạnh hơn enum/string union trong TypeScript ở điểm nào?
-- Bạn chọn cách nào cho LRU cache và vì sao?
+Tiếp theo: [checklist cơ bản](04-checklist-and-ai-review.md). [Bài repository/LRU](07-optional-exercises.md) để sau khi đã học collections và Optional.

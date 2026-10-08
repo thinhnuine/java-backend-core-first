@@ -56,9 +56,9 @@ Nếu dùng `if/else` khắp nơi:
 
 ```java
 if (customerType.equals("VIP")) {
-    discount = total.multiply(20).divide(100);
+    // Tính phần giảm giá VIP theo quy tắc làm tròn đã xác định.
 } else if (customerType.equals("NEW")) {
-    discount = total.multiply(10).divide(100);
+    // Tính phần giảm giá NEW theo quy tắc làm tròn đã xác định.
 }
 ```
 
@@ -119,3 +119,5 @@ Nhưng Java dùng class/method rõ ràng hơn vì không có object literal linh
 6. Viết `refactoring-notes.md`: vấn đề, thay đổi, tradeoff.
 
 Học tiếp theo: mỗi lần muốn dùng pattern, viết một câu "pattern này giảm đau ở đâu?".
+
+NoDiscountPolicy trong snippet dùng USD để minh họa và chỉ áp dụng cart USD. Với cart nhiều currency, lấy currency từ total của cart; không trả Money(0, "USD") cố định cho mọi cart. Money ở lab chưa có divide; tính phần trăm là bài mở rộng phải xác định rounding và overflow, không gọi method chưa được định nghĩa.

@@ -1,5 +1,7 @@
 # JUnit 5 Và AssertJ
 
+Nếu chưa có project chạy test, làm [unit test đầu tiên](../../learning-path/04-first-unit-test.md) trước: có POM, file path, import và lệnh chạy. Trong lịch mới, học JUnit cơ bản ở tuần 3, phần test mở rộng ở tuần 15. Các snippet bên dưới cần class và thư viện tương ứng.
+
 ## JUnit 5 Basics
 
 ```java
@@ -8,7 +10,8 @@ class MoneyTest {
     void addsMoneyWithSameCurrency() {
         Money result = new Money(10, "USD").add(new Money(5, "USD"));
 
-        assertEquals(new Money(15, "USD"), result);
+        assertEquals(15L, result.amount());
+        assertEquals("USD", result.currency());
     }
 }
 ```

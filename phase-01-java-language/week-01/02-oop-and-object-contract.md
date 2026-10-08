@@ -28,7 +28,7 @@ Giải thích:
 - `void send(...)`: class implement interface này phải có method `send`.
 - `String recipient`: người nhận.
 - `String message`: nội dung cần gửi.
-- Method trong interface mặc định là public abstract, nên bạn không cần viết `public abstract void send(...)`.
+- Method send ở đây không có body nên là public abstract. Interface cũng có thể có default/static/private method; đừng suy rằng mọi method interface đều abstract.
 
 Class implement interface:
 
@@ -854,6 +854,8 @@ ShoppingCart
 DiscountPolicy
 ```
 
+Các block field dưới đây là phác thảo, **chưa compile được**: bạn phải thêm constructor để khởi tạo final field, import List và các method theo yêu cầu. Không copy chúng như class đã hoàn chỉnh.
+
 `ProductId` là value object:
 
 ```java
@@ -977,3 +979,5 @@ Sau khi xong, tự trả lời:
 ## Hướng học tiếp theo
 
 Sau file này, bạn nên quay lại code `Money` và thêm `equals/hashCode/toString`. Tiếp theo học [03-exercises.md](03-exercises.md), làm bài `Money`, `Notification Sender`, rồi mới sang `ShoppingCart`.
+
+List.copyOf chỉ bảo vệ cấu trúc list; với Tags chứa String immutable thì phù hợp. Nếu list chứa object mutable, caller vẫn có thể sửa object đó qua reference. Muốn toàn bộ model immutable phải bảo vệ cả phần tử.

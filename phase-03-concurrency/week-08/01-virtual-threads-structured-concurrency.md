@@ -39,7 +39,7 @@ Không phải thuốc tiên cho:
 
 ## Structured Concurrency
 
-Structured concurrency giúp gom vòng đời nhiều task con vào một scope rõ ràng. Tùy Java version, API có thể là preview, nên học concept trước.
+Structured concurrency giúp gom vòng đời nhiều task con vào một scope rõ ràng. Trong mốc Java 21 của khóa, StructuredTaskScope là preview; chỉ học concept và không dùng trong bài bắt buộc. Virtual threads đã có API chính thức ở Java 21. Luôn đọc tài liệu đúng phiên bản JDK trước khi thử code preview.
 
 Ý tưởng:
 
@@ -60,3 +60,7 @@ Viết demo:
 - Tạo 1000 task sleep 100ms bằng fixed thread pool nhỏ.
 - Tạo 1000 task sleep 100ms bằng virtual thread executor.
 - So sánh thời gian và giải thích.
+
+Virtual threads không làm database có thêm connection hay dịch vụ ngoài có thêm quota. Vẫn cần connection pool, giới hạn số thao tác I/O đồng thời và timeout. Demo sleep chỉ mô phỏng chờ; không phải benchmark HTTP/DB thật. Trong Java 21, blocking khi giữ synchronized monitor có thể pin carrier thread; hành vi này phụ thuộc phiên bản, tránh suy rộng sang mọi JDK.
+
+Đối chiếu theo mốc JDK 21: [virtual threads guide](https://docs.oracle.com/en/java/javase/21/core/virtual-threads.html) và [StructuredTaskScope preview API](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/StructuredTaskScope.html).

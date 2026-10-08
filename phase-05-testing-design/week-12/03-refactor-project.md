@@ -55,3 +55,5 @@ JSON parser:
 - Code dễ đọc hơn theo note.
 - Không thêm abstraction vô cớ.
 - Public API vẫn dễ dùng.
+
+Theo lịch mới, ưu tiên test/refactor TaskService và TaskRepository của Task Manager đang có. LRU, parser, event emitter và log processor chỉ là lựa chọn nếu bạn đã làm các project đó; không cần tạo thêm project để học testing/design.

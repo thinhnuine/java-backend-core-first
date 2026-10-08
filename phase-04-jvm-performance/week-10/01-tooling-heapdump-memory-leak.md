@@ -32,19 +32,23 @@ Ví dụ:
 ## App Leak Có Chủ Đích
 
 ```java
+import java.util.ArrayList;
+import java.util.List;
+
 public final class LeakDemo {
     private static final List<byte[]> STORE = new ArrayList<>();
 
     public static void main(String[] args) throws Exception {
-        while (true) {
+        for (int i = 0; i < 32; i++) {
             STORE.add(new byte[1024 * 1024]);
-            Thread.sleep(100);
         }
+        System.out.println("PID=" + ProcessHandle.current().pid());
+        Thread.sleep(120_000);
     }
 }
 ```
 
-Chạy heap nhỏ rồi lấy dump:
+Lưu file LeakDemo.java, chạy javac LeakDemo.java. Demo giữ khoảng 32 MiB payload và chờ 2 phút để bạn lấy dump trước khi process kết thúc. Chạy ở terminal thứ nhất, gọi jcmd ở terminal thứ hai, thay <pid> bằng PID đã in:
 
 ```bash
 java -Xmx128m LeakDemo

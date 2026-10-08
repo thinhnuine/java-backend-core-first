@@ -1,5 +1,7 @@
 # Type System Trong Java
 
+Trước bài này, hoàn thành [buổi chạy Java đầu tiên](../../learning-path/00-first-java-program.md). Ở tuần 2 mới, đọc phần Package/Class trước, rồi primitive/reference, String và boxing; bài Money là luyện thêm sau khi đã tạo được Task.
+
 File này viết theo kiểu mentor giải thích chậm. Bạn không cần đọc hết một lượt. Mỗi phần nên đọc xong rồi tự gõ code trong `java-core-lab`, chạy thử, nhìn lỗi, sửa lỗi.
 
 ## Primitive Vs Reference Type
@@ -66,7 +68,7 @@ if (currency == "USD") {
 }
 ```
 
-Bạn có thể kỳ vọng in ra `same currency`, nhưng kết quả thường là:
+Bạn có thể kỳ vọng in ra `same currency`, với đoạn code cụ thể này, kết quả là:
 
 ```text
 different currency
@@ -92,7 +94,7 @@ Trong JavaScript, bạn cũng từng gặp chuyện tương tự:
 
 Hai object literal có nội dung giống nhau nhưng là hai object khác nhau. Java reference type cũng có tinh thần như vậy. Khác biệt là Java buộc bạn rõ ràng hơn: primitive như `int` không phải object, còn `String`, `Money`, `User` là reference type.
 
-Với TypeScript, type như `number` gần với primitive concept hơn, còn object/interface gần với reference concept hơn. Nhưng Java strict hơn nhiều về `null`, method call và generic.
+Với TypeScript, type như `number` gần với primitive concept hơn, còn object/interface gần với reference concept hơn. Java kiểm tra type của method call và generic ở compile time, nhưng không tự bảo đảm reference khác `null`: `String name = null; name.length();` vẫn compile và lỗi khi chạy. TypeScript bật `strictNullChecks` có thể bắt nhiều trường hợp null mà Java compiler mặc định không bắt.
 
 ### 5. Khi nào dùng và không dùng
 
@@ -270,7 +272,7 @@ Sau khi lỗi xảy ra, ghi lại bằng một câu: lỗi xảy ra ở bước 
 
 ### 1. Ý chính
 
-`String` trong Java là `immutable`, nghĩa là tạo xong thì nội dung không đổi. Mỗi thao tác như `toUpperCase()` tạo ra string mới thay vì sửa string cũ. Hiểu `String` immutable sẽ giúp bạn hiểu cách thiết kế object an toàn như `Money`.
+`String` trong Java là `immutable`, nghĩa là tạo xong thì nội dung không đổi. Các method như `toUpperCase()` không sửa nội dung string gốc; chúng có thể trả object mới hoặc dùng lại object khi không cần đổi nội dung. Hiểu `String` immutable sẽ giúp bạn hiểu cách thiết kế object an toàn như `Money`.
 
 ### 2. Giải thích code
 
@@ -291,7 +293,7 @@ public class StringPlayground {
 Giải thích:
 
 - `String name = "Java";`: tạo biến `name` trỏ tới string `"Java"`.
-- `name.toUpperCase()`: không sửa object `"Java"` cũ. Nó trả về object string mới.
+- `name.toUpperCase()`: không sửa object `"Java"` cũ. Trong ví dụ này, kết quả có nội dung mới `"JAVA"`; không nên dựa vào identity của kết quả để kiểm tra nội dung.
 - `String upper = ...`: biến `upper` trỏ tới string mới `"JAVA"`.
 - `System.out.println(name);`: vẫn in `Java`.
 - `System.out.println(upper);`: in `JAVA`.
@@ -490,7 +492,7 @@ Cảnh báo: đừng public mọi thứ chỉ để "gọi cho tiện". Public A
 - `package`: namespace tổ chức class.
 - `class`: blueprint để tạo object.
 - `field`: biến thuộc object/class.
-- `constructor`: method đặc biệt chạy khi tạo object.
+- `constructor`: phần khởi tạo object, có tên trùng class và không khai báo kiểu trả về; constructor không phải method thông thường.
 - `access modifier`: keyword điều khiển phạm vi truy cập.
 - `public API`: phần class cho code bên ngoài dùng.
 
@@ -514,7 +516,9 @@ Sau đó thử cố sửa `value` từ class khác và xem Java báo lỗi gì.
 
 ### 2. Giải thích code mẫu
 
-Bạn tự gõ class theo hướng này:
+Trong lab này amount đếm đơn vị tiền nhỏ nhất do bài quy định: USD tính cent, VND tính đồng; Money(100, "USD") là 100 cent. Chưa có phép đổi tiền tệ. Không dùng double cho bài tính tiền này.
+
+Đây là mẫu constructor/accessor/add để luyện từng bước; bạn bổ sung equals/hashCode ở bài OOP, rồi mới dùng assertion so cả hai Money. Tự gõ class theo hướng này:
 
 ```java
 package dev.thinh.javacore;
@@ -551,7 +555,7 @@ public final class Money {
             throw new IllegalArgumentException("currency must match");
         }
 
-        return new Money(this.amount + other.amount, this.currency);
+        return new Money(Math.addExact(this.amount, other.amount), this.currency);
     }
 }
 ```
@@ -568,6 +572,7 @@ Giải thích:
 - `add(Money other)`: cộng hai object `Money`.
 - `other == null`: caller không được truyền `null`.
 - `!this.currency.equals(other.currency)`: chỉ cộng cùng currency.
+- `Math.addExact(...)`: cộng long và ném ArithmeticException nếu vượt miền giá trị; phép + thông thường có thể overflow âm thầm.
 - `return new Money(...)`: immutable object không sửa object cũ, mà trả object mới.
 
 Cách gọi:
@@ -682,3 +687,5 @@ Không dùng AI sinh code. Chỉ dùng AI review sau khi bạn đã tự viết.
 ## Hướng học tiếp theo
 
 Sau khi làm xong `Money`, học tiếp [02-oop-and-object-contract.md](02-oop-and-object-contract.md). Ở đó bạn sẽ gặp `interface`, `abstract class`, `composition`, `equals/hashCode` và hiểu vì sao `Money` nên có object contract rõ ràng.
+
+Nguồn đối chiếu: [String API Java 21](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html).

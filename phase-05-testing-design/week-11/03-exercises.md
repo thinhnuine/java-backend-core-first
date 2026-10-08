@@ -46,3 +46,5 @@ Trả lời:
 - Test nào quá phụ thuộc implementation?
 - Bạn có mock quá tay không?
 - Assertion fail có dễ hiểu không?
+
+Theo lịch mới, ưu tiên test/refactor TaskService và TaskRepository của Task Manager đang có. LRU, parser, event emitter và log processor chỉ là lựa chọn nếu bạn đã làm các project đó; không cần tạo thêm project để học testing/design.

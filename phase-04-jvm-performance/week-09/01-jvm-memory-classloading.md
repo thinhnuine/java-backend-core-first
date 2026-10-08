@@ -70,3 +70,5 @@ System.out.println(MyClass.class.getClassLoader());
 ```
 
 Ghi lại quan sát.
+
+String pool ở đây là cơ chế intern/dùng chung String, không phải một vùng memory độc lập ngang với heap/stack/metaspace; String object vẫn ở heap. Metaspace dùng native memory. Khi nói local variable ở stack hoặc object ở heap, đây là mô hình để đọc code; JIT có thể tối ưu representation/allocation.

@@ -28,13 +28,17 @@ Case này `"java"` và `"JAVA"` bị coi là trùng theo comparator.
 
 ## Big-O Cần Nhớ
 
-| Operation | ArrayList | HashMap/HashSet | TreeMap/TreeSet |
-| --- | --- | --- | --- |
-| lookup by index | O(1) | n/a | n/a |
-| contains value | O(n) | O(1) avg by key | O(log n) |
-| add | O(1) amortized | O(1) avg | O(log n) |
-| remove | O(n) by value/index shift | O(1) avg | O(log n) |
-| sorted iteration | no | no | yes |
+| Thao tác | ArrayList | HashSet | HashMap | TreeSet | TreeMap |
+| --- | --- | --- | --- | --- | --- |
+| get(index) | O(1) | Không có | Không có | Không có | Không có |
+| contains(element) | O(n) | Trung bình O(1) | Dùng containsKey/value bên dưới | O(log n) | Dùng containsKey/value bên dưới |
+| get(key), containsKey(key) | Không có | Không có | Trung bình O(1) | Không có | O(log n) |
+| containsValue(value) | Không có | Không có | O(n) | Không có | O(n) |
+| Thêm cuối / add / put | Amortized O(1) | Trung bình O(1) | Amortized trung bình O(1) | O(log n) | O(log n) |
+| Xóa theo value / key | O(n) | Trung bình O(1) | Trung bình O(1) theo key | O(log n) | O(log n) theo key |
+| Duyệt theo thứ tự sort | Cần tự sort | Không bảo đảm | Không bảo đảm | Có | Có theo key |
+
+Các chi phí trên giả sử hash/equals/comparator có chi phí hằng số và hash phân bố hợp lý. **Map tìm theo key khác với tìm theo value**: `containsValue` phải quét, không được suy từ tốc độ `get(key)`. O(1) không có nghĩa là luôn nhanh hơn trên mọi dữ liệu nhỏ. [HashMap API](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/HashMap.html).
 
 ## `ConcurrentHashMap`
 

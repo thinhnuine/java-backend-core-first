@@ -1,5 +1,7 @@
 # Mentor Guide Tuần 2: Generics, Enum Và Nested Class
 
+> **Đọc sau:** đây là mentor guide mở rộng của giáo trình cũ, không phải điểm bắt đầu hay checklist bắt buộc. Học theo [README mới](README.md) và hoàn thành bài cơ bản trước.
+
 ## 1. Ý chính
 
 Tuần này học cách Java biểu diễn type linh hoạt mà vẫn an toàn. `Generics` giúp bạn viết class/method dùng được với nhiều type nhưng compiler vẫn bắt lỗi sớm. `enum` giúp mô hình hóa tập giá trị hữu hạn, còn `nested class` giúp đặt class phụ vào đúng ngữ cảnh.
