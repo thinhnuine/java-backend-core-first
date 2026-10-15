@@ -1,68 +1,36 @@
 # Bài Tập Tuần 4
 
-> **Chọn phạm vi:** làm phần được chỉ định trong [README module](README.md) và roadmap. Benchmark, log processor lớn, tự viết pool/queue/rate limiter, GC/reflection/proxy là bài mở rộng; checklist đầy đủ dưới đây không bắt buộc trước khi qua mốc học mới.
+**Lượt đầu chỉ làm bài 1 và phần cơ bản bài 3.** Dùng JShell 21 như bài 00, tự gõ, đoán rồi chạy. Không có đáp án mẫu.
 
 ## Bài 1: Collection Playground
 
-Tạo chương trình `CollectionPlayground`.
+Dùng ba title, trong đó hai title trùng:
 
-Yêu cầu:
+1. Thêm vào ArrayList, in size và phần tử đầu.
+2. Tạo HashSet từ list, in size.
+3. Tạo HashMap dùng ID String; đọc, cập nhật và xóa một ID.
+4. Thử đọc ID không có, giải thích output.
 
-- Tạo 100k phần tử.
-- So sánh lookup bằng:
-  - `ArrayList.contains`
-  - `HashSet.contains`
-  - `TreeSet.contains`
-- So sánh insert/remove ở đầu/cuối `ArrayList`.
-- Ghi nhận kết quả và nhận xét.
-
-Không cần benchmark chuẩn tuyệt đối. Mục tiêu là quan sát xu hướng và giải thích đúng.
+Chưa cần 100k phần tử hay đo thời gian.
 
 ## Bài 2: HashMap Key Bug
 
-Tạo class key custom:
-
-```java
-public final class UserKey {
-    private String email;
-}
-```
-
-Làm 2 version:
-
-- Version sai: equals/hashCode nhất quán nhưng cùng dựa trên email mutable; có method đổi email. Đây là bug do mutate key, không trộn với bug quên hashCode.
-- Version đúng: immutable, `equals/hashCode` đúng.
-
-Yêu cầu:
-
-- Put key vào `HashMap`.
-- Mutate key sai sau khi put.
-- Ghi hashCode trước/sau đổi email; chọn hai email cho hash khác nhau và quan sát get có thể không tìm lại được key. Nếu kết quả chưa đổi, phân tích bucket/hash thay vì kết luận mutable key an toàn.
-- Viết note giải thích.
+**Để sau khi quen class và equality.** Bài này tìm hiểu vì sao key đổi trạng thái có thể không tra lại được; lượt đầu dùng String làm key.
 
 ## Bài 3: Collection Choice Notes
 
-Tạo file `collection-choice-notes.md` trong project luyện tập.
-
-Với mỗi case, chọn collection và giải thích:
-
-- Search user by id.
-- Sort task theo due date.
-- Remove duplicate email.
-- Preserve insertion order.
-- Count frequency.
-- Cache cần LRU.
+Phần cơ bản: ghi cấu trúc bạn chọn và một câu giải thích cho danh sách title, loại email trùng, tìm title theo ID. Chỉ cần ba dòng ghi chú.
 
 ## Bài 4: Concurrent Word Counter
 
-Viết word counter:
+**Để sau khi học thread.** Đây là bài nhiều luồng cùng đếm từ, không phải điều kiện để hoàn thành phần làm quen Java.
 
-- Single-thread dùng `HashMap`.
-- Multi-thread dùng `ConcurrentHashMap`.
-- Dùng `merge` hoặc `compute`.
+## Đọc thêm sau
 
-Test:
-
-- Input nhỏ dễ kiểm.
-- Input có word lặp.
-- Multi-thread chạy nhiều lần kết quả vẫn đúng.
+- Bài 1 mở rộng: 100k phần tử, so contains của ArrayList/HashSet/TreeSet và thêm/xóa hai đầu ArrayList; ghi cách đo, xu hướng, không kết luận từ một lần đo.
+- Bài 2 mở rộng: tự viết hai UserKey có equals/hashCode nhất quán theo email, một mutable và một immutable (trạng thái không đổi); put, đổi email, ghi hash trước/sau và get.
+- Bài 2: chọn email có hash khác nhau; nếu vẫn get được, phân tích hash/bucket (vùng lưu theo hash), không kết luận key mutable an toàn; tách khỏi lỗi quên hashCode.
+- Bài 3 mở rộng: collection-choice-notes.md cho due date, insertion order (thứ tự thêm), đếm tần suất và LRU cache (loại mục ít truy cập gần đây nhất).
+- Bài 4 mở rộng: input nhiều dòng, bản một thread dùng HashMap, nhiều thread dùng ConcurrentHashMap.merge/compute; kiểm input nhỏ/từ lặp, so độ dễ đọc và tính đúng.
+- Merge/compute là cập nhật qua hàm; phải hiểu thao tác atomic (như một bước không chia nhỏ); chạy đúng nhiều lần không chứng minh thread safety (tính đúng khi chạy đồng thời).
+- Benchmark sâu, log processor, pool/queue/rate limiter, GC/reflection/proxy: không cần ở lượt đầu.

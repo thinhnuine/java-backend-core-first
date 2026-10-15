@@ -1,36 +1,35 @@
 # Checklist Và AI Review Tuần 4
 
-> **Chọn phạm vi:** làm phần được chỉ định trong [README module](README.md) và roadmap. Benchmark, log processor lớn, tự viết pool/queue/rate limiter, GC/reflection/proxy là bài mở rộng; checklist đầy đủ dưới đây không bắt buộc trước khi qua mốc học mới.
+Chỉ tự kiểm phần **làm quen List, Set, Map**. Chưa đánh giá kiến thức sâu.
 
 ## Checklist
 
-- [ ] Giải thích được vì sao `ArrayList.get` nhanh.
-- [ ] Biết vì sao insert/remove giữa `ArrayList` tốn O(n).
-- [ ] Biết vì sao `HashMap` cần `equals/hashCode`.
-- [ ] Biết khi nào dùng `TreeMap`.
-- [ ] Biết khi nào cần giữ insertion order.
-- [ ] Không dùng `ConcurrentHashMap` để che mọi vấn đề concurrency.
-- [ ] Có benchmark nhỏ kèm nhận xét, không chỉ số liệu.
+- [ ] Tự tạo được List, thêm phần tử và đọc theo vị trí.
+- [ ] Biết Set bỏ phần tử trùng.
+- [ ] Dùng Map lưu/đọc/xóa theo ID.
+- [ ] Hiểu put lại cùng key và get khi thiếu key.
+- [ ] Tự đổi input và giải thích output.
 
 ## Prompt AI Review
 
 ```text
-Bạn là mentor Java Backend. Hãy review bài Collections tuần 4 của tôi.
-
-Tập trung vào:
-- benchmark có công bằng không
-- tôi có hiểu đúng độ phức tạp không
-- nhận xét có bị overclaim không
-- collection được chọn có hợp lý không
-- equals/hashCode của key custom có vấn đề không
-- ConcurrentHashMap có được dùng đúng atomic operation không
-
-Code, kết quả và ghi chú:
+Tôi đang làm quen Java, đã biết React/Next.js.
+Review thao tác List/Set/Map trong code dưới đây.
+Chỉ ra tối đa 2 lỗi hoặc chỗ khó hiểu, giải thích từ mới ngay khi dùng.
+Cho gợi ý để tôi tự sửa; chưa mở rộng sang internals hoặc tối ưu hiệu năng.
+Code, dự đoán và kết quả thực tế:
 ```
 
 ## Câu Hỏi Tự Vấn
 
-- Nếu đổi data size từ 1k lên 1M thì collection đang chọn còn hợp không?
-- Key trong `HashMap` có immutable không?
-- Có cần sorted order thật không, hay chỉ cần sort lúc output?
-- Concurrent collection có giải quyết đúng race mình đang gặp không?
+- Dòng này thêm, đọc hay xóa dữ liệu?
+- Đổi key hoặc thêm phần tử trùng thì kết quả ra sao?
+- Tôi chọn List/Set/Map vì cần thao tác nào?
+
+Đủ khi tự trả lời bằng ví dụ đã chạy. Nếu còn vướng, quay lại bài 00.
+
+## Đọc thêm sau
+
+- Checklist sâu: Big-O (mức tăng chi phí theo kích thước dữ liệu), equals/hashCode, sorted order và insertion order.
+- Review sâu: benchmark công bằng, kết luận theo bằng chứng, key ổn định, atomic operation của ConcurrentHashMap.
+- Câu tự vấn sau này: dữ liệu 1k → 1M, key immutable, sort liên tục hay khi output, lỗi nhiều thread được xử lý đúng chưa?
