@@ -23,7 +23,7 @@ Luồng rẻ hơn không làm mọi tài nguyên khác vô hạn. **Quy tắc ng
 
 ## 4. Liên hệ với Frontend
 
-Nếu đã có cách tương tự trong JS/TS, so theo hành vi và kiểu dữ liệu; không suy ra cơ chế chạy giống nhau.
+Bạn quen chờ I/O bằng Promise; virtual thread cho phép viết code chờ theo trình tự. Nhiều Java thread vẫn có thể sửa chung dữ liệu.
 
 ## 5. Khi nào dùng và không dùng
 

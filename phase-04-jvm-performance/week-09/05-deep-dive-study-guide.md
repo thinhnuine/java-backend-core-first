@@ -23,7 +23,7 @@ Muốn hiểu dữ liệu bị giữ, lần theo reference thay vì nhìn tên b
 
 ## 4. Liên hệ với Frontend
 
-Nếu đã có cách tương tự trong JS/TS, so theo hành vi và kiểu dữ liệu; không suy ra cơ chế chạy giống nhau.
+Trong JS, const second = first với array cũng giữ cùng object. Gán biến không tự clone nội dung.
 
 ## 5. Khi nào dùng và không dùng
 

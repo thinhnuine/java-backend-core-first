@@ -23,12 +23,13 @@ System.out.println(discount.apply(100)); // 90
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Thêm cách tính giá mới.
+- Thay một hành vi mà caller vẫn gọi giống cũ.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Thêm biến thể chưa có nhu cầu.
+- Không chốt cách làm tròn phép tính.
 
 **Quy tắc ngón tay cái:** Có biến thể thật rồi mới tách điểm thay thế.
 
@@ -66,12 +67,12 @@ System.out.println(new TaskService(() -> "Java").title()); // Java
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Service cần đổi nơi lưu.
+- Test cần thay dependency thật.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Interface có nhưng service vẫn tự new implementation cố định.
 
 **Quy tắc ngón tay cái:** Service nói cần gì; nơi khởi tạo chọn cách cung cấp.
 

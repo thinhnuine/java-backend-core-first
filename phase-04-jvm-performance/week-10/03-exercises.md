@@ -12,7 +12,7 @@ Scanner đọc danh sách class và chọn class có annotation.
 
 - Tạo dấu MyComponent có thể đọc lúc chạy.
 - Chuẩn bị ba class, chỉ hai class có dấu.
-- Lọc danh sách Class<?> có sẵn.
+- Lọc danh sách `Class<?>` có sẵn.
 
 **Gợi ý:** Không quét cả package trước khi lọc danh sách đơn giản đúng.
 

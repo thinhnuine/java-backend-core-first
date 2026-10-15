@@ -23,7 +23,7 @@ Tách method là hữu ích nếu tên giúp hiểu ý định hoặc dùng lạ
 
 ## 4. Liên hệ với Frontend
 
-Nếu đã có cách tương tự trong JS/TS, so theo hành vi và kiểu dữ liệu; không suy ra cơ chế chạy giống nhau.
+Giống tách một utility trong React mà giữ output cũ. Test giúp nhận ra việc vô tình đổi hành vi.
 
 ## 5. Khi nào dùng và không dùng
 

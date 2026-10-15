@@ -34,12 +34,13 @@ System.out.println(response); // Không có internalNote
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Ẩn dữ liệu chỉ dùng nội bộ.
+- Giữ API ổn định khi cách lưu đổi.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Trả toàn bộ dữ liệu DB vì tiện.
+- Nghĩ ví dụ record đã là entity JPA.
 
 **Tự gõ, không dùng AI sinh code:** Thêm một field nội bộ và giữ nguyên response. **Gợi ý:** Ví dụ không phải entity JPA; nó minh họa việc chọn dữ liệu.
 

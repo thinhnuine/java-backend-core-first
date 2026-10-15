@@ -22,7 +22,7 @@ Thông tin kiểu khác với dữ liệu của một object cụ thể. **Quy t
 
 ## 4. Liên hệ với Frontend
 
-Nếu đã có cách tương tự trong JS/TS, so theo hành vi và kiểu dữ liệu; không suy ra cơ chế chạy giống nhau.
+JS có typeof và thao tác đọc thuộc tính object. Java reflection đọc mô tả class/method theo kiểu Java, không thay thế cách truy cập trực tiếp thông thường.
 
 ## 5. Khi nào dùng và không dùng
 

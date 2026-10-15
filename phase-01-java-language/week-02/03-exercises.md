@@ -6,7 +6,7 @@
 
 Dùng generics có sẵn: danh sách chỉ chứa kiểu bạn chọn.
 
-- Tạo List<String> với ba title.
+- Tạo `List<String>` với ba title.
 - Đọc từng title và in độ dài.
 
 **Gợi ý:** Dùng ArrayList nếu cần thêm/xóa; dùng for trước.
@@ -17,8 +17,8 @@ Dùng generics có sẵn: danh sách chỉ chứa kiểu bạn chọn.
 
 Box giữ quan hệ kiểu lúc đưa vào và lấy ra.
 
-- Tạo Box<String>.
-- Tạo Box<Integer>.
+- Tạo `Box<String>`.
+- Tạo `Box<Integer>`.
 - Gọi get và dùng đúng kiểu kết quả.
 
 **Gợi ý:** T là tên đại diện, không phải any.
@@ -41,7 +41,7 @@ Enum giới hạn lựa chọn trạng thái.
 
 Ghép danh sách và enum sau khi hiểu từng phần.
 
-- Tạo List<TaskStatus>.
+- Tạo `List<TaskStatus>`.
 - Duyệt và đếm DONE.
 
 **Gợi ý:** So enum bằng ==; không cần Stream.
@@ -50,7 +50,7 @@ Ghép danh sách và enum sau khi hiểu từng phần.
 
 ## Tự kể lại sau khi làm
 
-Tự trả lời: T ở Box<String> là gì? Enum chặn kiểu lỗi nào? **Gợi ý:** tạo một dòng cố ý sai và giải thích lỗi compiler, rồi bỏ dòng đó.
+Tự trả lời: T ở `Box<String>` là gì? Enum chặn kiểu lỗi nào? **Gợi ý:** tạo một dòng cố ý sai và giải thích lỗi compiler, rồi bỏ dòng đó.
 
 ## Đọc thêm sau
 

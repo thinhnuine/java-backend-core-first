@@ -22,7 +22,7 @@ Không tìm được là tình huống bình thường của thao tác tìm ki�
 
 ## 4. Liên hệ với Frontend
 
-Nếu đã có cách tương tự trong JS/TS, so theo hành vi và kiểu dữ liệu; không suy ra cơ chế chạy giống nhau.
+Array.find trong JS có thể trả undefined. Java findFirst trả Optional để biểu thị có hoặc không có kết quả.
 
 ## 5. Khi nào dùng và không dùng
 

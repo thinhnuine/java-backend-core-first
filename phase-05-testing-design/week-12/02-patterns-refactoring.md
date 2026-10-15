@@ -23,12 +23,12 @@ System.out.println(keep.apply(" Java ").length()); // 6
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Có nhiều cách chuẩn hóa.
+- Caller cần chọn hành vi từ ngoài.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Tách strategy cho một phép tính không có biến thể.
 
 **Quy tắc ngón tay cái:** Cùng việc, nhiều cách: cân nhắc strategy.
 
@@ -46,12 +46,12 @@ System.out.println(defaultLabel().value()); // TODO
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Tên method làm rõ ý định tạo object.
+- Nhiều nơi cần cùng quy tắc khởi tạo.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Thêm factory chỉ để bọc new mà không giúp hiểu hơn.
 
 **Tự gõ, không dùng AI sinh code:** Viết factory cho một nhãn khác cần kiểm tra dữ liệu. **Gợi ý:** Factory phải giúp tên gọi hoặc quy tắc tạo rõ hơn.
 
@@ -68,12 +68,13 @@ listener.accept("task-created"); // Consumer nhận dữ liệu, không trả k�
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Một sự kiện cần báo nhiều bên.
+- Bên nghe cần đăng ký hoặc gỡ đăng ký.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Nghĩ callback luôn chạy trên thread khác.
+- Không quy định xử lý lỗi của listener.
 
 **Tự gõ, không dùng AI sinh code:** Tạo hai listener và tự gọi cả hai khi task được tạo. **Gợi ý:** Chưa cần làm thư viện event tổng quát.
 

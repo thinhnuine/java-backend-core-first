@@ -49,8 +49,8 @@ try (var pool = java.util.concurrent.Executors.newFixedThreadPool(2)) {
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Chờ kết quả đã giao cho executor.
+- Kiểm trạng thái hoàn thành của task.
 
 **Lỗi hay gặp**
 
@@ -83,12 +83,13 @@ try (var pool = java.util.concurrent.Executors.newSingleThreadExecutor()) {
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Task có thể thất bại.
+- Caller cần xử lý lỗi gốc.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Chỉ xem thông báo lỗi bọc, bỏ qua cause.
+- Giao task rồi không quan sát lỗi của nó.
 
 **Tự gõ, không dùng AI sinh code:** Giao một task thành công và một task lỗi, quan sát riêng hai kết quả. **Gợi ý:** getCause lấy lỗi gốc bên trong lỗi bọc.
 

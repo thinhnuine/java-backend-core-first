@@ -18,11 +18,11 @@ for (Status status : statuses) System.out.println(status); // TODO rồi DONE
 
 ## 3. Vì sao thiết kế như vậy
 
-Đọc List<Status> là danh sách trạng thái; không phải danh sách chuỗi. **Quy tắc ngón tay cái:** tự giải thích được output trước khi mở rộng bài.
+Đọc `List<Status>` là danh sách trạng thái; không phải danh sách chuỗi. **Quy tắc ngón tay cái:** tự giải thích được output trước khi mở rộng bài.
 
 ## 4. Liên hệ với Frontend
 
-Nếu đã có cách tương tự trong JS/TS, so theo hành vi và kiểu dữ liệu; không suy ra cơ chế chạy giống nhau.
+`List<Status>` gần mảng các giá trị thuộc một union trong TS. Java vẫn giữ enum là kiểu có thật khi chạy.
 
 ## 5. Khi nào dùng và không dùng
 

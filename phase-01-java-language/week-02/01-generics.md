@@ -24,7 +24,7 @@ System.out.println(title.get().length()); // 4: kết quả get là String
 
 ## 3. Vì sao thiết kế như vậy
 
-Không dùng generics, hộp có thể trả Object (kiểu chung của các object), khiến bạn phải cast: tự yêu cầu Java xem giá trị theo kiểu cụ thể. Cast sai có thể gây lỗi lúc chạy. **Quy tắc ngón tay cái:** đọc Box<String> là “hộp chứa String”.
+Không dùng generics, hộp có thể trả Object (kiểu chung của các object), khiến bạn phải cast: tự yêu cầu Java xem giá trị theo kiểu cụ thể. Cast sai có thể gây lỗi lúc chạy. **Quy tắc ngón tay cái:** đọc `Box<String>` là “hộp chứa String”.
 
 ## 4. Liên hệ với frontend
 
@@ -34,14 +34,14 @@ Giống `Box<string>` trong TS về việc liên kết kiểu đầu vào và đ
 
 **Khi nào dùng**
 
-- Khi dùng List<String> (danh sách chuỗi) hoặc Map<Long, String> (tra chuỗi theo khóa long bọc trong Long).
+- Khi dùng `List<String>` (danh sách chuỗi) hoặc `Map<Long, String>` (tra chuỗi theo khóa long bọc trong Long).
 - Khi một class cần làm cùng việc cho nhiều kiểu.
 
 ## 6. Bẫy hay gặp
 
 **Lỗi hay gặp**
 
-- Viết Box<int>; dùng Integer vì generics nhận kiểu object.
+- Viết `Box<int>`; dùng Integer vì generics nhận kiểu object.
 - Bỏ <String> và dùng Box trần, làm mất kiểm tra kiểu.
 
 ## 7. Thuật ngữ mới
@@ -50,7 +50,7 @@ Giống `Box<string>` trong TS về việc liên kết kiểu đầu vào và đ
 
 ## 8. Bài tập nhỏ để tự gõ lại
 
-**Tự gõ, không dùng AI sinh code:** Tạo Box<Integer>, lấy số ra và cộng 1; sau đó thử đưa String vào hộp đó để xem lỗi.
+**Tự gõ, không dùng AI sinh code:** Tạo `Box<Integer>`, lấy số ra và cộng 1; sau đó thử đưa String vào hộp đó để xem lỗi.
 
 **Gợi ý:** Giữ class Box; chỉ thay kiểu được chọn. Xóa dòng cố ý sai sau khi đọc lỗi.
 

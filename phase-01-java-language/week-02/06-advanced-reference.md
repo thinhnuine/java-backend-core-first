@@ -1,6 +1,6 @@
 # Tra Cứu Sau: Generics Và Class Lồng Nhau
 
-> **Làm rõ trước khi học:** List<?> không phải list chứa tùy ý mọi kiểu. List<? extends Number> không có nghĩa được thêm bất kỳ Number nào. Type erasure không xóa mọi thông tin generic khỏi mọi metadata.
+> **Làm rõ trước khi học:** `List<?>` không phải list chứa tùy ý mọi kiểu. `List<? extends Number>` không có nghĩa được thêm bất kỳ Number nào. Type erasure không xóa mọi thông tin generic khỏi mọi metadata.
 
 Đây là bản tra cứu tự chọn. Các tiêu đề cũ được giữ để bạn tìm lại; không cần học hết trước Spring.
 
@@ -17,12 +17,12 @@ System.out.println(first(java.util.List.of("Java"))); // Java: trả String
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Một helper dùng nhiều kiểu dữ liệu.
+- Đầu vào và đầu ra cần cùng kiểu.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Quên xử lý danh sách rỗng trước get(0).
 
 **Quy tắc ngón tay cái:** T xuất hiện ở nhiều vị trí khi các vị trí đó phải cùng kiểu.
 
@@ -41,12 +41,12 @@ System.out.println(value(3)); // 3.0
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Method cần hành vi của một nhóm kiểu.
+- Muốn compiler chặn kiểu không phù hợp.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Nghĩ extends ở generic chỉ áp dụng class, không áp dụng interface.
 
 **Quy tắc ngón tay cái:** Cần hành vi của Number thì giới hạn T theo Number.
 
@@ -64,12 +64,12 @@ System.out.println(first); // Java
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Chỉ cần đọc object từ danh sách.
+- Không cần giữ tên kiểu cụ thể ở đầu ra.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Nghĩ ? có nghĩa có thể thêm mọi kiểu.
 
 **Quy tắc ngón tay cái:** Dấu ? là kiểu chưa biết, không phải mọi kiểu đều được ghi vào.
 
@@ -89,12 +89,13 @@ System.out.println(target); // [3]
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Nhận danh sách chỉ để đọc số.
+- Nhận nơi chứa để thêm giá trị.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Cố thêm số vào ? extends Number.
+- Đọc ? super Integer và giả định kết quả luôn Integer.
 
 **Quy tắc ngón tay cái:** Đọc T: extends T; ghi T: super T.
 
@@ -102,7 +103,7 @@ System.out.println(target); // [3]
 
 ## 6. Type Erasure
 
-Type erasure là cách Java bỏ phần lớn tham số kiểu khỏi dạng thực thi, nên không kiểm tra List<String> như một class riêng khi chạy.
+Type erasure là cách Java bỏ phần lớn tham số kiểu khỏi dạng thực thi, nên không kiểm tra `List<String>` như một class riêng khi chạy.
 
 ```java
 var words = new java.util.ArrayList<String>(); // var suy ra kiểu biến
@@ -112,16 +113,17 @@ System.out.println(words.getClass() == counts.getClass()); // true
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Đọc giới hạn của generic khi chạy.
+- Thiết kế code cần biết kiểu thực tế.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Kiểm instanceof `List<String>`.
+- Tưởng mọi thông tin generic đều bị xóa hoàn toàn.
 
 **Quy tắc ngón tay cái:** Kiểm tra kiểu phần tử chủ yếu diễn ra khi biên dịch.
 
-**Tự gõ, không dùng AI sinh code:** Tạo ArrayList<Long> và so getClass với words. **Gợi ý:** getClass trả class thực tế, không trả tham số generic.
+**Tự gõ, không dùng AI sinh code:** Tạo `ArrayList<Long>` và so getClass với words. **Gợi ý:** getClass trả class thực tế, không trả tham số generic.
 
 ## 2. Enum Có Field Và Behavior
 
@@ -139,12 +141,12 @@ System.out.println(Status.TODO.label()); // Cần làm
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Mỗi trạng thái cần một nhãn.
+- Thông tin đi kèm lựa chọn ổn định.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Dùng enum cho danh sách do người dùng thêm tùy ý.
 
 **Tự gõ, không dùng AI sinh code:** Thêm IN_PROGRESS có nhãn riêng. **Gợi ý:** Mỗi hằng phải truyền nhãn cho constructor.
 
@@ -160,12 +162,12 @@ System.out.println(canMove(Step.DONE, Step.TODO)); // false theo quy tắc mẫu
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Nghiệp vụ có bước trước/sau rõ.
+- Cần từ chối chuyển trạng thái trái phép.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Nghĩ enum tự áp đặt thứ tự chuyển.
 
 **Quy tắc ngón tay cái:** Enum liệt kê trạng thái; quy tắc chuyển là phần bạn viết thêm.
 
@@ -183,12 +185,12 @@ System.out.println(size.value()); // 20
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Một kiểu chỉ có ý nghĩa gần class ngoài.
+- Muốn gom tên mà không giữ object ngoài.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Bỏ static dù không cần dữ liệu của object ngoài.
 
 **Quy tắc ngón tay cái:** Chỉ gom tên và code: ưu tiên static nested class.
 
@@ -209,12 +211,12 @@ System.out.println(page.new Cursor().limit()); // 20
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Class con cần đọc state của object ngoài.
+- Một object phụ gắn với một instance cụ thể.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Không nhận ra object trong giữ liên hệ với object ngoài.
 
 **Quy tắc ngón tay cái:** Cần dữ liệu của object ngoài mới cân nhắc inner class.
 
@@ -233,12 +235,13 @@ job.run(); // Hello, chưa tạo thread
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Một implementation nhỏ chỉ dùng một nơi.
+- Đọc code Java cũ chưa dùng lambda.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Nhét quá nhiều xử lý vào class không tên.
+- Nhầm gọi run với tạo thread mới.
 
 **Tự gõ, không dùng AI sinh code:** Đổi nội dung run rồi gọi hai lần. **Gợi ý:** run trực tiếp chạy trên luồng gọi hiện tại.
 

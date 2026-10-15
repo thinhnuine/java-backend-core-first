@@ -25,12 +25,13 @@ System.out.println(new TaskResponse(1L, input.title())); // TaskResponse[id=1, t
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Mang input của API.
+- Chỉ trả dữ liệu công khai cho FE.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Nghĩ record tự kiểm dữ liệu.
+- Cho DTO chứa mọi field nội bộ.
 
 **Tự gõ, không dùng AI sinh code:** Tạo response chỉ có id và title, không có dữ liệu nội bộ. **Gợi ý:** Record không tự kiểm tra title.
 
@@ -58,8 +59,8 @@ System.out.println(validTitle(" Java ")); // Java
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Chặn input sai trước nghiệp vụ.
+- Giữ quy tắc nhất quán giữa các lối gọi.
 
 **Lỗi hay gặp**
 
@@ -88,12 +89,13 @@ System.out.println(error.code()); // TASK_NOT_FOUND
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- FE cần phân biệt loại lỗi.
+- Nhiều endpoint cần cùng dạng thông báo.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Đổi cấu trúc lỗi tùy endpoint.
+- Trả thông tin lỗi nội bộ cho client.
 
 **Tự gõ, không dùng AI sinh code:** Thiết kế lỗi title không hợp lệ có thông tin field. **Gợi ý:** Tách mã lỗi ổn định với thông báo có thể đổi.
 

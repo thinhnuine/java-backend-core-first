@@ -37,12 +37,13 @@ retained.clear(); // Bỏ reference; không ép GC chạy ngay
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Học cách object bị giữ bởi list.
+- Thử cơ chế loại dữ liệu cũ.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Tạo dữ liệu vô hạn chỉ để thấy hết bộ nhớ.
+- Nghĩ còn reference mà GC vẫn phải thu hồi.
 
 **Tự gõ, không dùng AI sinh code:** Thêm giới hạn số phần tử giữ lại. **Gợi ý:** Dùng kích thước nhỏ; không cần làm máy hết bộ nhớ để học.
 

@@ -25,12 +25,13 @@ System.out.println(elapsed); // Thời gian thay đổi theo lần chạy
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Học cách ghi mốc thời gian.
+- So sánh phương án sau khi đã có kết quả đúng.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Một lần đo rồi kết luận tổng quát.
+- Không sử dụng kết quả phép tính.
 
 **Quy tắc ngón tay cái:** Đúng kết quả trước, đo công bằng sau.
 

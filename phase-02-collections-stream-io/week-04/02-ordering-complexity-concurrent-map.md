@@ -21,7 +21,8 @@ System.out.println(titles.keySet()); // [1, 2]: theo khóa
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Nghĩ sắp xếp theo value thay vì key.
+- Dùng quy tắc so sánh không nhất quán.
 
 **Quy tắc ngón tay cái:** Cần thứ tự khóa: TreeMap.
 
@@ -39,8 +40,8 @@ System.out.println(scores); // [1, 3]
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Cần loại trùng đồng thời giữ thứ tự.
+- Cần lấy phần tử nhỏ/lớn nhất.
 
 **Lỗi hay gặp**
 

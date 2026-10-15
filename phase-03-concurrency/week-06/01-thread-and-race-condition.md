@@ -43,12 +43,12 @@ System.out.println(worker.getState()); // TERMINATED: đã kết thúc
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Xem thread đã bắt đầu/kết thúc chưa.
+- Đọc trạng thái khi tìm lỗi.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Trông chờ trạng thái ngay sau start luôn giống nhau.
 
 **Tự gõ, không dùng AI sinh code:** Thử in trạng thái ngay sau start, trước join. **Gợi ý:** Kết quả lúc đó phụ thuộc thời điểm; đừng cố học thuộc một output.
 
@@ -76,8 +76,8 @@ System.out.println(counter.count); // Không được bảo đảm bằng 20000
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Quan sát dữ liệu dùng chung bị cập nhật sai.
+- So bản chưa khóa với bản đã bảo vệ.
 
 **Lỗi hay gặp**
 
@@ -102,12 +102,12 @@ Thread worker = new Thread(work); worker.start(); worker.join();
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Hai request cùng dùng một service.
+- Nhiều worker sửa cùng một bộ đếm.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Nghĩ biến local chứa reference làm object được trỏ tới tự riêng biệt.
 
 **Tự gõ, không dùng AI sinh code:** Chạy hai thread dùng work và giải thích vì sao local không dùng chung. **Gợi ý:** Biến nằm trong lần gọi, không nằm ở field object dùng chung.
 

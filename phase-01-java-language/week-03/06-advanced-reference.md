@@ -14,12 +14,12 @@ System.out.println(new Success() instanceof Result); // true
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Mô hình có số nhánh được kiểm soát.
+- Muốn giới hạn kiểu được kế thừa.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Thêm kiểu con nhưng quên khai báo quan hệ cho phép.
 
 **Tự gõ, không dùng AI sinh code:** Vẽ hai kết quả thành công và thất bại trước khi thêm class thứ hai. **Gợi ý:** Thêm tên class mới vào permits và chọn final cho class lá.
 
@@ -36,12 +36,12 @@ if (value instanceof String text) { // text chỉ có khi value là String
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Nhận Object rồi xử lý theo kiểu.
+- Muốn tránh kiểm kiểu rồi cast riêng.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Dùng biến pattern ngoài vùng compiler bảo đảm đã khớp.
 
 **Tự gõ, không dùng AI sinh code:** Đổi value thành số rồi null và quan sát nhánh if. **Gợi ý:** Không cần ép kiểu String lần nữa.
 
@@ -59,12 +59,13 @@ System.out.print(message); // Hai dòng Hello và Java
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Viết dữ liệu mẫu nhiều dòng.
+- Giữ nội dung văn bản dễ nhìn trong code.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Không để xuống dòng sau dấu mở.
+- Không kiểm khoảng trắng cuối kết quả.
 
 **Tự gõ, không dùng AI sinh code:** Viết text block có ba dòng rồi xem khoảng trắng đầu dòng. **Gợi ý:** Dòng sau dấu mở là nơi nội dung bắt đầu.
 
@@ -80,12 +81,13 @@ try (var reader = new java.io.StringReader("Java")) { // Tự đóng reader
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Đọc file hoặc mở reader.
+- Dùng connection cần đóng.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Quên đóng tài nguyên khi có lỗi.
+- Dùng tài nguyên sau khi khối try kết thúc.
 
 **Quy tắc ngón tay cái:** Mở tài nguyên cần đóng: ưu tiên try-with-resources.
 
@@ -104,12 +106,12 @@ System.out.println(new MissingTaskException(7).getMessage()); // Missing task 7
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Caller cần phân biệt một lỗi nghiệp vụ.
+- Tên lỗi làm cách xử lý rõ hơn.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Tạo một class lỗi cho từng thông báo dù không cần phân biệt.
 
 **Tự gõ, không dùng AI sinh code:** Viết method ném MissingTaskException khi id không tồn tại trong danh sách mẫu. **Gợi ý:** Chỉ tạo lỗi riêng nếu bên gọi cần phân biệt tình huống đó.
 

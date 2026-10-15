@@ -2,7 +2,7 @@
 
 Checklist (danh sách tự kiểm) cho phần đang học: **Generics và enum**.
 
-- [ ] Dùng Box<String>, List<String> và enum trạng thái.
+- [ ] Dùng `Box<String>`, `List<String>` và enum trạng thái.
 - [ ] Giải thích T được chọn là kiểu gì và enum chặn lỗi gõ nhầm nào.
 - [ ] Có một đầu vào sai và giải thích cách code xử lý.
 

@@ -25,7 +25,7 @@ Kiểm dữ liệu ở ranh giới nhận input, không đợi code phía sau g�
 
 ## 4. Liên hệ với Frontend
 
-Nếu đã có cách tương tự trong JS/TS, so theo hành vi và kiểu dữ liệu; không suy ra cơ chế chạy giống nhau.
+Giống hàm tạo dữ liệu đã kiểm tra trước khi đưa vào state React; type TS một mình không validate dữ liệu runtime.
 
 ## 5. Khi nào dùng và không dùng
 

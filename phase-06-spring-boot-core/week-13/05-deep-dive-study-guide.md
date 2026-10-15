@@ -25,7 +25,7 @@ Service dùng chung không nên giữ currentUser hay input hiện tại trong f
 
 ## 4. Liên hệ với Frontend
 
-Nếu đã có cách tương tự trong JS/TS, so theo hành vi và kiểu dữ liệu; không suy ra cơ chế chạy giống nhau.
+Trong một hàm JS, biến cục bộ của mỗi lời gọi khác với dữ liệu đặt ở module dùng chung. Hãy hỏi ai có thể giữ và sửa dữ liệu đó.
 
 ## 5. Khi nào dùng và không dùng
 

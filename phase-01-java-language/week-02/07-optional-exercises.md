@@ -7,10 +7,10 @@
 Repository tổng quát là kho dùng được với nhiều kiểu id và dữ liệu.
 
 - Thiết kế save/findById/deleteById/findAll/existsById.
-- Lưu bằng HashMap<ID,T>.
+- Lưu bằng `HashMap<ID,T>`.
 - Từ chối id/value null.
 
-**Gợi ý:** Optional<T> biểu thị không tìm thấy; copy danh sách khi trả ra.
+**Gợi ý:** `Optional<T>` biểu thị không tìm thấy; copy danh sách khi trả ra.
 
 **Đạt khi:** Lưu-đọc-xóa đúng, caller không sửa cấu trúc kho qua findAll. Tự gõ phần triển khai, không dùng AI sinh lời giải.
 

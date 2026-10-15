@@ -16,12 +16,12 @@ System.out.println(result.join()); // Java backend
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Nối bước xử lý kết quả.
+- Ghép hai kết quả độc lập.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Nghĩ completedFuture tạo công việc bất đồng bộ mới.
 
 **Tự gõ, không dùng AI sinh code:** Nối thêm bước lấy độ dài chuỗi. **Gợi ý:** Ví dụ completedFuture có kết quả sẵn, không tạo thread mới.
 
@@ -40,12 +40,13 @@ Lock là khóa điều khiển quyền vào vùng dùng chung; ReentrantLock cho
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Cần chủ động lấy/trả khóa.
+- Sau này cần thử lấy khóa có giới hạn thời gian.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Lấy khóa nhưng quên finally unlock.
+- Lấy và trả ReentrantLock ở hai thread khác nhau.
 
 **Quy tắc ngón tay cái:** Lấy Lock xong phải có finally trả khóa.
 
@@ -63,12 +64,12 @@ System.out.println(count.get()); // 1
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Tăng một số đếm dùng chung.
+- Cần một thao tác cập nhật số nguyên.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Tách get rồi set làm mất tính atomic.
 
 **Quy tắc ngón tay cái:** Một số đếm: atomic tiện; nhiều field liên quan cần thiết kế thêm.
 
@@ -87,8 +88,8 @@ System.out.println(counts.get("java")); // 2
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Nhiều thread đếm theo từ.
+- Cập nhật giá trị một key dùng chung.
 
 **Lỗi hay gặp**
 

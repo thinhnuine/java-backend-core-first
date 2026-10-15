@@ -60,12 +60,13 @@ System.out.println(date.format(format)); // 15/10/2026
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Đọc ngày từ chuỗi input.
+- Hiển thị ngày theo mẫu chọn trước.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Mẫu không khớp chuỗi.
+- Nghĩ format thay đổi dữ liệu ngày bên trong.
 
 **Tự gõ, không dùng AI sinh code:** Dùng một mẫu năm-tháng-ngày khác. **Gợi ý:** Đổi cả chuỗi đầu vào và mẫu cho khớp.
 

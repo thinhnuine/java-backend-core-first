@@ -25,12 +25,12 @@ System.out.println(tasks.size()); // 0
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Tìm dữ liệu bị giữ lâu.
+- Hiểu vì sao list tăng làm tốn bộ nhớ.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Nghĩ clear bắt buộc GC chạy ngay.
 
 **Tự gõ, không dùng AI sinh code:** Thêm rồi xóa một phần tử và giải thích reference nào được bỏ. **Gợi ý:** Không suy ra thời điểm bộ nhớ được thu hồi từ size().
 
@@ -46,12 +46,12 @@ System.out.println(plusTwo(3)); // 5
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Lần theo lời gọi dẫn tới lỗi.
+- Hiểu method đang đợi method khác trả về.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Nhầm reference cục bộ với toàn bộ object trên stack.
 
 **Tự gõ, không dùng AI sinh code:** Vẽ thứ tự các lời gọi trong plusTwo. **Gợi ý:** Đọc lời gọi trong cùng trước; không tạo đệ quy vô hạn.
 
@@ -74,12 +74,12 @@ System.out.println(type.getSimpleName()); // String
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Chẩn đoán thiếu class lúc chạy.
+- Đọc code tìm kiểu theo tên.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Dùng tên ngắn thay tên đầy đủ khi Class.forName cần package.
 
 **Tự gõ, không dùng AI sinh code:** Thử một tên class không tồn tại và đọc lỗi. **Gợi ý:** Tên đầy đủ gồm package; khôi phục tên đúng sau khi thử.
 
@@ -94,12 +94,12 @@ System.out.println(Config.limit); // 10
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Hiểu field static có giá trị từ đâu.
+- Đọc code có static block.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Nghĩ static block chạy mỗi lần tạo object.
 
 **Tự gõ, không dùng AI sinh code:** Thêm static block in một thông báo rồi đọc limit hai lần. **Gợi ý:** Quan sát block chạy mấy lần trong một lượt nạp class.
 

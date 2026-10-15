@@ -14,12 +14,13 @@ System.out.println(method.invoke("Java")); // 4: gọi qua reflection
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Đọc metadata (thông tin mô tả kiểu).
+- Xây công cụ cần biết method lúc chạy.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Sai tên method chỉ phát hiện lúc chạy.
+- Dùng reflection cho việc gọi trực tiếp đã đủ rõ.
 
 **Quy tắc ngón tay cái:** Gọi trực tiếp khi biết kiểu; reflection khi thực sự cần đọc kiểu lúc chạy.
 
@@ -37,12 +38,12 @@ System.out.println(OldTask.class.isAnnotationPresent(Deprecated.class)); // true
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Đánh dấu thông tin để công cụ đọc.
+- Hiểu code framework đang dựa vào dấu nào.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Nghĩ annotation tự chạy code mà không có bên xử lý.
 
 **Tự gõ, không dùng AI sinh code:** Bỏ annotation rồi chạy phép kiểm tra. **Gợi ý:** Annotation chỉ hữu ích khi có nơi đọc và xử lý nó.
 

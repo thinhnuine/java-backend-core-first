@@ -23,7 +23,7 @@ Giới hạn 100 cần kiểm cả 100 và 101, không chỉ một chuỗi ngắ
 
 ## 4. Liên hệ với Frontend
 
-Nếu đã có cách tương tự trong JS/TS, so theo hành vi và kiểu dữ liệu; không suy ra cơ chế chạy giống nhau.
+Giống Vitest/Jest: điều kiện độ dài tối đa cần test sát ranh giới, không chỉ test input thường.
 
 ## 5. Khi nào dùng và không dùng
 

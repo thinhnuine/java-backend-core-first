@@ -8,7 +8,7 @@ Class, constructor và method. Nếu chưa tự làm được, quay lại ví d�
 
 ## Bốn buổi, mỗi buổi tối đa 2 giờ
 
-Dùng Box<String>, List<String> và enum trạng thái.
+Dùng `Box<String>`, `List<String>` và enum trạng thái.
 
 - [01-generics](01-generics.md)
 - [02-enum-and-nested-class](02-enum-and-nested-class.md)

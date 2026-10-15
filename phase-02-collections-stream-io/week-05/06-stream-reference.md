@@ -16,12 +16,12 @@ System.out.println(longNames); // [Thinh]
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Lọc danh sách theo điều kiện.
+- Biến đổi dữ liệu mà không sửa nguồn.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Quên thao tác kết thúc như toList.
 
 **Tự gõ, không dùng AI sinh code:** Đổi điều kiện để không giữ tên nào. **Gợi ý:** Kết quả danh sách rỗng là hợp lệ.
 
@@ -36,12 +36,12 @@ System.out.println(values.stream().distinct().sorted().limit(2).toList()); // [1
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Cần chọn, bỏ trùng và sắp xếp.
+- Giới hạn số kết quả.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Đổi thứ tự bước rồi mong kết quả luôn giống nhau.
 
 **Tự gõ, không dùng AI sinh code:** Đổi thứ tự limit và sorted rồi so kết quả. **Gợi ý:** Dự đoán trước khi chạy vì thứ tự bước có ý nghĩa.
 
@@ -57,12 +57,13 @@ System.out.println(groups.get(2)); // [An, Ha]; :: gọi method length cho mỗi
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Nhóm phần tử theo thuộc tính.
+- Tính thống kê theo nhóm.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Nhầm kiểu key với kiểu dữ liệu gốc.
+- Mong thứ tự HashMap được bảo đảm.
 
 **Tự gõ, không dùng AI sinh code:** Nhóm các từ bạn tự chọn và lấy nhóm dài 3. **Gợi ý:** Kiểu khóa của map là Integer vì length trả số.
 
@@ -102,12 +103,12 @@ System.out.println(longEnough.test("Java")); // true: Predicate trả boolean
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Truyền điều kiện kiểm tra vào method.
+- Đưa hành vi ngắn từ ngoài vào.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Lambda trả sai kiểu mà method abstract yêu cầu.
 
 **Tự gõ, không dùng AI sinh code:** Tạo Predicate kiểm tra chuỗi bắt đầu bằng J. **Gợi ý:** Dùng startsWith trong lambda.
 
@@ -123,12 +124,12 @@ System.out.println(words.stream().map(String::length).toList()); // [4, 3]
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Cung cấp hành vi cho map/filter.
+- Dùng lại method đã có tên rõ.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Tưởng :: thực hiện lời gọi ngay tại dòng khai báo.
 
 **Tự gõ, không dùng AI sinh code:** Viết hai cách lấy chữ thường từ danh sách. **Gợi ý:** Ưu tiên dạng bạn giải thích được; tên method thôi chưa phải lời gọi.
 

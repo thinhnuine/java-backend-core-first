@@ -22,7 +22,7 @@ Tách dữ liệu trả về giúp giữ contract API khi cấu trúc lưu trữ
 
 ## 4. Liên hệ với Frontend
 
-Nếu đã có cách tương tự trong JS/TS, so theo hành vi và kiểu dữ liệu; không suy ra cơ chế chạy giống nhau.
+FE chỉ cần dữ liệu của contract API; thay cấu trúc DB không nên buộc UI biết mọi field lưu trữ.
 
 ## 5. Khi nào dùng và không dùng
 

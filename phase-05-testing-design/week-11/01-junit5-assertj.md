@@ -42,12 +42,12 @@ System.out.println("PASS");
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Viết test mới dễ đọc.
+- Tách input, hành động và kỳ vọng.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Tính expected bằng chính method đang kiểm.
 
 **Tự gõ, không dùng AI sinh code:** Tách ba bước cho phép cộng hai số. **Gợi ý:** Expected là kết quả mong muốn từ yêu cầu, không lấy từ chính implementation.
 

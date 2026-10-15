@@ -15,12 +15,12 @@ System.out.println("PASS"); // Mô hình Java thuần, chưa dùng JUnit
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Nhiều input dùng cùng quy tắc kiểm.
+- Kiểm ranh giới dữ liệu.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Gộp các case có hành vi khác hẳn nhau khiến test khó đọc.
 
 **Tự gõ, không dùng AI sinh code:** Thêm một case cố ý không đạt. **Gợi ý:** Ghi input nào làm kiểm tra thất bại.
 
@@ -48,12 +48,13 @@ System.out.println(sender.last); // Hi
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Muốn kiểm service mà không gửi thật.
+- Muốn quan sát dữ liệu service đã gửi.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Fake thay luôn logic nghiệp vụ cần kiểm.
+- Fake có hành vi không phù hợp contract thật.
 
 **Tự gõ, không dùng AI sinh code:** Truyền FakeSender vào service của bạn và kiểm last. **Gợi ý:** Constructor nhận Sender; service không tự new sender khác.
 

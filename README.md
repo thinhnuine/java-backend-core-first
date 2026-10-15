@@ -6,7 +6,7 @@ Dành cho lập trình viên React/Next.js đã biết lập trình, đang bắt
 
 1. Nếu mới chạy Java: [buổi đầu tiên](learning-path/00-first-java-program.md).
 2. Nếu đang học OOP: [Interface và object contract](phase-01-java-language/week-01/02-oop-and-object-contract.md).
-3. Nếu đang vướng Generics: [Box<T> cơ bản](phase-01-java-language/week-02/01-generics.md).
+3. Nếu đang vướng Generics: [`Box<T>` cơ bản](phase-01-java-language/week-02/01-generics.md).
 4. Chọn bài tiếp theo theo [lịch 24 tuần](ROADMAP.md), không đọc toàn bộ repo một lượt.
 
 ## Cách dùng bộ bài cũ

@@ -23,7 +23,7 @@ System.out.println(result[0]); // 42
 
 ## 4. Liên hệ với Frontend
 
-Nếu đã có cách tương tự trong JS/TS, so theo hành vi và kiểu dữ liệu; không suy ra cơ chế chạy giống nhau.
+await chờ Promise bằng cơ chế của JS; Thread.join chặn luồng Java đang chờ. Cả hai giúp bạn đặt bước đọc kết quả sau lúc việc xong, nhưng cơ chế khác.
 
 ## 5. Khi nào dùng và không dùng
 

@@ -17,12 +17,13 @@ try (var pool = java.util.concurrent.Executors.newVirtualThreadPerTaskExecutor()
 
 **Khi nào dùng**
 
-- Khi cần thao tác này trong bài thực hành.
-- Khi đọc code có cùng cách viết.
+- Nhiều công việc phải chờ đọc/ghi.
+- Muốn giữ code chờ theo trình tự dễ đọc.
 
 **Lỗi hay gặp**
 
-- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+- Nghĩ luồng nhẹ hơn tự tăng số kết nối DB.
+- Nghĩ virtual thread sửa được race condition.
 
 **Quy tắc ngón tay cái:** Nhiều việc chờ I/O: cân nhắc virtual thread, vẫn giới hạn tài nguyên bên ngoài.
 

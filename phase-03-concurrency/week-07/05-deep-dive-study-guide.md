@@ -23,7 +23,7 @@ Giao việc và chờ kết quả là hai thao tác riêng. **Quy tắc ngón ta
 
 ## 4. Liên hệ với Frontend
 
-Nếu đã có cách tương tự trong JS/TS, so theo hành vi và kiểu dữ liệu; không suy ra cơ chế chạy giống nhau.
+Future gần Promise về ý tưởng kết quả tương lai. get có thể chặn thread đang gọi, không giống await nhường điều khiển về event loop.
 
 ## 5. Khi nào dùng và không dùng
 
