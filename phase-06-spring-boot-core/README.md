@@ -1,12 +1,12 @@
 # Spring Boot Và PostgreSQL
 
-Đọc ở **tuần 7–8 và 12–15** theo [roadmap](../ROADMAP.md). Mã phase/week giữ để tra cứu; không dùng lịch 14 tuần cũ để quyết định tiến độ.
+Đây là nhóm tài liệu theo chủ đề; số week là mã bài cũ. Đọc [roadmap](../ROADMAP.md) để chọn đúng phần trong lịch 24 tuần.
 
-| Module | Phạm vi |
-| --- | --- |
-| [week-13](week-13/README.md) | Khởi động Spring, DI, HTTP API và validation/error |
-| [week-14](week-14/README.md) | SQL đã học → JPA/Flyway/transaction/query và integration test |
+- [week-13: API đầu tiên](week-13/README.md) — Tạo một API lưu tạm, chia controller/service/repository theo vai trò.
+- [week-14: API dùng database](week-14/README.md) — Lưu PostgreSQL, dựng cấu trúc từ migration và kiểm rollback.
 
-API có DB là mốc giữa khóa. Học tiếp frontend, security, chạy demo và nghiệm thu theo project xuyên suốt.
+**Cách học:** một ví dụ, một lần tự sửa, một câu giải thích. Dừng khi hiểu, không cần hoàn thành mọi file trong một tuần.
 
-Tiếp theo: đối chiếu [Task Manager](../learning-path/03-task-manager-project.md) và [chuẩn đầu ra](../COURSE_OUTCOMES.md).
+## Đọc thêm sau
+
+Các bài mở rộng được đánh dấu ở cuối từng file. Ưu tiên hoàn thành Task Manager trước khi tự viết công cụ tổng quát.

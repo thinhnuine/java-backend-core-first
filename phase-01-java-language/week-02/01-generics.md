@@ -1,153 +1,59 @@
 # Generics: Biết Trong Hộp Có Kiểu Dữ Liệu Gì
 
-**Lượt đầu: khoảng 60–90 phút.** Cần biết biến, class, constructor, method và `new`. Nếu chưa tự chạy được một class có `main`, quay lại [buổi đầu](../../learning-path/00-first-java-program.md). Bài thuộc tuần 4 trong lịch mới; tên thư mục `week-02` là mã cũ.
+> **Làm rõ trước khi học:** T không phải any. Generics kiểm tra kiểu, không tự từ chối null hay kiểm tra nghiệp vụ.
 
-Mục tiêu hôm nay: đọc được `List<String>`, tự dùng `Box<String>` và hiểu compiler đang giúp bắt lỗi gì. Chưa cần wildcard, PECS, bounded type hay generic repository.
+Học một ví dụ rồi dừng để tự sửa đầu vào. Các heading giữ nguyên để đối chiếu bản trước.
+
+**Cách chạy ví dụ:** dùng JDK 21 (bộ công cụ Java). Mở terminal, gõ `jshell`; gõ từng khối Java độc lập, dùng `/reset` trước khối tiếp theo và `/exit` để thoát. JShell chạy được khai báo class, method (hàm của Java) và lệnh trực tiếp, không cần khung main. Các comment `//` giải thích dòng code và kết quả cần quan sát.
 
 ## 1. Ý chính
 
-Generics cho phép viết một class dùng được với nhiều kiểu dữ liệu nhưng vẫn kiểm tra kiểu lúc compile. Trong `Box<String>`, phần `<String>` nói rằng chiếc hộp này chứa chuỗi. Chữ `T` trong định nghĩa `Box<T>` là tên đại diện cho kiểu mà người dùng class sẽ chọn.
-
-Trước tiên nhìn thứ quen thuộc hơn:
-
-```java
-// Snippet: đặt trong main, thêm import java.util.ArrayList;
-// và import java.util.List; ở đầu file.
-List<String> titles = new ArrayList<>();
-titles.add("Học Java");
-String first = titles.get(0);
-System.out.println(first);
-```
-
-`List` là danh sách; `ArrayList` là một cách triển khai danh sách. `add` thêm phần tử; `get(0)` lấy phần tử đầu tiên, đánh số từ 0 như array JS. `<String>` ràng buộc kiểu phần tử, còn `<>` bên phải để compiler suy ra kiểu đó.
-
-Tạm dừng và đoán: nếu thay `titles.add("Học Java")` bằng `titles.add(123)`, lỗi xảy ra lúc compile hay lúc chạy? Hãy thử để thấy compiler chặn ngay.
+Generics cho bạn ghi kiểu dữ liệu được phép đưa vào một hộp hoặc danh sách, để Java phát hiện nhầm kiểu trước khi chạy.
 
 ## 2. Giải thích code
 
-Tạo thư mục riêng cho ví dụ, đặt **hai file cùng thư mục**, chưa dùng package để tập trung vào generics.
-
-`Box.java`:
-
 ```java
-public final class Box<T> {
+class Box<T> { // T là tên đại diện cho kiểu do người dùng hộp chọn
     private final T value;
-
-    public Box(T value) {
-        this.value = value;
-    }
-
-    public T get() {
-        return value;
-    }
+    Box(T value) { this.value = value; } // Nhận đúng kiểu T
+    T get() { return value; } // Trả lại cùng kiểu đó
 }
+Box<String> title = new Box<>("Java"); // T là String
+System.out.println(title.get().length()); // 4: kết quả get là String
 ```
-
-`GenericDemo.java`:
-
-```java
-public class GenericDemo {
-    public static void main(String[] args) {
-        Box<String> titleBox = new Box<>("Học Java");
-        String title = titleBox.get();
-        System.out.println(title.toUpperCase());
-
-        Box<Integer> countBox = new Box<>(3);
-        int count = countBox.get();
-        System.out.println(count + 1);
-    }
-}
-```
-
-Chạy từ thư mục chứa hai file:
-
-```sh
-javac -encoding UTF-8 Box.java GenericDemo.java
-java GenericDemo
-```
-
-Kết quả:
-
-```text
-HỌC JAVA
-4
-```
-
-Đọc từng phần:
-
-| Code | Cách hiểu |
-| --- | --- |
-| `public final class Box<T>` | Class cho bên ngoài sử dụng; `final` không cho kế thừa; `T` là tham số kiểu |
-| `private final T value` | Field chỉ truy cập trực tiếp bên trong class và chỉ gán một lần; kiểu của nó là T |
-| `public Box(T value)` | Constructor nhận giá trị thuộc kiểu T; constructor không có kiểu trả về |
-| `this.value = value` | Gán tham số vào field của object đang tạo |
-| `public T get()` | Method trả về cùng kiểu T |
-| `Box<String>` | Ở cách sử dụng này, compiler hiểu T là String |
-| `Box<Integer>` | Ở cách sử dụng này, compiler hiểu T là Integer |
-
-`Integer` là wrapper của `int`: generics trong Java 21 cần reference type, nên không viết `Box<int>`. Số `3` được boxing thành Integer; gán kết quả cho `int count` thì được unboxing. Không cần học implementation của boxing để làm bài này.
-
-Bạn có thể đọc nhẩm `Box<T>` là “Box của kiểu T”, giống đọc tên tham số trong hàm. `T` không phải từ khóa bắt buộc; đổi nhất quán thành `ValueType` vẫn hợp lệ.
 
 ## 3. Vì sao thiết kế như vậy
 
-Nếu hộp chỉ dùng `Object`, nó nhận được nhiều kiểu nhưng caller phải tự đoán kiểu thực tế. Ví dụ sau **cố ý sai**, đặt trong `main` để thử:
-
-```java
-Object value = 123;
-String title = (String) value;
-System.out.println(title);
-```
-
-`(String)` là cast: bạn yêu cầu Java coi giá trị đó là String. Đoạn này compile được nhưng chạy sẽ ném `ClassCastException`, vì object thực tế là Integer. Cast không biến số thành chuỗi.
-
-Với generics, thử thêm dòng sau vào `GenericDemo`:
-
-```java
-// Cố ý không compile: Box<String> không nhận Integer.
-Box<String> wrong = new Box<>(123);
-```
-
-Compiler phát hiện mâu thuẫn trước khi chạy. Xóa dòng sai sau khi đã đọc lỗi.
+Không dùng generics, hộp có thể trả Object (kiểu chung của các object), khiến bạn phải cast: tự yêu cầu Java xem giá trị theo kiểu cụ thể. Cast sai có thể gây lỗi lúc chạy. **Quy tắc ngón tay cái:** đọc Box<String> là “hộp chứa String”.
 
 ## 4. Liên hệ với frontend
 
-Nếu đã dùng TypeScript, `Array<string>` khá gần `List<String>` ở mục đích ràng buộc kiểu phần tử. Khi dùng một type `Box<T>` trong TS, bạn cũng chọn T ở nơi sử dụng. Đây là sự tương đồng về kiểm tra type, không có nghĩa generics tự validate JSON từ API hoặc tự cấm null.
+Giống `Box<string>` trong TS về việc liên kết kiểu đầu vào và đầu ra. Dấu `<>` bên phải cho Java suy ra kiểu; không có nghĩa là hộp chứa mọi kiểu.
 
 ## 5. Khi nào dùng và không dùng
 
-| Tình huống | Việc nên làm lúc này |
-| --- | --- |
-| Danh sách title | Dùng `List<String>` |
-| Danh sách task | Sau khi có class Task, dùng `List<Task>` |
-| Cấu trúc giống nhau chỉ khác kiểu dữ liệu | Có thể dùng generic class |
-| Class chỉ phục vụ một nghiệp vụ Task rõ ràng | Cứ viết class cụ thể; chưa cần tổng quát hóa |
+**Khi nào dùng**
 
-Box là ví dụ học cú pháp. Project thật không cần bọc mọi String vào một Box.
+- Khi dùng List<String> (danh sách chuỗi) hoặc Map<Long, String> (tra chuỗi theo khóa long bọc trong Long).
+- Khi một class cần làm cùng việc cho nhiều kiểu.
 
 ## 6. Bẫy hay gặp
 
-- Viết `Box box` bỏ phần type, khiến mất kiểm tra kiểu hữu ích.
-- Nghĩ `T` là một object để gọi `new T()`; ở đây T là tham số kiểu, không phải constructor cụ thể.
-- Viết `Box<int>` thay vì `Box<Integer>`.
-- Nghĩ `final T value` làm object bên trong immutable; nó chỉ ngăn gán lại field.
-- Nghĩ `Box<String>` tự cấm null: ví dụ này vẫn nhận null, nên gọi method trên giá trị đó có thể lỗi.
+**Lỗi hay gặp**
+
+- Viết Box<int>; dùng Integer vì generics nhận kiểu object.
+- Bỏ <String> và dùng Box trần, làm mất kiểm tra kiểu.
 
 ## 7. Thuật ngữ mới
 
-- **Type parameter**: tên đại diện cho kiểu, như T trong định nghĩa class.
-- **Type argument**: kiểu được chọn lúc dùng, như String trong Box<String>.
-- **Type inference**: compiler suy ra kiểu, ví dụ ở `new Box<>(...)`.
-- **Cast**: yêu cầu coi một giá trị theo kiểu khác; có thể thất bại khi chạy.
-- **Type-safe**: trong ngữ cảnh này, compiler kiểm tra cách dùng kiểu mà không cần caller cast thủ công.
+**Type parameter**: tên đại diện như T. **Type argument**: kiểu được chọn như String. **Compiler**: công cụ kiểm tra và dịch code trước khi chạy.
 
 ## 8. Bài tập nhỏ để tự gõ lại
 
-1. Chạy nguyên ví dụ, rồi tạo thêm `Box<Boolean>` chứa `true` và in giá trị.
-2. Thử gán `titleBox.get()` vào biến Integer, đọc lỗi compiler rồi sửa lại.
-3. Tạo class `TaskTitle` có constructor và method `text()`, rồi dùng `Box<TaskTitle>`. In nội dung qua `box.get().text()`.
-4. Giải thích thành lời: “Với Box<TaskTitle>, get trả về kiểu gì? Vì sao không cần cast?”
+**Tự gõ, không dùng AI sinh code:** Tạo Box<Integer>, lấy số ra và cộng 1; sau đó thử đưa String vào hộp đó để xem lỗi.
 
-**Đạt khi:** làm được bước 3–4 mà không xem lời giải; chưa cần tự viết generic method.
+**Gợi ý:** Giữ class Box; chỉ thay kiểu được chọn. Xóa dòng cố ý sai sau khi đọc lỗi.
 
-Tiếp theo: [enum](02-enum-and-nested-class.md). Chỉ khi đã thoải mái với Box và List mới mở [tra cứu nâng cao](06-advanced-reference.md).
+## Đọc thêm sau
+
+Wildcard (dấu ? đại diện kiểu chưa biết), PECS (quy tắc chọn chiều đọc/ghi) và type erasure (cách thông tin kiểu được xử lý khi chạy) nằm trong [tra cứu nâng cao](06-advanced-reference.md). Chưa cần chúng để dùng Box và List.

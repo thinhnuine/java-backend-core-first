@@ -1,79 +1,83 @@
 # JIT, Garbage Collector Và GC Log
 
+**Cách chạy ví dụ:** dùng JDK 21 (bộ công cụ Java). Mở terminal, gõ `jshell`; gõ từng khối Java độc lập, dùng `/reset` trước khối tiếp theo và `/exit` để thoát. JShell chạy được khai báo class, method (hàm của Java) và lệnh trực tiếp, không cần khung main. Các comment `//` giải thích dòng code và kết quả cần quan sát.
+
 ## JIT
 
-JIT compiler tối ưu code nóng khi app chạy.
+JIT là cơ chế JVM tối ưu code được chạy nhiều lần trong lúc chương trình đang hoạt động.
 
-Hệ quả:
+**Quy tắc ngón tay cái:** Lần chạy đầu chưa đại diện tốc độ ổn định.
 
-- Benchmark lần chạy đầu dễ sai vì warm-up.
-- Code chạy lâu có thể nhanh hơn sau khi JIT optimize.
-- Microbenchmark nên dùng JMH, không tự đo bằng `System.currentTimeMillis` rồi kết luận mạnh.
+**Tự làm:** Đo cùng một việc nhiều lần và ghi sự biến động. **Gợi ý:** Không kết luận nguyên nhân chỉ từ thời gian.
 
 ## Benchmark Pitfalls
 
-Tránh:
+Benchmark là phép đo hiệu năng; phép đo nhỏ dễ bị ảnh hưởng bởi các công việc khác trên máy.
 
-- Đo một lần rồi kết luận.
-- Không warm-up.
-- Để JVM optimize mất code không dùng kết quả.
-- Dùng input quá nhỏ.
-- So sánh trong môi trường đang chạy tác vụ khác.
+```java
+long start = System.nanoTime(); // Mốc đo khoảng thời gian
+long total = 0;
+for (int i = 0; i < 10000; i++) total += i;
+long elapsed = System.nanoTime() - start;
+System.out.println(total); // 49995000: giữ kết quả có thể quan sát
+System.out.println(elapsed); // Thời gian thay đổi theo lần chạy
+```
+
+**Khi nào dùng**
+
+- Khi cần thao tác này trong bài thực hành.
+- Khi đọc code có cùng cách viết.
+
+**Lỗi hay gặp**
+
+- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+
+**Quy tắc ngón tay cái:** Đúng kết quả trước, đo công bằng sau.
+
+**Tự gõ, không dùng AI sinh code:** Chạy nhiều lần và ghi dải thời gian. **Gợi ý:** Ví dụ học cách đo, không dùng để tuyên bố Java nhanh/chậm.
 
 ## Garbage Collector
 
-GC thu hồi object không còn reachable.
+Garbage collector, viết tắt GC, thu hồi bộ nhớ object không còn cần truy cập theo các quy tắc JVM.
 
-Reachable nghĩa là object còn được tham chiếu từ GC roots, ví dụ:
+**Quy tắc ngón tay cái:** Bỏ reference không có nghĩa GC chạy ngay.
 
-- local variable trên stack.
-- static field.
-- thread.
-- JNI reference.
+**Tự làm:** Giải thích vì sao list giữ mọi dữ liệu mãi có thể làm đầy heap. **Gợi ý:** GC không biết dữ liệu còn tham chiếu đó đã hết ích lợi nghiệp vụ.
 
 ## G1
 
-G1 là default phổ biến:
+G1 là một garbage collector cân bằng thời gian dừng và lượng công việc thu gom cho nhiều ứng dụng.
 
-- chia heap thành region.
-- cân bằng throughput và pause time.
-- phù hợp nhiều app server thông thường.
+**Quy tắc ngón tay cái:** Giữ cấu hình mặc định trước khi có số đo.
+
+**Tự làm:** Ghi collector hiện dùng của ứng dụng thực hành. **Gợi ý:** Đọc log khởi động; không đoán mọi JDK/môi trường có cùng mặc định.
 
 ## ZGC
 
-ZGC hướng tới pause time thấp:
+ZGC là garbage collector hướng tới thời gian dừng ngắn.
 
-- hợp heap lớn.
-- hợp latency-sensitive workload.
-- không tự nhiên làm code logic nhanh hơn.
+**Quy tắc ngón tay cái:** Collector tốt hơn phụ thuộc yêu cầu và tải.
+
+**Tự làm:** Nêu việc ứng dụng cần giảm thời gian dừng hay giảm bộ nhớ. **Gợi ý:** Chưa đổi collector chỉ vì tên mới hơn.
 
 ## GC Log
 
-Chạy app với:
+GC log là bản ghi hoạt động thu gom bộ nhớ. Với file Main.java đã chạy được, dùng `java '-Xlog:gc*' Main.java` trong thư mục chứa file. Dấu nháy giữ ký tự * nguyên vẹn trong zsh.
 
-```bash
-java '-Xlog:gc*' -jar app.jar
-```
-
-Set heap nhỏ để quan sát:
-
-```bash
-java -Xms128m -Xmx128m -jar app.jar
-```
-
-Khi đọc log, để ý:
-
-- GC type.
-- heap before/after.
-- pause time.
-- frequency.
-- full GC có xuất hiện không.
+**Tự làm:** chạy ứng dụng nhỏ, tìm tên collector trong log. **Gợi ý:** không thấy lần thu gom không có nghĩa GC bị tắt.
 
 ## Bài Tập Nhanh
 
-Viết `AllocationPressureDemo`:
+Chỉ quan sát trước khi tối ưu.
 
-- tạo nhiều object ngắn hạn.
-- tạo một list giữ object để tăng heap.
-- chạy với heap nhỏ.
-- ghi lại khi nào GC thường xuyên hơn.
+- Chạy một app nhỏ có log GC.
+- Ghi tên collector và một dòng bạn hiểu.
+- Giải thích giới hạn của phép đo thời gian.
+
+**Gợi ý:** Giữ đầu vào và môi trường giống nhau khi so.
+
+**Đạt khi:** Báo cáo có dữ liệu quan sát, không tuyên bố nguyên nhân chưa kiểm tra. Tự gõ phần triển khai, không dùng AI sinh lời giải.
+
+## Đọc thêm sau
+
+JMH là công cụ xây benchmark Java; dùng khi cần đo nghiêm túc. G1/ZGC tuning, allocation rate (tốc độ cấp phát) và pause distribution (phân bố thời gian dừng) học sau. [Java 21 GC guide](https://docs.oracle.com/en/java/javase/21/gctuning/).

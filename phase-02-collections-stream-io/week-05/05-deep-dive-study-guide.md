@@ -1,138 +1,53 @@
 # Mentor Guide Tuần 5: Stream, Optional, Date/Time Và I/O
 
-> **Chọn phạm vi:** làm phần được chỉ định trong [README module](README.md) và roadmap. Benchmark, log processor lớn, tự viết pool/queue/rate limiter, GC/reflection/proxy là bài mở rộng; checklist đầy đủ dưới đây không bắt buộc trước khi qua mốc học mới.
+Học một ví dụ rồi dừng để tự sửa đầu vào. Các heading giữ nguyên để đối chiếu bản trước.
+
+**Cách chạy ví dụ:** dùng JDK 21 (bộ công cụ Java). Mở terminal, gõ `jshell`; gõ từng khối Java độc lập, dùng `/reset` trước khối tiếp theo và `/exit` để thoát. JShell chạy được khai báo class, method (hàm của Java) và lệnh trực tiếp, không cần khung main. Các comment `//` giải thích dòng code và kết quả cần quan sát.
 
 ## 1. Ý chính
 
-`Stream` giúp bạn xử lý collection như một pipeline dữ liệu: lọc, biến đổi, gom kết quả. `Optional` giúp biểu diễn kết quả có thể vắng mặt mà không phải trả `null`. `java.time` và NIO.2 giúp bạn xử lý thời gian và file theo cách hiện đại hơn.
+Optional là hộp biểu diễn kết quả có thể thiếu; orElse cung cấp giá trị dự phòng.
 
 ## 2. Giải thích code
 
-Ví dụ Stream:
-
 ```java
-List<String> activeEmails = users.stream()
-    .filter(User::active)
-    .map(User::email)
-    .sorted()
-    .toList();
+var titles = java.util.List.of("Java", "SQL");
+var found = titles.stream().filter(title -> title.length() > 10).findFirst();
+System.out.println(found.orElse("Chưa có")); // Chưa có
 ```
-
-Giải thích:
-
-- `users.stream()`: tạo stream từ list.
-- `filter(User::active)`: giữ user active.
-- `map(User::email)`: đổi `User` thành email.
-- `sorted()`: sort email.
-- `toList()`: terminal operation, gom kết quả thành list.
-
-Ví dụ Optional:
-
-```java
-User user = repository.findById("u1")
-    .orElseThrow(() -> new IllegalArgumentException("user not found"));
-```
-
-- `findById` trả `Optional<User>`.
-- `orElseThrow`: nếu có user thì lấy ra, nếu không có thì throw exception.
-
-Ví dụ đọc file:
-
-```java
-try (Stream<String> lines = Files.lines(Path.of("app.log"))) {
-    long errors = lines.filter(line -> line.contains("ERROR")).count();
-    System.out.println(errors);
-}
-```
-
-- `Files.lines`: đọc file dạng stream từng dòng.
-- `try-with-resources`: đảm bảo đóng file.
-- `count()`: terminal operation.
 
 ## 3. Vì sao thiết kế như vậy
 
-Stream làm code rõ khi logic là pipeline. Nhưng nếu bạn nhồi side effect phức tạp vào stream, code sẽ khó debug.
-
-Ví dụ stream xấu:
-
-```java
-users.stream()
-    .map(user -> {
-        audit(user);
-        sendEmail(user);
-        return user.email();
-    })
-    .toList();
-```
-
-Đoạn này vừa transform vừa gây side effect. Loop thường rõ hơn.
-
-Optional giúp tránh null mơ hồ. Code xấu:
-
-```java
-User user = repository.findByIdOrNull("u1");
-System.out.println(user.email()); // NullPointerException nếu không có user
-```
-
-Code rõ hơn:
-
-```java
-User user = repository.findById("u1")
-    .orElseThrow(() -> new IllegalArgumentException("user not found"));
-```
+Không tìm được là tình huống bình thường của thao tác tìm kiếm. **Quy tắc ngón tay cái:** tự giải thích được output trước khi mở rộng bài.
 
 ## 4. Liên hệ với Frontend
 
-Stream giống chain array method trong JS:
-
-```javascript
-users
-  .filter(user => user.active)
-  .map(user => user.email)
-  .sort()
-```
-
-Optional biểu diễn có/không có giá trị, gần ý tưởng `User | undefined`. Java cung cấp map/orElse/orElseThrow, nhưng không buộc bạn xử lý an toàn: get() trên Optional rỗng vẫn compile rồi lỗi runtime.
-
-`Instant` giống timestamp chuẩn để backend lưu event time. Khi hiển thị cho user, frontend mới format theo locale/timezone.
+Nếu đã có cách tương tự trong JS/TS, so theo hành vi và kiểu dữ liệu; không suy ra cơ chế chạy giống nhau.
 
 ## 5. Khi nào dùng và không dùng
 
-| Công cụ | Khi dùng | Khi tránh |
-| --- | --- | --- |
-| Stream | Pipeline filter/map/group rõ ràng | Logic nhiều side effect |
-| Loop | Cần debug từng bước, logic phức tạp | Pipeline đơn giản có thể viết gọn |
-| Optional return | Kết quả có thể không tồn tại | Field/parameter trong đa số case |
-| `Instant` | Timestamp backend | Ngày sinh/due date không giờ |
-| `LocalDate` | Ngày không timezone | Event timestamp |
-| `Files.lines` | File lớn, đọc từng dòng | Quên close stream |
+**Khi nào dùng**
+
+- Khi cần củng cố sau bài chính.
+- Khi gặp đúng tình huống ví dụ trong code của bạn.
 
 ## 6. Bẫy hay gặp
 
-- Gọi `Optional.get()` bừa bãi.
-- Stream quá dài, khó đọc.
-- Dùng `forEach` để mutate state ngoài.
-- Dùng `readAllLines` với file rất lớn.
-- Dùng sai type thời gian, ví dụ due date lại dùng `Instant`.
-- Quên `try-with-resources` khi dùng `Files.lines`.
+**Lỗi hay gặp**
+
+- Chép output mà chưa tự chạy.
+- Mở rộng nhiều khái niệm cùng lúc.
 
 ## 7. Thuật ngữ mới
 
-- `stream`: dòng xử lý dữ liệu.
-- `intermediate operation`: operation trả stream mới như `filter`, `map`.
-- `terminal operation`: operation kết thúc stream như `toList`, `count`.
-- `Optional`: container biểu diễn có/không có value.
-- `Instant`: thời điểm tuyệt đối.
-- `NIO.2`: API file/path hiện đại của Java.
+Các tên API trong ví dụ chỉ phục vụ một thao tác đang học. Nếu chưa biết class/method, quay lại bài cơ bản được dẫn trong README module.
 
 ## 8. Bài tập nhỏ để tự gõ lại
 
-Viết `LogLineParser` và `LogProcessor`:
+**Tự gõ, không dùng AI sinh code:** Đổi điều kiện để tìm được Java rồi không tìm được gì.
 
-1. Parse dòng log thành `LogLine`.
-2. Đếm số dòng `ERROR`.
-3. Group count theo level bằng Stream.
-4. Viết lại bằng loop.
-5. Ghi chú bản nào dễ đọc hơn.
+**Gợi ý:** Giữ cùng cách xử lý Optional, thay input/điều kiện.
 
-Học tiếp theo: khi code Stream, nếu bạn không giải thích pipeline thành một câu tiếng Việt được, hãy thử viết loop trước.
+## Đọc thêm sau
+
+Collector nhiều mức, xử lý file khổng lồ và parallelStream. Đây là phần tự chọn. [Quay lại trang module](README.md).

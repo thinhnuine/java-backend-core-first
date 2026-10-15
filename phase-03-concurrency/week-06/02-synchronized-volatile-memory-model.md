@@ -1,94 +1,96 @@
 # `synchronized`, `volatile` Và Java Memory Model
 
+**Cách chạy ví dụ:** dùng JDK 21 (bộ công cụ Java). Mở terminal, gõ `jshell`; gõ từng khối Java độc lập, dùng `/reset` trước khối tiếp theo và `/exit` để thoát. JShell chạy được khai báo class, method (hàm của Java) và lệnh trực tiếp, không cần khung main. Các comment `//` giải thích dòng code và kết quả cần quan sát.
+
 ## `synchronized`
 
+synchronized khóa một vùng thao tác trên cùng object để mỗi lần chỉ một thread thực hiện vùng đó.
+
 ```java
-public synchronized void increment() {
-    count++;
+class Counter {
+    private int value;
+    synchronized void increment() { value++; } // Khóa object Counter này
+    synchronized int value() { return value; }
 }
+Counter counter = new Counter(); counter.increment();
+System.out.println(counter.value()); // 1
 ```
 
-`synchronized` làm 2 việc:
+**Khi nào dùng**
 
-- Mutual exclusion: một thời điểm chỉ một thread vào critical section cùng monitor.
-- Visibility: unlock/lock tạo happens-before.
+- Nhiều luồng sửa cùng trạng thái.
+- Cần bảo vệ một nhóm thao tác cùng nhau.
 
-Block form:
+**Lỗi hay gặp**
 
-```java
-synchronized (lock) {
-    count++;
-}
-```
+- Mỗi thread khóa một object khác nhau.
+- Đọc field dùng chung qua lối không đồng bộ.
 
-Luôn lock trên object ổn định, private nếu có thể:
+**Quy tắc ngón tay cái:** Cùng dữ liệu, cùng khóa, mọi lối truy cập phải nhất quán.
 
-```java
-private final Object lock = new Object();
-```
+**Tự gõ, không dùng AI sinh code:** Thay UnsafeCounter bằng Counter và chạy hai thread. **Gợi ý:** Cả hai thread phải dùng cùng một counter.
 
 ## `volatile`
 
-Một write volatile happens-before read tiếp theo của cùng biến theo Java Memory Model, giúp truyền khả năng nhìn thấy dữ liệu. Đây không phải phép chụp nhất quán nhiều field và không biến chuỗi read–modify–write thành atomic.
+volatile giúp truyền giá trị mới giữa các luồng qua một field; nó không gộp nhiều thao tác thành một.
 
 ```java
-private volatile boolean running = true;
+class Flag { volatile boolean ready; }
+Flag flag = new Flag();
+Thread worker = new Thread(() -> flag.ready = true); // Ghi flag
+worker.start(); worker.join();
+System.out.println(flag.ready); // true; join cũng bảo đảm thấy kết quả
 ```
 
-Phù hợp:
+**Khi nào dùng**
 
-- stop flag.
-- config flag đơn giản.
-- publish reference trong một số pattern cẩn thận.
+- Cờ báo trạng thái đơn giản.
+- Truyền một giá trị cập nhật giữa luồng.
 
-Không phù hợp:
+**Lỗi hay gặp**
 
-- `count++`.
-- update nhiều field cần invariant.
-- operation check-then-act.
+- Nghĩ volatile làm count++ atomic (không bị xen ngang).
+
+**Quy tắc ngón tay cái:** volatile cho nhìn thấy, không thay khóa cho phép tăng nhiều bước.
+
+**Tự gõ, không dùng AI sinh code:** Giải thích vì sao thêm volatile vào count++ vẫn chưa đủ. **Gợi ý:** Tách count++ thành ba bước; volatile không khóa ba bước đó.
 
 ## Java Memory Model
 
-Java Memory Model mô tả khi nào write ở thread này visible với read ở thread khác.
+Java Memory Model là bộ quy tắc nói khi nào một luồng được bảo đảm thấy dữ liệu do luồng khác ghi.
 
-Bạn không cần thuộc formal spec ngay, nhưng cần biết:
+**Quy tắc ngón tay cái:** Dựa vào quy tắc đồng bộ, không dựa vào “máy mình luôn chạy đúng”.
 
-- Without happens-before, thread khác có thể không thấy write mới.
-- CPU/compiler/JIT có thể reorder trong giới hạn spec.
-- Code "nhìn có vẻ đúng" vẫn sai nếu thiếu synchronization.
+**Tự làm:** Tìm start, join hoặc synchronized trong ví dụ của bạn. **Gợi ý:** Nói rõ chúng kết nối hai luồng nào; mô hình CPU/cache để sau.
 
 ## Happens-Before Hay Gặp
 
-- `Thread.start()` happens-before code trong thread mới.
-- Code trong thread happens-before thread khác `join()` xong.
-- Unlock happens-before lock sau đó trên cùng monitor.
-- Write volatile happens-before read volatile sau đó cùng field.
+Happens-before là quan hệ bảo đảm thứ tự và khả năng thấy dữ liệu giữa thao tác. start, join và cùng khóa synchronized tạo các quan hệ thường dùng.
+
+**Quy tắc ngón tay cái:** Đợi join thành công rồi mới đọc kết quả worker.
+
+**Tự làm:** Đánh dấu điểm đọc count sau join trong bài counter. **Gợi ý:** Bỏ join có thể khiến bạn đọc khi worker chưa xong, ngoài lỗi cập nhật.
 
 ## `wait/notifyAll`
 
-Pattern đúng thường dùng `while`:
+wait cho luồng tạm nhường khóa để chờ điều kiện; notifyAll đánh thức các luồng đang chờ cùng object để kiểm tra lại điều kiện.
 
-```java
-synchronized (lock) {
-    while (queue.isEmpty()) {
-        lock.wait();
-    }
-    item = queue.removeFirst();
-}
-```
+**Quy tắc ngón tay cái:** Chờ điều kiện trong while, không chỉ if.
 
-Dùng `while` vì:
-
-- spurious wakeup.
-- thread khác có thể lấy mất condition trước.
-- condition mới là thứ quyết định được chạy tiếp.
+**Tự làm:** Vẽ luồng lấy hàng khi hàng đợi đang rỗng. **Gợi ý:** Ưu tiên dùng BlockingQueue (hàng đợi hỗ trợ chờ) trước khi tự viết bằng wait.
 
 ## Bài Tập Nhanh
 
-Sửa `UnsafeCounter` bằng:
+Sửa một lỗi trước khi học mọi cơ chế đồng bộ.
 
-- `synchronized`.
-- `volatile int` để chứng minh vẫn sai.
-- `AtomicInteger` để preview tuần sau.
+- Dùng synchronized cho counter.
+- Vẽ vùng đọc-cộng-ghi được bảo vệ.
+- Thử bản volatile và giải thích giới hạn.
 
-Ghi lại khác biệt bằng lời của bạn.
+**Gợi ý:** Chạy nhiều lần là quan sát bổ sung, không thay lập luận.
+
+**Đạt khi:** Nêu được object khóa nào bảo vệ field nào. Tự gõ phần triển khai, không dùng AI sinh lời giải.
+
+## Đọc thêm sau
+
+wait/notifyAll chỉ gọi khi giữ khóa của đúng object; while cần vì điều kiện có thể không còn đúng sau khi thức dậy. InterruptedException báo yêu cầu ngắt lúc chờ; xử lý bằng truyền tiếp hoặc khôi phục cờ ngắt rồi kết thúc phù hợp. [JLS 21: memory model](https://docs.oracle.com/javase/specs/jls/se21/html/jls-17.html).

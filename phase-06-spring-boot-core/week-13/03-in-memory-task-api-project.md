@@ -1,58 +1,35 @@
 # Project Tuần 13: In-Memory Task API
 
+Đây là đề để tự làm, không phải đáp án. Chọn từng mục theo README module; không cần làm hết trong một buổi. Tự gõ code, dùng AI để xin gợi ý sau khi đã thử.
+
 ## Mục Tiêu
 
-Build REST API bằng Spring Boot nhưng persistence tạm thời in-memory để tập trung vào IoC/DI, REST layer, validation và error handling.
+Tạo API lưu dữ liệu trong bộ nhớ để tập trung vào HTTP và quy tắc. Restart làm mất dữ liệu là giới hạn đã biết của chặng này, không phải lưu trữ lâu dài.
 
 ## Domain
 
-Task:
-
-- `id`.
-- `title`.
-- `description`.
-- `status`: `TODO`, `IN_PROGRESS`, `DONE`.
-- `createdAt`.
-- `updatedAt`.
+Domain là dữ liệu/nghiệp vụ đang mô hình hóa. Task có id, title, description, status, createdAt, updatedAt. **Tự làm:** bắt đầu id/title/status. **Gợi ý:** thời điểm dùng Instant sau khi luồng tạo/lấy đúng.
 
 ## Endpoint
 
-- `POST /tasks`.
-- `GET /tasks/{id}`.
-- `GET /tasks`.
-- `PUT /tasks/{id}`.
-- `DELETE /tasks/{id}`.
+Endpoint là method+đường dẫn. Làm POST /tasks và GET /tasks/{id} trước, rồi GET danh sách, PUT sửa, DELETE xóa. **Tự làm:** ghi request/response. **Gợi ý:** tạo trả 201, xóa 204 không body theo contract đã chọn.
 
 ## Layer
 
-- `TaskController`.
-- `TaskService`.
-- `TaskRepository` interface.
-- `InMemoryTaskRepository`.
-- DTO request/response.
-- `ApiExceptionHandler`.
+Controller nhận HTTP; service xử lý quy tắc; repository đọc/ghi bộ nhớ. DTO mang dữ liệu ra/vào. **Tự làm:** vẽ một lần tạo task qua ba phần. **Gợi ý:** service nhận repository qua constructor.
 
 ## Validation
 
-- title required.
-- title max length.
-- status hợp lệ.
-- id không tồn tại trả 404.
+Title khác null/trắng, dài 1–100 sau trim; status hợp lệ; id không có trả 404. **Tự làm:** thử title có nhiều khoảng trắng hai đầu. **Gợi ý:** @Size không tự trim.
 
 ## Test
 
-- Service unit test không cần Spring.
-- Có ít nhất một HTTP test cho create/validation/not found; chọn slice test hoặc full context phù hợp.
-- Test validation error.
-- Test not found.
+Kiểm service bằng Java không bật server; thêm HTTP test cho tạo, lỗi dữ liệu và không tìm thấy. **Tự làm:** cố tình làm sai validation. **Gợi ý:** test HTTP phải thấy status/body đúng, không chỉ method Java đúng.
 
 ## README Project
 
-Cần có:
+README ghi JDK/Boot đã chọn, cách chạy, gọi thử, giới hạn mất dữ liệu sau restart và cách chạy test. **Tự làm:** làm theo README trong terminal mới. **Gợi ý:** ghi cả port và dữ liệu đầu vào mẫu.
 
-- cách chạy app.
-- endpoint chính.
-- request/response mẫu.
-- error response mẫu.
-- giải thích bean nào được Spring tạo.
-- dependency nào kích hoạt web autoconfiguration.
+## Đọc thêm sau
+
+Sang [API có database](../week-14/03-final-api-project.md) sau khi hiểu HTTP. Với nhiều request, không giữ current user/title trong field dùng chung; ConcurrentHashMap không tự bảo vệ nghiệp vụ nhiều bước.

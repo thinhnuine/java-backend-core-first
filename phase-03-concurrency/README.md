@@ -1,13 +1,13 @@
 # Concurrency Theo Nhu Cầu
 
-Đọc ở **shared state tuần 8/22; chuyên sâu sau dự án** theo [roadmap](../ROADMAP.md). Mã phase/week giữ để tra cứu; không dùng lịch 14 tuần cũ để quyết định tiến độ.
+Đây là nhóm tài liệu theo chủ đề; số week là mã bài cũ. Đọc [roadmap](../ROADMAP.md) để chọn đúng phần trong lịch 24 tuần.
 
-| Module | Phạm vi |
-| --- | --- |
-| [week-06](week-06/README.md) | Thread/race; wait/notify và JMM chi tiết học sau |
-| [week-07](week-07/README.md) | Executor/Future/async/lock, mở rộng |
-| [week-08](week-08/README.md) | Virtual thread và coordination capstone, mở rộng |
+- [week-06: Dữ liệu dùng chung](week-06/README.md) — Nhận diện field dùng chung và hiểu một lỗi cập nhật xen kẽ.
+- [week-07: Giao và chờ công việc](week-07/README.md) — Dùng ExecutorService, đọc Future và đóng executor.
+- [week-08: Virtual thread](week-08/README.md) — Thử virtual thread Java 21 và hiểu giới hạn tài nguyên bên ngoài.
 
-Đường bắt buộc: giải thích shared state và demo conflict khi cập nhật task. Tự viết pool/queue/rate limiter không phải chuẩn đầu ra toàn khóa.
+**Cách học:** một ví dụ, một lần tự sửa, một câu giải thích. Dừng khi hiểu, không cần hoàn thành mọi file trong một tuần.
 
-Tiếp theo: đối chiếu [Task Manager](../learning-path/03-task-manager-project.md) và [chuẩn đầu ra](../COURSE_OUTCOMES.md).
+## Đọc thêm sau
+
+Các bài mở rộng được đánh dấu ở cuối từng file. Ưu tiên hoàn thành Task Manager trước khi tự viết công cụ tổng quát.

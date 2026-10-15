@@ -1,127 +1,53 @@
 # Mentor Guide Tuần 10: Tooling, Heap Dump, Reflection Và Proxy
 
-> **Chọn phạm vi:** làm phần được chỉ định trong [README module](README.md) và roadmap. Benchmark, log processor lớn, tự viết pool/queue/rate limiter, GC/reflection/proxy là bài mở rộng; checklist đầy đủ dưới đây không bắt buộc trước khi qua mốc học mới.
+Học một ví dụ rồi dừng để tự sửa đầu vào. Các heading giữ nguyên để đối chiếu bản trước.
+
+**Cách chạy ví dụ:** dùng JDK 21 (bộ công cụ Java). Mở terminal, gõ `jshell`; gõ từng khối Java độc lập, dùng `/reset` trước khối tiếp theo và `/exit` để thoát. JShell chạy được khai báo class, method (hàm của Java) và lệnh trực tiếp, không cần khung main. Các comment `//` giải thích dòng code và kết quả cần quan sát.
 
 ## 1. Ý chính
 
-Tuần này học cách quan sát JVM và hiểu cơ chế phía sau framework. `jcmd`, JFR, VisualVM, heap dump giúp bạn debug runtime. `reflection`, `annotation`, `dynamic proxy` giúp bạn hiểu vì sao Spring có thể scan class, inject bean, bọc transaction.
+Reflection đọc thông tin class trong lúc chương trình chạy.
 
 ## 2. Giải thích code
 
-Annotation:
-
 ```java
-package dev.thinh.javacore;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface MyComponent {
-}
+Class<?> type = String.class;
+System.out.println(type.getSimpleName()); // String
+System.out.println(type.getMethod("length").getReturnType()); // int
 ```
-
-Giải thích:
-
-- `@interface`: khai báo annotation.
-- `@Retention(RetentionPolicy.RUNTIME)`: annotation còn tồn tại ở runtime để reflection đọc được.
-- `@Target(ElementType.TYPE)`: annotation dùng trên class/interface/enum.
-
-Reflection đọc annotation:
-
-```java
-public class ComponentScanner {
-    public boolean isComponent(Class<?> type) {
-        return type.isAnnotationPresent(MyComponent.class);
-    }
-}
-```
-
-- `Class<?>`: metadata của class.
-- `isAnnotationPresent`: kiểm tra class có annotation không.
 
 ## 3. Vì sao thiết kế như vậy
 
-Nếu annotation không có runtime retention:
-
-```java
-@Retention(RetentionPolicy.SOURCE)
-public @interface MyComponent {
-}
-```
-
-Reflection runtime sẽ không thấy annotation. Scanner của bạn sẽ trả false dù class có annotate trong source.
-
-Dynamic proxy giúp bọc behavior:
-
-```text
-caller -> proxy -> target
-```
-
-Spring transaction thường được áp dụng qua proxy: tạo hoặc tham gia transaction theo propagation; commit/rollback phụ thuộc ranh giới và rollback rules. Không phải mọi exception đều mặc định rollback, cũng không phải mọi lời gọi nội bộ đi qua proxy. Xem bài @Transactional trước khi suy từ mental model sang behavior thực.
+Thông tin kiểu khác với dữ liệu của một object cụ thể. **Quy tắc ngón tay cái:** tự giải thích được output trước khi mở rộng bài.
 
 ## 4. Liên hệ với Frontend
 
-Decorator trong TypeScript/NestJS có cảm giác gần annotation:
-
-```ts
-@Controller()
-class UserController {}
-```
-
-Spring annotation cũng dùng metadata:
-
-```java
-@RestController
-public class UserController {
-}
-```
-
-Proxy thì giống wrapper function/HOC ở frontend:
-
-```javascript
-const withLogging = fn => (...args) => {
-  console.log(args)
-  return fn(...args)
-}
-```
+Nếu đã có cách tương tự trong JS/TS, so theo hành vi và kiểu dữ liệu; không suy ra cơ chế chạy giống nhau.
 
 ## 5. Khi nào dùng và không dùng
 
-| Công cụ | Khi dùng | Khi tránh |
-| --- | --- | --- |
-| `jcmd` | Cần thread dump/heap info nhanh | Không biết PID/process |
-| Heap dump | Memory leak/OOM analysis | App production nhạy cảm, dump lớn |
-| Reflection | Framework/tooling, metadata | Business logic bình thường |
-| Annotation | Metadata declarative | Thay thế mọi config/logic |
-| Proxy | Logging, transaction, security cross-cutting | Logic domain cốt lõi |
+**Khi nào dùng**
+
+- Khi cần củng cố sau bài chính.
+- Khi gặp đúng tình huống ví dụ trong code của bạn.
 
 ## 6. Bẫy hay gặp
 
-- Annotation thiếu `RUNTIME`.
-- Reflection nuốt exception.
-- Proxy làm mất root cause.
-- Heap dump chỉ nhìn object lớn mà không nhìn ai giữ reference.
-- Nghĩ Spring chỉ là annotation, quên container/proxy/lifecycle.
+**Lỗi hay gặp**
+
+- Chép output mà chưa tự chạy.
+- Mở rộng nhiều khái niệm cùng lúc.
 
 ## 7. Thuật ngữ mới
 
-- `reflection`: đọc/gọi metadata class runtime.
-- `annotation`: metadata gắn vào code.
-- `retention`: annotation tồn tại tới giai đoạn nào.
-- `target`: annotation được gắn lên loại element nào.
-- `proxy`: object đứng giữa caller và target.
-- `heap dump`: snapshot object trên heap.
+Các tên API trong ví dụ chỉ phục vụ một thao tác đang học. Nếu chưa biết class/method, quay lại bài cơ bản được dẫn trong README module.
 
 ## 8. Bài tập nhỏ để tự gõ lại
 
-1. Tạo `@MyComponent`.
-2. Tạo `UserService` có annotation.
-3. Tạo `PlainHelper` không có annotation.
-4. Viết scanner nhận `Class<?>` và check annotation.
-5. Viết dynamic proxy log method call cho interface `Calculator`.
+**Tự gõ, không dùng AI sinh code:** Tìm method isEmpty và kiểu trả về.
 
-Học tiếp theo: khi vào Spring, hãy nhớ annotation chỉ là metadata; container mới là thứ đọc metadata và tạo behavior.
+**Gợi ý:** Chưa cần tự quét package hoặc tạo container.
+
+## Đọc thêm sau
+
+Heap dump sâu, scanner, dynamic proxy và tự mô phỏng Spring. Đây là phần tự chọn. [Quay lại trang module](README.md).

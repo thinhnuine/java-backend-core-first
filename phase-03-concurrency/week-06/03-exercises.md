@@ -1,70 +1,43 @@
 # Bài Tập Tuần 6
 
-> **Chọn phạm vi:** làm phần được chỉ định trong [README module](README.md) và roadmap. Benchmark, log processor lớn, tự viết pool/queue/rate limiter, GC/reflection/proxy là bài mở rộng; checklist đầy đủ dưới đây không bắt buộc trước khi qua mốc học mới.
+Đây là đề để tự làm, không phải đáp án. Chọn từng mục theo README module; không cần làm hết trong một buổi. Tự gõ code, dùng AI để xin gợi ý sau khi đã thử.
 
 ## Bài 1: Counter Race
 
-Yêu cầu:
+Counter race là lỗi nhiều luồng làm mất lần tăng.
 
-- `UnsafeCounter`.
-- `SynchronizedCounter`.
-- `VolatileCounter`.
-- `AtomicCounter` nếu muốn preview.
+- Làm counter thường và synchronized.
+- Hai thread cùng tăng; join cả hai.
+- Ghi số dự kiến và thực tế.
 
-Test:
+**Gợi ý:** Vẽ lịch xen kẽ để giải thích bản thường, không chờ lỗi tự xuất hiện.
 
-- 10 threads.
-- 100_000 increments mỗi thread.
-- Chạy nhiều lần.
-
-Ghi chú:
-
-- Bản nào sai?
-- Bản nào đúng?
-- Vì sao `volatile` không đủ?
+**Đạt khi:** Nêu được vùng cần khóa và vì sao volatile không đủ. Tự gõ phần triển khai, không dùng AI sinh lời giải.
 
 ## Bài 2: Stop Flag
 
-Viết worker loop:
+Stop flag là cờ báo một worker (luồng làm việc) nên dừng.
 
-```java
-while (running) {
-    // do work
-}
-```
+- Dùng volatile boolean cho cờ đơn giản.
+- Đặt cách kết thúc worker rõ.
+- Ghi ai đọc và ai ghi.
 
-Làm 2 bản:
+**Gợi ý:** Không dùng println/sleep như cách bảo đảm nhìn thấy cờ.
 
-- `running` thường.
-- `volatile running`.
-
-Quan sát và giải thích visibility.
+**Đạt khi:** Demo kết thúc được; hiểu bản thiếu đồng bộ có thể treo. Tự gõ phần triển khai, không dùng AI sinh lời giải.
 
 ## Bài 3: Bounded Buffer Với `wait/notifyAll`
 
-Viết `BoundedBuffer<T>`:
-
-- Constructor nhận capacity.
-- `put(T item)` block nếu full.
-- `take()` block nếu empty.
-- Không nhận null item.
-
-Yêu cầu:
-
-- Dùng `while` khi wait.
-- Dùng `notifyAll`, không dùng `notify` trước khi hiểu rõ.
-- Có producer/consumer demo.
+Bounded buffer là hàng đợi có số chỗ tối đa; wait/notifyAll là cách phối hợp chờ. Đây là bài nâng cao, hướng làm ở cuối file. **Tự làm trước:** vẽ lúc đầy và rỗng. **Gợi ý:** ai cần đợi, ai có thể làm điều kiện đổi?
 
 ## Learning Log
 
-Trả lời:
-
-- Race condition tuần này nằm ở đâu?
-- Monitor lock là gì?
-- `volatile` giúp gì và không giúp gì?
-- Tại sao `wait` phải nằm trong `while`?
-- Bạn sẽ tránh shared mutable state bằng cách nào?
+Ghi một lịch gây lỗi và một quy tắc bảo vệ bản sửa. **Gợi ý:** “chạy 10 lần đúng” là quan sát, chưa là lý do code luôn đúng.
 
 ## Quan sát và chứng minh là hai việc khác nhau
 
-UnsafeCounter có thể cho đúng kết quả trong một lần chạy; điều đó không chứng minh an toàn. Hãy phân tích lịch xen kẽ read–modify–write và chỉ ra quan hệ đồng bộ bảo vệ bản sửa. Đợi join của mọi worker trước khi đọc kết quả. Stop-flag demo có thể treo: chạy trong process riêng có thời gian dừng; tránh println/sleep dùng như “cách sửa visibility”. Trong lab coordination, xử lý InterruptedException rõ ràng và bảo đảm worker thoát khi kết thúc demo.
+Chờ join của mọi worker trước khi đọc kết quả. Nếu thử cờ thiếu volatile, chạy process riêng có giới hạn thời gian và cách dừng. **Tự làm:** phân biệt đọc quá sớm với mất cập nhật. **Gợi ý:** hai lỗi này có thể cùng xuất hiện.
+
+## Đọc thêm sau
+
+Tự viết buffer: put chờ khi đầy, take chờ khi rỗng, không nhận null, kiểm điều kiện bằng while dưới cùng khóa, notifyAll khi điều kiện đổi. Xử lý interruption (yêu cầu ngắt) và kết thúc worker; thử BlockingQueue trước khi tự viết.

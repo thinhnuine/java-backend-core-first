@@ -1,123 +1,54 @@
 # Mentor Guide Tuần 12: SOLID, Pattern Và Refactoring
 
+Học một ví dụ rồi dừng để tự sửa đầu vào. Các heading giữ nguyên để đối chiếu bản trước.
+
+**Cách chạy ví dụ:** dùng JDK 21 (bộ công cụ Java). Mở terminal, gõ `jshell`; gõ từng khối Java độc lập, dùng `/reset` trước khối tiếp theo và `/exit` để thoát. JShell chạy được khai báo class, method (hàm của Java) và lệnh trực tiếp, không cần khung main. Các comment `//` giải thích dòng code và kết quả cần quan sát.
+
 ## 1. Ý chính
 
-Tuần này học thiết kế code dễ sửa. `SOLID` và design pattern không phải luật tôn giáo, mà là ngôn ngữ để nhận diện vấn đề và chọn cách refactor. Mục tiêu là dùng pattern khi nó giảm complexity thật, không phải để code trông "senior".
+Refactor là đổi cách tổ chức code mà không đổi kết quả đã cam kết.
 
 ## 2. Giải thích code
 
-Ví dụ Strategy:
-
 ```java
-package dev.thinh.javacore;
-
-public interface DiscountPolicy {
-    Money discountFor(ShoppingCart cart);
-}
+String normalize(String title) { return title.trim(); }
+String input = " Java ";
+if (!normalize(input).equals("Java")) throw new AssertionError("changed behavior");
+System.out.println("PASS");
 ```
-
-Implementation:
-
-```java
-public final class NoDiscountPolicy implements DiscountPolicy {
-    @Override
-    public Money discountFor(ShoppingCart cart) {
-        return new Money(0, "USD");
-    }
-}
-```
-
-Service dùng strategy:
-
-```java
-public final class CheckoutService {
-    private final DiscountPolicy discountPolicy;
-
-    public CheckoutService(DiscountPolicy discountPolicy) {
-        this.discountPolicy = discountPolicy;
-    }
-
-    public Money discountFor(ShoppingCart cart) {
-        return discountPolicy.discountFor(cart);
-    }
-}
-```
-
-Giải thích:
-
-- `DiscountPolicy`: abstraction cho rule giảm giá.
-- `NoDiscountPolicy`: một implementation.
-- `CheckoutService` phụ thuộc interface, không phụ thuộc class cụ thể.
-- Thay policy không cần sửa service.
 
 ## 3. Vì sao thiết kế như vậy
 
-Nếu dùng `if/else` khắp nơi:
-
-```java
-if (customerType.equals("VIP")) {
-    // Tính phần giảm giá VIP theo quy tắc làm tròn đã xác định.
-} else if (customerType.equals("NEW")) {
-    // Tính phần giảm giá NEW theo quy tắc làm tròn đã xác định.
-}
-```
-
-Khi thêm rule mới, bạn phải sửa nhiều chỗ. Strategy gom từng rule thành class riêng và service chỉ gọi contract.
-
-Nhưng nếu chỉ có một rule đơn giản và không có dấu hiệu thay đổi, tạo Strategy có thể là over-engineering.
+Tách method là hữu ích nếu tên giúp hiểu ý định hoặc dùng lại quy tắc. **Quy tắc ngón tay cái:** tự giải thích được output trước khi mở rộng bài.
 
 ## 4. Liên hệ với Frontend
 
-Strategy giống việc truyền function/prop để thay behavior:
-
-```tsx
-<PriceCalculator discountStrategy={vipDiscount} />
-```
-
-Builder hơi giống tạo config object nhiều option:
-
-```javascript
-createUser({ email, displayName, timezone })
-```
-
-Nhưng Java dùng class/method rõ ràng hơn vì không có object literal linh hoạt như JS.
+Nếu đã có cách tương tự trong JS/TS, so theo hành vi và kiểu dữ liệu; không suy ra cơ chế chạy giống nhau.
 
 ## 5. Khi nào dùng và không dùng
 
-| Pattern/Nguyên tắc | Khi dùng | Khi tránh |
-| --- | --- | --- |
-| SRP | Class có nhiều lý do thay đổi | Tách quá nhỏ làm khó đọc |
-| Strategy | Nhiều thuật toán thay thế | Chỉ có một rule đơn giản |
-| Builder | Object nhiều optional field | Object 2-3 field |
-| Factory | Logic tạo object phức tạp | `new` rõ ràng là đủ |
-| Observer | Event/listener | Flow sync đơn giản |
+**Khi nào dùng**
+
+- Khi cần củng cố sau bài chính.
+- Khi gặp đúng tình huống ví dụ trong code của bạn.
 
 ## 6. Bẫy hay gặp
 
-- Tạo interface cho mọi class.
-- Dùng pattern trước khi có vấn đề.
-- Refactor không có test.
-- Tách class quá nhỏ, flow bị vỡ vụn.
-- Đổi public API mà không ghi lý do.
+**Lỗi hay gặp**
+
+- Chép output mà chưa tự chạy.
+- Mở rộng nhiều khái niệm cùng lúc.
 
 ## 7. Thuật ngữ mới
 
-- `SOLID`: nhóm nguyên tắc thiết kế OOP.
-- `Strategy`: pattern tách thuật toán thành object thay thế được.
-- `Builder`: pattern tạo object nhiều option.
-- `Factory`: pattern gom logic tạo object.
-- `Observer`: pattern event/listener.
-- `refactoring`: đổi cấu trúc code mà giữ behavior.
+Các tên API trong ví dụ chỉ phục vụ một thao tác đang học. Nếu chưa biết class/method, quay lại bài cơ bản được dẫn trong README module.
 
 ## 8. Bài tập nhỏ để tự gõ lại
 
-1. Chọn `LogProcessor`, `LruCache` hoặc `EventEmitter`.
-2. Viết test trước.
-3. Ghi 2 code smell.
-4. Refactor một phần nhỏ.
-5. Chạy test.
-6. Viết `refactoring-notes.md`: vấn đề, thay đổi, tradeoff.
+**Tự gõ, không dùng AI sinh code:** Tách một đoạn normalize đang bị lặp trong bài của bạn.
 
-Học tiếp theo: mỗi lần muốn dùng pattern, viết một câu "pattern này giảm đau ở đâu?".
+**Gợi ý:** Chạy kiểm tra trước và sau thay đổi.
 
-NoDiscountPolicy trong snippet dùng USD để minh họa và chỉ áp dụng cart USD. Với cart nhiều currency, lấy currency từ total của cart; không trả Money(0, "USD") cố định cho mọi cart. Money ở lab chưa có divide; tính phần trăm là bài mở rộng phải xác định rounding và overflow, không gọi method chưa được định nghĩa.
+## Đọc thêm sau
+
+Áp mọi design pattern, abstraction nhiều tầng và kiến trúc lớn. Đây là phần tự chọn. [Quay lại trang module](README.md).

@@ -1,52 +1,58 @@
 # Thực Hành Nhỏ: Tóm Tắt Task Và Báo Input Sai
 
-Dành một buổi sau [record/switch](01-modern-java.md) và [exception](02-exception-handling.md). Bài chỉ chạy local, chưa có Spring, repository hoặc database. Làm trong thư mục riêng để không trùng class với ví dụ đã gõ.
+Đây là đề để tự làm, không phải đáp án. Chọn từng mục theo README module; không cần làm hết trong một buổi. Tự gõ code, dùng AI để xin gợi ý sau khi đã thử.
 
 ## Bước 1 — Mang dữ liệu
 
-Tạo enum TaskStatus với ba hằng TODO, IN_PROGRESS, DONE. Tạo record TaskSummary gồm `long id`, `String title`, `TaskStatus status`.
+Record mang dữ liệu của kết quả tóm tắt.
 
-Tạo một object và in từng accessor. Đoán `equals` giữa hai record cùng giá trị trước khi chạy. Chưa thêm validation vào record ở bước này.
+- Tạo TaskStatus với ba giá trị.
+- Tạo TaskSummary chứa id, title, status.
+- In các method đọc.
+
+**Gợi ý:** Record không tự chặn dữ liệu sai.
+
+**Đạt khi:** Tạo được hai record và so equals. Tự gõ phần triển khai, không dùng AI sinh lời giải.
 
 ## Bước 2 — Viết method tạo summary
 
-Trong một class thường, viết method với chữ ký:
+Method createSummary kiểm input trước khi trả kết quả.
 
-```java
-// Chỉ là chữ ký để bạn tự cài phần thân.
-static TaskSummary createSummary(long id, String title, TaskStatus status)
-```
+- id dương, title khác null/trắng và dài 1–100 sau trim.
+- status khác null.
+- Sai thì throw IllegalArgumentException.
 
-Quy tắc theo thứ tự:
+**Gợi ý:** Gọi constructor record trực tiếp vẫn có thể bỏ qua method này; đó là giới hạn bài.
 
-1. id phải dương.
-2. title không null/blank; trim rồi kiểm chiều dài từ 1 tới 100.
-3. status không null.
-4. Hợp lệ thì trả record mới với title đã trim.
-5. Sai thì ném IllegalArgumentException có message chỉ ra field liên quan.
-
-Ở bài này validation đặt trong factory method để luyện luồng lỗi; gọi constructor record trực tiếp vẫn có thể bỏ qua quy tắc. Đây là giới hạn cần tự giải thích. Khi học constructor validation của record, có thể chuyển quy tắc vào đó để mọi đường tạo object đều được kiểm tra.
+**Đạt khi:** Một input hợp lệ trả title đã trim. Tự gõ phần triển khai, không dùng AI sinh lời giải.
 
 ## Bước 3 — Chạy và quan sát lỗi
 
-Viết main gọi createSummary với dữ liệu hợp lệ và sai. Dùng try/catch ở caller để in lỗi; không catch rồi trả null bên trong createSummary. Viết label bằng switch cho ba status, dùng nó khi in summary hợp lệ.
+Caller là bên gọi method và nhận kết quả hoặc lỗi.
+
+- Viết lần gọi hợp lệ.
+- Viết lần gọi sai trong try/catch.
+- In message của lỗi.
+
+**Gợi ý:** Không catch rồi trả null trong createSummary.
+
+**Đạt khi:** Biết dòng nào không được chạy sau throw. Tự gõ phần triển khai, không dùng AI sinh lời giải.
 
 ## Bước 4 — Tự viết test
 
-| Case | Kỳ vọng |
-| --- | --- |
-| id=1, title=" Học Java ", status=TODO | Record có title="Học Java" |
-| id=0 | IllegalArgumentException, message liên quan id |
-| title=null | IllegalArgumentException, message liên quan title |
-| title chỉ có dấu cách | IllegalArgumentException |
-| title sau trim dài 100 ký tự | Thành công |
-| title sau trim dài 101 ký tự | IllegalArgumentException |
-| status=null | IllegalArgumentException, message liên quan status |
+Test kiểm các trường hợp sát quy tắc.
 
-Dùng assertEquals cho kết quả, assertThrows cho lỗi; xem [bài chạy JUnit](../../learning-path/04-first-unit-test.md) nếu quên setup. Không cần so sánh chính xác toàn bộ message nếu điều đó không phải API contract.
+- Thử id 0, title null/trắng, status null.
+- Thử title 100 và 101 ký tự sau trim.
+
+**Gợi ý:** Xác định expected trước khi chạy.
+
+**Đạt khi:** Mỗi case đúng/lỗi đều được kiểm, không chỉ quan sát bằng mắt. Tự gõ phần triển khai, không dùng AI sinh lời giải.
 
 ## Đạt khi
 
-Tự sửa thêm một điều kiện validation và test được nó; giải thích vì sao record không tự chặn input sai và caller chạy dòng nào sau khi có exception. Không yêu cầu generic result type, sealed class hoặc parser.
+Tự thêm một quy tắc mới và kiểm nó. **Gợi ý:** nếu chưa giải thích được throw/throws, quay lại [bài exception](02-exception-handling.md). Chưa cần parser hay sealed class.
 
-Tiếp theo: [checklist](04-checklist-and-ai-review.md), rồi [Task Manager](../../learning-path/03-task-manager-project.md) theo roadmap.
+## Đọc thêm sau
+
+Chỉ mở rộng sau khi bài nhỏ chạy đúng. Ghi một lỗi đã gặp và cách bạn tự tìm nguyên nhân.

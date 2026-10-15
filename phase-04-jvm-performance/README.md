@@ -1,12 +1,12 @@
 # JVM Và Chẩn Đoán Lỗi
 
-Đọc ở **căn bản tuần 23; chuyên sâu sau dự án** theo [roadmap](../ROADMAP.md). Mã phase/week giữ để tra cứu; không dùng lịch 14 tuần cũ để quyết định tiến độ.
+Đây là nhóm tài liệu theo chủ đề; số week là mã bài cũ. Đọc [roadmap](../ROADMAP.md) để chọn đúng phần trong lịch 24 tuần.
 
-| Module | Phạm vi |
-| --- | --- |
-| [week-09](week-09/README.md) | Heap/stack/classpath; JIT/GC lab là mở rộng |
-| [week-10](week-10/README.md) | Tooling/heap dump/reflection/proxy theo vấn đề cần điều tra |
+- [week-09: JVM vừa đủ](week-09/README.md) — Phân biệt heap chứa dữ liệu object và stack theo dõi lời gọi.
+- [week-10: Tìm nguyên nhân lỗi](week-10/README.md) — Chọn công cụ theo câu hỏi; hiểu dữ liệu bị giữ ngoài ý muốn.
 
-Đọc stack trace và phân biệt nhóm lỗi memory/classpath ở mức căn bản. Không yêu cầu đạt năng lực tuning JVM production.
+**Cách học:** một ví dụ, một lần tự sửa, một câu giải thích. Dừng khi hiểu, không cần hoàn thành mọi file trong một tuần.
 
-Tiếp theo: đối chiếu [Task Manager](../learning-path/03-task-manager-project.md) và [chuẩn đầu ra](../COURSE_OUTCOMES.md).
+## Đọc thêm sau
+
+Các bài mở rộng được đánh dấu ở cuối từng file. Ưu tiên hoàn thành Task Manager trước khi tự viết công cụ tổng quát.

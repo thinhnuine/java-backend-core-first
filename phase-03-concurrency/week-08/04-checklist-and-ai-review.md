@@ -1,31 +1,25 @@
 # Checklist Và AI Review Tuần 8
 
-> **Chọn phạm vi:** làm phần được chỉ định trong [README module](README.md) và roadmap. Benchmark, log processor lớn, tự viết pool/queue/rate limiter, GC/reflection/proxy là bài mở rộng; checklist đầy đủ dưới đây không bắt buộc trước khi qua mốc học mới.
+Checklist (danh sách tự kiểm) cho phần đang học: **Virtual thread**.
+
+Chỉ đánh dấu khi có code và kết quả làm bằng chứng.
 
 ## Checklist
 
-- [ ] Giải thích được virtual thread phù hợp bài toán nào.
-- [ ] Không dùng virtual thread để né shared state.
-- [ ] Thread pool có shutdown đúng.
-- [ ] Producer-consumer không dùng `if` thay `while` khi wait.
-- [ ] Rate limiter có test concurrent.
-- [ ] Learning log có ít nhất 3 bug concurrency đã gặp.
-- [ ] Biết dùng thread dump ở mức khái niệm để tìm deadlock.
+- [ ] Thử virtual thread Java 21 và hiểu giới hạn tài nguyên bên ngoài.
+- [ ] Phân biệt việc chờ I/O với tính toán CPU.
+- [ ] Có một đầu vào sai và giải thích cách code xử lý.
 
 ## Prompt AI Review
 
 ```text
-Bạn là mentor Java Backend. Hãy review bài tổng hợp concurrency của tôi.
-
-Tập trung vào:
-- race condition
-- deadlock
-- visibility bug
-- shutdown behavior
-- wait/notify hoặc Condition có đúng pattern không
-- test concurrent có đủ thuyết phục không
-- virtual thread được hiểu đúng chưa
-- rate limiter algorithm có tradeoff rõ không
-
-Code và learning log:
+Tôi mới học Java, đã biết React/Next.js.
+Mục tiêu: Phân biệt việc chờ I/O với tính toán CPU.
+Đây là code, dự đoán và kết quả thực tế của tôi: ...
+Chỉ ra tối đa 2 điểm cần sửa; giải thích thuật ngữ ngay khi dùng.
+Cho một gợi ý để tôi tự sửa, chưa viết lời giải.
 ```
+
+## Đọc thêm sau
+
+Structured concurrency preview, pool tự viết và rate limiter. Chỉ dùng checklist mở rộng khi bạn chủ động chọn học phần đó.

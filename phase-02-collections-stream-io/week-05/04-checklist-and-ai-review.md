@@ -1,39 +1,31 @@
 # Checklist Và AI Review Tuần 5
 
-> **Chọn phạm vi:** làm phần được chỉ định trong [README module](README.md) và roadmap. Benchmark, log processor lớn, tự viết pool/queue/rate limiter, GC/reflection/proxy là bài mở rộng; checklist đầy đủ dưới đây không bắt buộc trước khi qua mốc học mới.
+Checklist (danh sách tự kiểm) cho phần đang học: **Stream và ngày giờ**.
+
+Chỉ đánh dấu khi có code và kết quả làm bằng chứng.
 
 ## Checklist
 
-- [ ] Dùng được `filter/map/reduce/collect`.
-- [ ] Biết dùng `groupingBy`.
-- [ ] Không gọi `Optional.get()` bừa bãi.
-- [ ] Biết chọn `Instant`/`LocalDate`/`ZonedDateTime`.
-- [ ] Xử lý file lớn không load toàn bộ khi không cần.
-- [ ] Có loop implementation.
-- [ ] Có Stream implementation.
-- [ ] Có report so sánh Stream vs loop.
+- [ ] Lọc bằng loop rồi Stream; dùng Optional cho kết quả có thể thiếu, LocalDate cho ngày.
+- [ ] Hai cách lọc cho cùng kết quả và không gọi get trên Optional rỗng.
+- [ ] Có một đầu vào sai và giải thích cách code xử lý.
 
 ## Prompt AI Review
 
 ```text
-Bạn là mentor Java Backend. Hãy review Log Processor của tôi.
-
-Tập trung vào:
-- Stream pipeline có dễ đọc không
-- loop version có rõ hơn không
-- xử lý file lớn có tốn memory không
-- Optional dùng có hợp lý không
-- java.time type chọn đúng chưa
-- error handling có rõ policy không
-- benchmark/report có kết luận quá tay không
-
-Code và report:
+Tôi mới học Java, đã biết React/Next.js.
+Mục tiêu: Hai cách lọc cho cùng kết quả và không gọi get trên Optional rỗng.
+Đây là code, dự đoán và kết quả thực tế của tôi: ...
+Chỉ ra tối đa 2 điểm cần sửa; giải thích thuật ngữ ngay khi dùng.
+Cho một gợi ý để tôi tự sửa, chưa viết lời giải.
 ```
 
 ## Câu Hỏi Tự Vấn
 
-- Stream đang làm code rõ hơn hay chỉ ngắn hơn?
-- Có side effect nào ẩn trong stream pipeline không?
-- Nếu file 5GB thì code hiện tại còn chạy được không?
-- Timestamp dùng timezone đúng chưa?
-- Error policy có phù hợp backend production không?
+Tôi giải thích được thao tác nào? Đầu vào nào làm code lỗi? Tôi chọn cách này vì yêu cầu nào?
+
+**Tự làm:** ghi một câu trả lời kèm ví dụ. **Gợi ý:** dựa trên lần chạy vừa làm, không chép định nghĩa.
+
+## Đọc thêm sau
+
+Collector nhiều mức, xử lý file khổng lồ và parallelStream. Chỉ dùng checklist mở rộng khi bạn chủ động chọn học phần đó.

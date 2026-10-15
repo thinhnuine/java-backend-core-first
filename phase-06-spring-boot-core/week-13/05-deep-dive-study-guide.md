@@ -1,126 +1,56 @@
 # Mentor Guide Tuần 13: Spring IoC/DI, Autoconfiguration Và REST API
 
+Học một ví dụ rồi dừng để tự sửa đầu vào. Các heading giữ nguyên để đối chiếu bản trước.
+
+**Cách chạy ví dụ:** dùng JDK 21 (bộ công cụ Java). Mở terminal, gõ `jshell`; gõ từng khối Java độc lập, dùng `/reset` trước khối tiếp theo và `/exit` để thoát. JShell chạy được khai báo class, method (hàm của Java) và lệnh trực tiếp, không cần khung main. Các comment `//` giải thích dòng code và kết quả cần quan sát.
+
 ## 1. Ý chính
 
-Spring Boot giúp bạn build backend nhanh, nhưng bạn cần hiểu cốt lõi: IoC container tạo object, DI inject dependency, autoconfiguration tạo cấu hình mặc định, controller nhận HTTP request. Mục tiêu tuần này là build REST API in-memory và hiểu request đi qua controller, service, repository.
+Biến cục bộ thuộc một lần gọi; field của service có thể được nhiều request dùng chung.
 
 ## 2. Giải thích code
 
-Service:
-
 ```java
-package dev.thinh.task;
-
-import org.springframework.stereotype.Service;
-
-@Service
-public class TaskService {
-    private final TaskRepository repository;
-
-    public TaskService(TaskRepository repository) {
-        this.repository = repository;
-    }
+class GreetingService {
+    String greet(String name) { return "Hi " + name; } // Không lưu name vào field
 }
+var service = new GreetingService();
+System.out.println(service.greet("An")); // Hi An
+System.out.println(service.greet("Binh")); // Hi Binh
 ```
-
-Giải thích:
-
-- `@Service`: annotation báo class này là service bean.
-- `private final TaskRepository repository`: dependency.
-- Constructor injection: Spring inject `TaskRepository` bean vào constructor.
-
-Controller:
-
-```java
-@RestController
-@RequestMapping("/tasks")
-public class TaskController {
-    private final TaskService service;
-
-    public TaskController(TaskService service) {
-        this.service = service;
-    }
-}
-```
-
-- `@RestController`: class xử lý HTTP request và trả response body.
-- `@RequestMapping("/tasks")`: prefix endpoint.
-- Controller phụ thuộc service, không tự xử lý business dài.
-
-DTO:
-
-```java
-public record CreateTaskRequest(@NotBlank String title) {
-}
-```
-
-- `record`: DTO ngắn gọn.
-- `@NotBlank`: validation title không null/blank.
 
 ## 3. Vì sao thiết kế như vậy
 
-Nếu controller chứa hết logic:
-
-```java
-@PostMapping
-public TaskResponse create(@RequestBody CreateTaskRequest request) {
-    // validate, create id, save map, handle error...
-}
-```
-
-Controller sẽ phình to và khó test. Tách layer giúp:
-
-- Controller lo HTTP.
-- Service lo business.
-- Repository lo lưu trữ.
-
-Nếu service import `ResponseEntity`, service đã bị dính HTTP, sau này dùng service từ job/message consumer sẽ khó.
+Service dùng chung không nên giữ currentUser hay input hiện tại trong field. **Quy tắc ngón tay cái:** tự giải thích được output trước khi mở rộng bài.
 
 ## 4. Liên hệ với Frontend
 
-Controller giống API route trong Next.js:
-
-```ts
-export async function POST(req: Request) {}
-```
-
-Nhưng trong Spring, bạn thường tách rõ controller/service/repository hơn. DI của Spring hơi giống việc truyền dependency qua props/context, nhưng chạy ở backend container.
+Nếu đã có cách tương tự trong JS/TS, so theo hành vi và kiểu dữ liệu; không suy ra cơ chế chạy giống nhau.
 
 ## 5. Khi nào dùng và không dùng
 
-| Thành phần | Khi dùng | Khi tránh |
-| --- | --- | --- |
-| Controller | Mapping HTTP, DTO, status code | Business logic dài |
-| Service | Business rule, transaction boundary | Trả `ResponseEntity` |
-| Repository | Persistence | Validate HTTP request |
-| DTO | API request/response | Nhồi entity ra ngoài |
-| `@RestControllerAdvice` | Error response nhất quán | Throw stack trace ra client |
+**Khi nào dùng**
+
+- Khi cần củng cố sau bài chính.
+- Khi gặp đúng tình huống ví dụ trong code của bạn.
 
 ## 6. Bẫy hay gặp
 
-- Field injection thay vì constructor injection.
-- Controller chứa business logic.
-- Trả entity trực tiếp.
-- Không có validation.
-- Error response mỗi chỗ một kiểu.
-- Class nằm ngoài component scan path.
+**Lỗi hay gặp**
+
+- Chép output mà chưa tự chạy.
+- Mở rộng nhiều khái niệm cùng lúc.
 
 ## 7. Thuật ngữ mới
 
-- `IoC`: container quản lý object lifecycle.
-- `DI`: dependency injection, đưa dependency từ ngoài vào.
-- `bean`: object do Spring quản lý.
-- `autoconfiguration`: Spring Boot tự cấu hình dựa trên dependency/config.
-- `DTO`: object cho request/response API.
-- `controller/service/repository`: các layer phổ biến trong backend.
+Các tên API trong ví dụ chỉ phục vụ một thao tác đang học. Nếu chưa biết class/method, quay lại bài cơ bản được dẫn trong README module.
 
 ## 8. Bài tập nhỏ để tự gõ lại
 
-1. Tạo Task API in-memory.
-2. Endpoint `POST /tasks`.
-3. Endpoint `GET /tasks/{id}`.
-4. DTO request/response.
-5. Validation `@NotBlank`.
-6. Global error handler cho not found.
+**Tự gõ, không dùng AI sinh code:** Kiểm TaskService có field nào chỉ phục vụ một request.
 
-Học tiếp theo: sau khi API chạy in-memory, tuần 14 mới đưa vào database/JPA.
+**Gợi ý:** Chuyển dữ liệu đó thành tham số hoặc biến cục bộ khi phù hợp.
+
+## Đọc thêm sau
+
+Bean lifecycle, auto-configuration sâu và nhiều cấu hình bean. Đây là phần tự chọn. [Quay lại trang module](README.md).

@@ -1,124 +1,35 @@
 # Mentor Explanation Style
 
-Use this style when writing or rewriting lesson files in this repo.
-
-The learner has four years of frontend experience, is new to Java and backend, and studies about eight hours per week. Do not assume prior Python, SQL, server-side Node.js, Docker, or authentication knowledge. Use the frontend stack they already know for comparisons. The writing should feel like a Java Backend mentor explaining slowly enough that the learner does not need to leave the document and ask AI again for the basics.
+Quy ước biên tập để các lần sửa sau giữ cùng cách dạy. Nội dung ưu tiên yêu cầu mới nhất của người học.
 
 ## Required Structure For Each Concept
 
-### 1. Ý chính
+Viết cho FE có 4 năm React/Next.js nhưng mới học Java. Giữ heading cấp 2 của file hiện có; nếu cần chia nhỏ thì thêm heading cấp 3. Mỗi chủ đề chỉ tập trung một việc.
 
-Explain in 2-3 plain Vietnamese sentences:
+Thứ tự: một câu định nghĩa và mục đích → code Java 21 tối đa 10 dòng, comment dòng quan trọng → liên hệ FE nếu đúng → “Khi nào dùng” 2–3 ý → “Lỗi hay gặp” tối đa 3 ý → một quy tắc dễ nhớ → bài tập nhỏ và gợi ý, không đáp án.
 
-- What the concept is.
-- What problem it solves.
-- Why the learner should care.
-
-Keep English technical terms intact when they are standard terms, such as `primitive`, `reference`, `immutable`, `interface`, `implements`, `override`, `invariant`, `defensive copy`.
-
-### 2. Giải thích code
-
-Walk through the code from the lesson:
-
-- Explain important lines.
-- Explain keywords such as `final`, `private`, `public`, `implements`, `extends`, `@Override`, `protected`.
-- When useful, show a tiny runnable example of how the code is called.
-
-### 3. Vì sao thiết kế như vậy
-
-Explain the design reason behind the code.
-
-Include one "if we do not do this, what goes wrong" example:
-
-- Show the wrong code.
-- Explain the bug or bad result.
-
-### 4. Liên hệ với Frontend
-
-Compare with JS/TS/React only when the comparison is real and useful.
-
-Good comparisons:
-
-- Java `final` field vs JS `const` binding.
-- Java `interface` vs TypeScript `interface`.
-- Immutable object vs React immutable state update.
-- Constructor validation vs validating props/input before using them.
-
-Do not force a frontend analogy when it makes the concept less clear.
-
-### 5. Khi nào dùng và không dùng
-
-Use a short list or table.
-
-Include:
-
-- When to use it.
-- When not to use it.
-- Warning when overused.
-
-### 6. Bẫy hay gặp
-
-List common mistakes for beginners.
-
-Prefer concrete mistakes:
-
-- using `==` for `String`
-- forgetting to initialize a `final` field
-- exposing mutable lists
-- using inheritance just for code reuse
-
-### 7. Thuật ngữ mới
-
-Define new terms briefly.
-
-Examples:
-
-- `invariant`
-- `immutable`
-- `defensive copy`
-- `reference`
-- `boxing`
-- `unboxing`
-
-### 8. Bài tập nhỏ để tự gõ lại
-
-Give a small exercise the learner should type manually.
-
-Requirements:
-
-- Do not provide the full final solution unless the lesson is explicitly an answer key.
-- Provide enough steps that the learner can proceed.
-- Encourage running code/tests locally.
+Với file cũ có tám heading về cách học một chủ đề, giữ tên/thứ tự để đối chiếu nhưng rút phần nội dung xuống ngắn; không lặp tám mục đó cho mỗi tiểu mục. README, đề bài và checklist phục vụ điều hướng/thực hành, không thêm code vô nghĩa chỉ để đủ khuôn.
 
 ## Tone
 
-- Detailed but easy to understand.
-- Practical, not academic.
-- Friendly mentor voice.
-- Use tables for comparisons.
-- Use code blocks for code.
-- Java examples should be short and valid for Java 21.
-- If source material is inaccurate or misleading, call that out clearly.
-- End lesson files with 1-2 next study directions.
+Dùng tiếng Việt đời thường. Giữ thuật ngữ tiếng Anh và giải thích ngay lần đầu. Không giả định đã biết SQL, backend Node.js, Docker hay bảo mật. Mỗi phần nên vừa một lượt đọc ngắn; tách nếu cần cuộn nhiều. Không ép so sánh với React khi khác cơ chế.
 
 ## Short Answer Exception
 
-When the learner asks "ngắn gọn thôi" or asks a quick factual question, answer briefly instead of using the full structure.
+Câu hỏi nhanh trả lời ngắn đúng nhu cầu. Khi xin gợi ý bài tập, chỉ gợi ý bước tiếp theo; không đưa toàn bộ lời giải. Khi sửa tài liệu, nêu trước điểm sai hoặc dễ hiểu nhầm được phát hiện.
 
 ## Learning Path And Prerequisites
 
-- Follow ROADMAP.md for the new sequence. Old week-* directory names identify modules, not the current study calendar.
-- Introduce unfamiliar backend terms before using them; distinguish required material from optional depth.
-- State prerequisites, where each runnable example goes, how to run it, expected output, and one observable completion criterion.
-- Label incomplete code as a snippet and name its missing context. Never imply every block compiles alone.
-- Build Task Manager incrementally. Use library/parser/thread-pool projects as optional practice after their prerequisites.
-- Teach basic tests alongside Java behavior, SQL before JPA, and HTTP before framework annotations.
-- Explain the limits of JS/TS analogies, especially nullability, String equality, shared state, and shallow immutability.
+Theo ROADMAP 24 tuần; week trong đường dẫn chỉ là mã module cũ. Ví dụ chính dùng Java 21 thuần, có cách chạy rõ: JShell độc lập hoặc file có main. Không nén nhiều câu lệnh khó đọc để lách giới hạn 10 dòng. Khi cần nhiều file, chia từng bước và ghi tên file.
+
+Giữ chi tiết nâng cao ở “Đọc thêm sau” cuối file. Mô hình Java thuần về Spring/DB/security phải ghi rõ chưa thực hiện framework, lưu trữ hay xác thực thật. Bài SQL chạy trong SQL console; shell command chạy trong terminal, không giả làm Java.
 
 ## Course Outcomes And Evidence
 
-- COURSE_OUTCOMES.md defines required competencies. A local DB API is a midpoint, not the end of this fullstack course.
-- Use one eight-hour budget for the selected material each new week. Do not imply every old module, checklist, or lab is required on top of that budget.
-- A race demo passing repeatedly is not a proof of thread safety. Explain synchronization and separate observed evidence from correctness reasoning.
-- Distinguish complete runnable examples, partial class sketches, intentionally invalid examples, and framework snippets with external prerequisites.
-- Record what was actually verified. Reading or compiling a snippet does not establish API/DB/security/container behavior.
+Đạt bài khi tự thực hiện, giải thích và kiểm một trường hợp lỗi. Một tuần mới có tổng 8 giờ cho nội dung được chọn. Task Manager xuyên suốt; parser/cache/thread pool là tự chọn.
+
+Chỉ báo kiểm chứng đã làm thật: chạy snippet không chứng minh API/DB/security/container. Race demo đúng vài lần không chứng minh đồng bộ đúng. Không đánh đổi việc giải thích chính xác để có câu ngắn dễ nhớ.
+
+## Đọc thêm sau
+
+Internals (cách triển khai bên trong), tuning (điều chỉnh hiệu năng), ngoại lệ hiếm và chi tiết phụ thuộc phiên bản chỉ đưa vào khi cần. Tài liệu chính thức bổ trợ phần nâng cao; phần cơ bản cần đủ để người học chạy ví dụ tại chỗ.

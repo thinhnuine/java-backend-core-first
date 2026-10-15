@@ -1,80 +1,117 @@
 # ExecutorService Và Future
 
+> **Làm rõ trước khi học:** newFixedThreadPool dùng hàng đợi không giới hạn mặc định. get(timeout) chỉ giới hạn lúc chờ; cancel(true) yêu cầu ngắt chứ không cưỡng bức mọi task dừng.
+
+**Cách chạy ví dụ:** dùng JDK 21 (bộ công cụ Java). Mở terminal, gõ `jshell`; gõ từng khối Java độc lập, dùng `/reset` trước khối tiếp theo và `/exit` để thoát. JShell chạy được khai báo class, method (hàm của Java) và lệnh trực tiếp, không cần khung main. Các comment `//` giải thích dòng code và kết quả cần quan sát.
+
 ## Vì Sao Không Tự Tạo Thread Mãi
 
-Tự `new Thread` cho mỗi task dễ gây:
+ExecutorService là công cụ nhận việc và quản lý các luồng chạy việc đó, giúp bạn không phải tự tạo và theo dõi từng thread.
 
-- quá nhiều thread.
-- khó shutdown.
-- khó quản lý queue.
-- khó handle exception.
+**Quy tắc ngón tay cái:** Giao việc cho executor, xác định ai đóng nó.
 
-`ExecutorService` tách task submission khỏi thread management.
+**Tự làm:** Liệt kê nơi tạo và nơi kết thúc executor trong bài của bạn. **Gợi ý:** Một task là một đơn vị công việc, không nhất thiết một thread mới.
 
 ## Fixed Thread Pool
 
+Fixed thread pool là nhóm có số luồng xử lý cố định, dùng lại để chạy nhiều task.
+
 ```java
-ExecutorService executor = Executors.newFixedThreadPool(4);
-try {
-    Future<Integer> future = executor.submit(() -> 42);
-    Integer value = future.get();
-} finally {
-    executor.shutdown();
-}
+try (var pool = java.util.concurrent.Executors.newFixedThreadPool(2)) {
+    var result = pool.submit(() -> 21 * 2); // Giao việc và giữ kết quả tương lai
+    System.out.println(result.get()); // Chờ rồi in 42
+} // Java 21: đóng pool và chờ việc đã giao kết thúc
 ```
 
-Luôn nghĩ tới shutdown. Thread pool bị quên shutdown có thể làm app không dừng.
+**Khi nào dùng**
+
+- Giới hạn số worker (luồng làm việc).
+- Thực hiện nhiều task độc lập.
+
+**Lỗi hay gặp**
+
+- Nghĩ số task chờ cũng được giới hạn tự động.
+
+**Quy tắc ngón tay cái:** Giới hạn worker không đồng nghĩa giới hạn hàng đợi.
+
+**Tự gõ, không dùng AI sinh code:** Giao hai phép tính rồi lấy cả hai kết quả. **Gợi ý:** Submit cả hai trước khi get để chúng có cơ hội chạy cùng lúc.
 
 ## `Future`
 
-`Future` đại diện kết quả sẽ có trong tương lai.
+Future là object giữ kết quả đang hoặc sẽ được tính; get chờ kết quả khi nó chưa sẵn sàng.
 
-Method hay dùng:
+```java
+try (var pool = java.util.concurrent.Executors.newFixedThreadPool(2)) {
+    var result = pool.submit(() -> 21 * 2); // Giao việc và giữ kết quả tương lai
+    System.out.println(result.get()); // Chờ rồi in 42
+} // Java 21: đóng pool và chờ việc đã giao kết thúc
+```
 
-- `get()`: block chờ kết quả.
-- `get(timeout, unit)`: block có timeout.
-- `cancel`.
-- `isDone`.
-- `isCancelled`.
+**Khi nào dùng**
+
+- Khi cần thao tác này trong bài thực hành.
+- Khi đọc code có cùng cách viết.
+
+**Lỗi hay gặp**
+
+- Nghĩ get luôn trả ngay.
+- Nghĩ get hai task đã submit làm chúng mất khả năng chạy song song.
+
+**Tự gõ, không dùng AI sinh code:** Đổi kết quả thành String rồi đọc nó. **Gợi ý:** Kiểu future đi theo giá trị method submit trả về.
 
 ## Shutdown Đúng
 
-Pattern:
+Shutdown là dừng nhận việc mới và quản lý việc còn lại trước khi ứng dụng kết thúc.
 
-```java
-executor.shutdown();
-if (!executor.awaitTermination(10, TimeUnit.SECONDS)) {
-    executor.shutdownNow();
-}
-```
+**Quy tắc ngón tay cái:** Bài ngắn Java 21: dùng try-with-resources cho executor.
 
-Trong bài tập nhỏ có thể đơn giản hơn, nhưng phải biết vấn đề.
+**Tự làm:** Chỉ ra dấu } đóng executor ở ví dụ pool. **Gợi ý:** Close chờ task kết thúc; task treo vẫn có thể làm close chờ mãi.
 
 ## Exception Trong Task
 
-Exception từ `Callable` sẽ được wrap trong `ExecutionException` khi gọi `future.get()`.
+Lỗi trong task được Future chuyển ra khi bạn gọi get, để bên gọi quyết định xử lý.
 
 ```java
-try {
-    future.get();
-} catch (ExecutionException e) {
-    Throwable cause = e.getCause();
+try (var pool = java.util.concurrent.Executors.newSingleThreadExecutor()) {
+    var result = pool.submit(() -> { throw new IllegalArgumentException("bad input"); });
+    try { result.get(); }
+    catch (java.util.concurrent.ExecutionException error) {
+        System.out.println(error.getCause().getMessage()); // bad input: lỗi gốc
+    }
 }
 ```
 
-Đừng nuốt cause.
+**Khi nào dùng**
+
+- Khi cần thao tác này trong bài thực hành.
+- Khi đọc code có cùng cách viết.
+
+**Lỗi hay gặp**
+
+- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+
+**Tự gõ, không dùng AI sinh code:** Giao một task thành công và một task lỗi, quan sát riêng hai kết quả. **Gợi ý:** getCause lấy lỗi gốc bên trong lỗi bọc.
 
 ## Bài Tập Nhanh
 
-Viết `TaskRunner`:
+Tạo chương trình giao ba phép tính độc lập.
 
-- Nhận list `Callable<T>`.
-- Chạy bằng fixed thread pool.
-- Trả list kết quả theo thứ tự input.
-- Nếu task lỗi, giữ cause trong custom result type.
+- Submit ba task.
+- Lấy kết quả theo thứ tự input.
+- Đóng executor khi xong.
+
+**Gợi ý:** Giữ danh sách Future thay vì get ngay sau từng submit.
+
+**Đạt khi:** Kết quả đúng và chương trình kết thúc được. Tự gõ phần triển khai, không dùng AI sinh lời giải.
 
 ## Queue, timeout và interruption
 
-newFixedThreadPool giới hạn worker nhưng dùng queue không giới hạn: submit nhanh hơn xử lý vẫn có thể làm backlog tăng và hết bộ nhớ. Khi học production, tìm hiểu ThreadPoolExecutor với bounded queue và rejection policy. [Executors API Java 21](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/Executors.html).
+Queue là hàng đợi task; timeout là giới hạn thời gian chờ; interruption là yêu cầu hợp tác dừng việc.
 
-get(timeout, unit) hết hạn chỉ dừng chờ ở caller; task có thể vẫn chạy. cancel(true)/shutdownNow yêu cầu interruption, không cưỡng bức mọi task dừng. Khi catch InterruptedException mà không truyền tiếp, khôi phục interrupt flag với Thread.currentThread().interrupt() và kết thúc luồng xử lý phù hợp. shutdown không chờ mọi task xong; cần awaitTermination nếu caller cần biết đã dừng, và kiểm tra lại sau shutdownNow.
+**Quy tắc ngón tay cái:** Hết thời gian chờ không có nghĩa công việc bên dưới đã dừng.
+
+**Tự làm:** Vẽ hai mốc: caller ngừng chờ và task thực sự kết thúc. **Gợi ý:** Đặt timeout ở thao tác I/O (đọc/ghi bên ngoài) khi cần, không chỉ ở Future.
+
+## Đọc thêm sau
+
+ThreadPoolExecutor với hàng đợi có giới hạn, chính sách từ chối task và shutdown có deadline để sau. [Executors Java 21](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/Executors.html).

@@ -1,102 +1,54 @@
 # Mentor Guide Tuần 9: JVM Memory, Class Loading, JIT Và GC
 
-> **Chọn phạm vi:** làm phần được chỉ định trong [README module](README.md) và roadmap. Benchmark, log processor lớn, tự viết pool/queue/rate limiter, GC/reflection/proxy là bài mở rộng; checklist đầy đủ dưới đây không bắt buộc trước khi qua mốc học mới.
+Học một ví dụ rồi dừng để tự sửa đầu vào. Các heading giữ nguyên để đối chiếu bản trước.
+
+**Cách chạy ví dụ:** dùng JDK 21 (bộ công cụ Java). Mở terminal, gõ `jshell`; gõ từng khối Java độc lập, dùng `/reset` trước khối tiếp theo và `/exit` để thoát. JShell chạy được khai báo class, method (hàm của Java) và lệnh trực tiếp, không cần khung main. Các comment `//` giải thích dòng code và kết quả cần quan sát.
 
 ## 1. Ý chính
 
-Tuần này bạn học Java như một runtime, không chỉ là syntax. JVM quản lý memory, load class, tối ưu code bằng JIT và dọn rác bằng GC. Hiểu phần này giúp bạn đọc lỗi production kiểu OOM, GC nhiều, app chậm, classpath lỗi.
+Reference là giá trị tham chiếu tới object; hai biến có thể cùng giữ một object.
 
 ## 2. Giải thích code
 
-Ví dụ tạo nhiều object:
-
 ```java
-package dev.thinh.javacore;
-
-import java.util.ArrayList;
-import java.util.List;
-
-public class MemoryDemo {
-    public static void main(String[] args) throws InterruptedException {
-        List<byte[]> store = new ArrayList<>();
-
-        while (true) {
-            store.add(new byte[1024 * 1024]);
-            System.out.println("Allocated " + store.size() + " MB");
-            Thread.sleep(100);
-        }
-    }
-}
+var first = new java.util.ArrayList<String>();
+var second = first; // Không sao chép list
+second.add("Java");
+System.out.println(first.size()); // 1
 ```
-
-Giải thích:
-
-- `new byte[1024 * 1024]`: tạo mảng khoảng 1MB trên heap.
-- `store.add(...)`: giữ reference, nên GC không thu hồi được.
-- `while (true)`: allocation liên tục.
-- Chạy với heap nhỏ có thể gây `OutOfMemoryError`.
-
-Command:
-
-```bash
-java -Xmx128m '-Xlog:gc*' dev.thinh.javacore.MemoryDemo
-```
-
-- `-Xmx128m`: giới hạn heap max 128MB.
-- `'-Xlog:gc*'`: bật GC log.
 
 ## 3. Vì sao thiết kế như vậy
 
-Java tự quản lý memory bằng GC, nhưng GC chỉ thu hồi object không còn reachable. Nếu bạn vẫn giữ reference trong list/static cache, object không được dọn.
-
-Ví dụ leak:
-
-```java
-private static final List<byte[]> STORE = new ArrayList<>();
-```
-
-Nếu app cứ add vào `STORE` mà không remove, object vẫn reachable từ static field. GC không dọn vì về mặt kỹ thuật object vẫn đang được dùng.
+Muốn hiểu dữ liệu bị giữ, lần theo reference thay vì nhìn tên biến. **Quy tắc ngón tay cái:** tự giải thích được output trước khi mở rộng bài.
 
 ## 4. Liên hệ với Frontend
 
-JavaScript cũng có garbage collector. Memory leak frontend thường là listener không remove, timer không clear, closure giữ reference. Java tương tự: object còn reachable thì GC không dọn.
-
-Khác biệt là Java backend thường cần đọc heap dump, GC log, thread dump để debug production.
+Nếu đã có cách tương tự trong JS/TS, so theo hành vi và kiểu dữ liệu; không suy ra cơ chế chạy giống nhau.
 
 ## 5. Khi nào dùng và không dùng
 
-| Công cụ/khái niệm | Khi dùng | Khi tránh |
-| --- | --- | --- |
-| GC log | App pause/chậm/OOM | Đọc một dòng rồi kết luận |
-| Heap dump | Cần biết object nào giữ memory | Dump production bừa bãi, file rất lớn |
-| JIT awareness | Benchmark/performance | Tự benchmark thiếu warm-up |
-| Classpath check | Lỗi class not found | Đoán mò dependency |
+**Khi nào dùng**
+
+- Khi cần củng cố sau bài chính.
+- Khi gặp đúng tình huống ví dụ trong code của bạn.
 
 ## 6. Bẫy hay gặp
 
-- Nghĩ GC dọn mọi thứ không cần nữa theo ý mình.
-- Không hiểu object còn reference thì không được dọn.
-- Benchmark bằng một lần chạy.
-- Nhầm stack overflow với heap OOM.
-- Không đọc message OOM cụ thể.
+**Lỗi hay gặp**
+
+- Chép output mà chưa tự chạy.
+- Mở rộng nhiều khái niệm cùng lúc.
 
 ## 7. Thuật ngữ mới
 
-- `heap`: vùng chứa object.
-- `stack`: vùng chứa call frame của thread.
-- `metaspace`: vùng chứa metadata class.
-- `GC`: garbage collector.
-- `reachable`: còn được tham chiếu từ GC roots.
-- `JIT`: compiler tối ưu code nóng lúc runtime.
-- `classpath`: nơi JVM tìm class.
+Các tên API trong ví dụ chỉ phục vụ một thao tác đang học. Nếu chưa biết class/method, quay lại bài cơ bản được dẫn trong README module.
 
 ## 8. Bài tập nhỏ để tự gõ lại
 
-1. Viết `MemoryDemo`.
-2. Chạy với `-Xmx128m`.
-3. Bật GC log.
-4. Quan sát OOM.
-5. Sửa code để không giữ object trong list nữa.
-6. So sánh GC behavior.
+**Tự gõ, không dùng AI sinh code:** Vẽ first, second và list ở giữa.
 
-Học tiếp theo: khi thấy OOM, câu hỏi đầu tiên là "OOM vùng nào?" và "object nào còn reachable?".
+**Gợi ý:** Một object có thể có nhiều mũi tên trỏ tới.
+
+## Đọc thêm sau
+
+JIT/GC tuning, benchmark và classloader internals. Đây là phần tự chọn. [Quay lại trang module](README.md).

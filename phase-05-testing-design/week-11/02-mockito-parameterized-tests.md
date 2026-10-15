@@ -1,74 +1,82 @@
 # Mockito Và Parameterized Tests
 
+**Cách chạy ví dụ:** dùng JDK 21 (bộ công cụ Java). Mở terminal, gõ `jshell`; gõ từng khối Java độc lập, dùng `/reset` trước khối tiếp theo và `/exit` để thoát. JShell chạy được khai báo class, method (hàm của Java) và lệnh trực tiếp, không cần khung main. Các comment `//` giải thích dòng code và kết quả cần quan sát.
+
 ## Parameterized Test
 
+Parameterized test là chạy cùng một quy tắc kiểm tra với nhiều bộ dữ liệu.
+
 ```java
-@ParameterizedTest
-@ValueSource(strings = {"", " ", "\t"})
-void rejectsBlankCurrency(String currency) {
-    assertThatThrownBy(() -> new Money(10, currency))
-        .isInstanceOf(IllegalArgumentException.class);
+for (String input : java.util.List.of(" Java ", "Java", "Java ")) {
+    if (!input.trim().equals("Java")) throw new AssertionError(input); // Kiểm từng case
 }
+System.out.println("PASS"); // Mô hình Java thuần, chưa dùng JUnit
 ```
 
-Dùng khi cùng một behavior cần test nhiều input.
+**Khi nào dùng**
 
-Nguồn input:
+- Khi cần thao tác này trong bài thực hành.
+- Khi đọc code có cùng cách viết.
 
-- `@ValueSource`.
-- `@CsvSource`.
-- `@MethodSource`.
+**Lỗi hay gặp**
+
+- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+
+**Tự gõ, không dùng AI sinh code:** Thêm một case cố ý không đạt. **Gợi ý:** Ghi input nào làm kiểm tra thất bại.
 
 ## Mockito
 
-Dùng mock khi dependency:
+Mockito tạo mock (object thay thế có thể cấu hình hành vi) để kiểm code mà không gọi dependency thật.
 
-- gọi network/database/file system.
-- khó dựng state.
-- cần verify interaction thật sự quan trọng.
+**Quy tắc ngón tay cái:** Chỉ thay phần bên ngoài bài đang kiểm, không thay chính logic cần kiểm.
 
-Đừng mock:
-
-- value object.
-- collection.
-- logic đơn giản tự tạo được.
+**Tự làm:** Tìm một dependency gửi email trong service. **Gợi ý:** Nếu chỉ có vài dòng xử lý dữ liệu, không cần mock.
 
 ## Ví Dụ Mockito
 
-```java
-PaymentGateway gateway = mock(PaymentGateway.class);
-Money amount = new Money(100, "USD");
-OrderService service = new OrderService(gateway);
-service.checkout(amount);
+Trước Mockito, dùng fake là implementation nhỏ bạn tự viết để quan sát lời gọi.
 
-verify(gateway).charge(amount);
+```java
+interface Sender { void send(String text); }
+class FakeSender implements Sender {
+    String last;
+    public void send(String text) { last = text; } // Ghi lại thay vì gửi thật
+}
+FakeSender sender = new FakeSender(); sender.send("Hi");
+System.out.println(sender.last); // Hi
 ```
+
+**Khi nào dùng**
+
+- Khi cần thao tác này trong bài thực hành.
+- Khi đọc code có cùng cách viết.
+
+**Lỗi hay gặp**
+
+- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+
+**Tự gõ, không dùng AI sinh code:** Truyền FakeSender vào service của bạn và kiểm last. **Gợi ý:** Constructor nhận Sender; service không tự new sender khác.
 
 ## Mock Vs Fake
 
-Fake là implementation đơn giản tự viết cho test.
+Fake tự thực hiện hành vi đơn giản; mock cấu hình kỳ vọng qua thư viện. Cả hai là cách thay một dependency trong test.
 
-Ví dụ:
+**Quy tắc ngón tay cái:** Chọn cách ít cấu hình mà vẫn chứng minh đúng hành vi.
 
-```java
-public class FakeEmailSender implements EmailSender {
-    private final List<Email> sent = new ArrayList<>();
-
-    @Override
-    public void send(Email email) {
-        sent.add(email);
-    }
-}
-```
-
-Fake thường dễ hiểu hơn mock nếu dependency đơn giản.
+**Tự làm:** So việc lưu message bằng fake với kiểm send được gọi bằng mock. **Gợi ý:** Không cần thực hiện cả hai cho mọi test.
 
 ## Bài Tập Nhanh
 
-Viết test cho `NotificationService`:
+Kiểm service mà không gửi email thật.
 
-- dùng fake sender.
-- dùng Mockito mock sender.
-- so sánh cách nào dễ đọc hơn.
+- Tạo fake ghi lại message.
+- Gọi service.
+- Kiểm message theo yêu cầu.
 
-Ví dụ trên dùng PaymentGateway.charge(Money) trả void từ bài OOP, nên không dùng when(...).thenReturn(...). Đặt snippet trong @Test, có import static Mockito.mock/verify và dependency Mockito; lab JUnit thuần chưa tự có AssertJ/Mockito. Trong Spring project, dùng dependency test do Initializr/Boot quản lý. Với lab Java thuần, thêm dependency test tương ứng và ghi phiên bản đã chọn. ValueSource không cung cấp null; thêm @NullSource hoặc dùng MethodSource cho case null.
+**Gợi ý:** Thử service tạo message sai để chắc test bắt được.
+
+**Đạt khi:** Không gọi mạng và không kiểm message với chính nó. Tự gõ phần triển khai, không dùng AI sinh lời giải.
+
+## Đọc thêm sau
+
+JUnit @ParameterizedTest, @ValueSource, @NullSource; Mockito verify và stubbing (cấu hình giá trị trả về) đọc sau. Method void không dùng thenReturn; chọn doThrow/doAnswer khi phù hợp. [Mockito documentation](https://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html).

@@ -1,25 +1,28 @@
 # Module week-10: Tooling, Reflection Và Proxy
 
-Tên week trong đường dẫn là mã tài liệu, không phải tuần theo lịch mới. Vị trí học: **mở rộng sau dự án** trong [ROADMAP.md](../../ROADMAP.md). Mỗi tuần mới có tổng 8 giờ cho mọi tài liệu được chọn, không phải 8 giờ cho mỗi module.
+Tên week-10 là mã module cũ. Học ở **nhánh tự chọn khi cần chẩn đoán** theo [lịch 24 tuần](../../ROADMAP.md). Tổng thời gian dự kiến vẫn là 8 giờ/tuần cho các bài được chọn.
 
 ## Cần biết trước
 
-JVM memory, annotation và exception; hiểu Spring DI nếu đọc liên hệ framework.
+JVM cơ bản và code đang chạy. Nếu chưa tự làm được, quay lại ví dụ trước thay vì đọc tiếp.
 
 ## Lượt học bắt buộc hoặc phạm vi được chọn
 
-Chọn đúng một công cụ theo câu hỏi: thread dump cho thread, heap analysis cho retention.
+Chọn công cụ theo câu hỏi; hiểu dữ liệu bị giữ ngoài ý muốn.
 
-Bắt đầu [bài thứ nhất](01-tooling-heapdump-memory-leak.md), sau đó [bài thứ hai](02-reflection-annotation-proxy.md) theo phần roadmap chỉ định. Đọc một ví dụ → đoán output → tự chạy → đổi input → giải thích bằng lời của mình. Có thể dành thêm buổi khi chưa qua mốc; không đọc hết để chạy theo thời hạn.
+- [01-tooling-heapdump-memory-leak](01-tooling-heapdump-memory-leak.md)
+- [02-reflection-annotation-proxy](02-reflection-annotation-proxy.md)
+
+Mỗi lượt 15–25 phút: đọc một ý → tự gõ → đoán kết quả → chạy → sửa một đầu vào. **Qua bài khi:** Chỉ được object nào giữ reference cần giải phóng.
 
 ## Đọc sau hoặc tự chọn
 
-Leak lab, annotation scanner và proxy logger là tự chọn; không phải điều kiện dùng Spring.
+Heap dump sâu, scanner, dynamic proxy và tự mô phỏng Spring. Chưa bắt buộc làm hết.
 
-Các file bài tập/checklist/mentor guide bên dưới dùng trong phạm vi được chọn, không phải yêu cầu làm hết:
+- [03-exercises](03-exercises.md)
+- [04-checklist-and-ai-review](04-checklist-and-ai-review.md)
+- [05-deep-dive-study-guide](05-deep-dive-study-guide.md)
 
-- [03-exercises.md](03-exercises.md)
-- [04-checklist-and-ai-review.md](04-checklist-and-ai-review.md)
-- [05-deep-dive-study-guide.md](05-deep-dive-study-guide.md)
+## Đọc thêm sau
 
-Tiếp theo: đối chiếu đầu ra tuần trong [roadmap](../../ROADMAP.md) và [chuẩn đầu ra](../../COURSE_OUTCOMES.md).
+Chọn một bài mở rộng khi gặp vấn đề thật. [Chuẩn đầu ra](../../COURSE_OUTCOMES.md) giúp quyết định đã đủ để đi tiếp hay chưa.

@@ -1,61 +1,31 @@
 # Capstone Concurrency: Thread Pool, Producer-Consumer, Rate Limiter
 
-> **Chọn phạm vi:** làm phần được chỉ định trong [README module](README.md) và roadmap. Benchmark, log processor lớn, tự viết pool/queue/rate limiter, GC/reflection/proxy là bài mở rộng; checklist đầy đủ dưới đây không bắt buộc trước khi qua mốc học mới.
+Đây là đề để tự làm, không phải đáp án. Chọn từng mục theo README module; không cần làm hết trong một buổi. Tự gõ code, dùng AI để xin gợi ý sau khi đã thử.
 
 ## Bài 1: Simple Thread Pool
 
-Yêu cầu:
-
-- Constructor nhận số worker.
-- Method `submit(Runnable task)`.
-- Worker lấy task từ queue.
-- Có `shutdown`.
-- Không nhận task mới sau shutdown.
-- Không làm mất task đã submit trước shutdown.
-
-Test:
-
-- Submit task chạy thành công.
-- Nhiều task được chạy.
-- Shutdown xong reject task mới.
-- Task throw exception không làm chết toàn bộ pool.
+Thread pool là nhóm worker lấy task từ hàng đợi. Bài tự viết chỉ làm sau khi dùng được ExecutorService; yêu cầu sâu ở cuối file. **Tự làm trước:** dùng pool có sẵn chạy ba task. **Gợi ý:** kiểm cả lúc task lỗi và lúc đóng.
 
 ## Bài 2: Producer-Consumer
 
-Yêu cầu:
+Producer tạo dữ liệu, consumer lấy dữ liệu ra xử lý.
 
-- Bounded queue.
-- Producer block khi queue đầy.
-- Consumer block khi queue rỗng.
-- Dùng `wait/notifyAll` hoặc `Condition`.
+- Dùng hàng đợi có giới hạn.
+- Một producer thêm, một consumer lấy.
+- Quy định lúc dừng.
 
-Test:
+**Gợi ý:** Thử ArrayBlockingQueue có sẵn trước khi tự viết chờ/đánh thức.
 
-- `take` chờ khi queue rỗng.
-- `put` chờ khi queue đầy.
-- Nhiều producer/consumer không mất item.
+**Đạt khi:** Không mất item, không chờ mãi sau khi hết việc. Tự gõ phần triển khai, không dùng AI sinh lời giải.
 
 ## Bài 3: Rate Limiter
 
-Yêu cầu:
-
-- Cho phép tối đa N request trong một window thời gian.
-- Có test đơn luồng.
-- Có test nhiều thread.
-- Ghi rõ tradeoff thuật toán.
-
-Chọn một thuật toán:
-
-- Fixed window: dễ viết, biên window có thể burst.
-- Sliding window: chính xác hơn, phức tạp hơn.
-- Token bucket: linh hoạt, hợp rate ổn định có burst nhỏ.
+Rate limiter giới hạn số thao tác trong khoảng thời gian. **Tự làm trước:** viết quy tắc “tối đa 3 lần trong 1 giây” bằng ví dụ thời điểm. **Gợi ý:** phân biệt cửa sổ cố định với cửa sổ trượt; chưa cần code nhiều luồng.
 
 ## Deliverable
 
-Tạo `concurrency-capstone-notes.md`:
+Deliverable là phần nộp để kiểm tra: code, cách chạy, một test lỗi và ghi chú về dừng việc. **Tự làm:** ghi một tình huống còn chưa xử lý. **Gợi ý:** đừng mô tả bản lab như công cụ production.
 
-- API public của từng component.
-- Bug concurrency bạn gặp.
-- Cách test.
-- Tradeoff shutdown/blocking.
-- Phần còn chưa chắc.
+## Đọc thêm sau
+
+Pool tự viết: từ chối task mới sau shutdown, xử lý hết việc đã nhận theo chính sách, task lỗi không làm mất toàn bộ worker. Buffer tự viết cần while và xử lý interruption. Rate limiter có fixed/sliding window và token bucket (ngân sách được bổ sung dần); kiểm ranh giới thời gian và nhiều luồng, dùng đồng hồ có thể điều khiển trong test.

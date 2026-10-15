@@ -1,26 +1,30 @@
 # Module Week-02: Generics Và Enum Từng Bước
 
-Bạn không cần học hết generics để viết Java. Bài cũ ghép quá nhiều khái niệm mới; lượt học đầu này chỉ tập trung vào ràng buộc kiểu và trạng thái task.
-
-**Lưu ý lịch:** đây là thư mục week-02 cũ, tương ứng phần nền ở **tuần 4 của [roadmap mới](../../ROADMAP.md)**. Nếu bạn đang ở tuần 2 mới, hãy học type system/class trước. Lịch dưới đây là cách chia một module thành bốn buổi, không cộng thêm một tuần bắt buộc vào roadmap.
+Tên week-02 là mã module cũ. Học ở **tuần 4** theo [lịch 24 tuần](../../ROADMAP.md). Tổng thời gian dự kiến vẫn là 8 giờ/tuần cho các bài được chọn.
 
 ## Kiểm tra đầu vào
 
-Trước khi học, thử tự viết một class có field String, constructor nhận String và method trả field đó; tạo object trong main rồi chạy bằng terminal. Nếu còn vướng, xem [buổi đầu](../../learning-path/00-first-java-program.md) và [type system](../week-01/01-type-system.md). Không cần biết Spring hoặc database.
+Class, constructor và method. Nếu chưa tự làm được, quay lại ví dụ trước thay vì đọc tiếp.
 
 ## Bốn buổi, mỗi buổi tối đa 2 giờ
 
-| Buổi | Đọc và làm | Đạt khi |
-| --- | --- | --- |
-| 1 | [Generics](01-generics.md): List<String>, chạy Box<String>/Box<Integer> | Giải thích get trả kiểu gì; tạo được một lỗi compile có chủ đích |
-| 2 | Tự gõ lại Box, làm bài 1–2 trong [bài tập](03-exercises.md); bổ sung List/Map từ roadmap | Không cần cast; dùng được List<Task> khi đã có Task |
-| 3 | [Enum](02-enum-and-nested-class.md), làm label bằng if/else | Phân biệt String và TaskStatus |
-| 4 | Bài 3–4, unit test nếu đã học JUnit, [checklist](04-checklist-and-ai-review.md) | Giải thích bằng code của mình thay vì nhắc lại định nghĩa |
+Dùng Box<String>, List<String> và enum trạng thái.
 
-Mỗi buổi chia khoảng 20 phút đọc, 50 phút tự gõ, 30 phút đổi input/tạo lỗi và 20 phút ghi lại điều hiểu được. Nếu chưa hiểu ví dụ, dừng tại đó; không cần đọc tiếp để đủ trang.
+- [01-generics](01-generics.md)
+- [02-enum-and-nested-class](02-enum-and-nested-class.md)
+
+Mỗi lượt 15–25 phút: đọc một ý → tự gõ → đoán kết quả → chạy → sửa một đầu vào. **Qua bài khi:** Giải thích T được chọn là kiểu gì và enum chặn lỗi gõ nhầm nào.
 
 ## Chưa cần học ở lượt đầu
 
-Wildcard `?`, PECS, bounded type, erasure, generic method, nested/inner/anonymous class, LRU cache và repository tổng quát. Chúng có trong [tra cứu nâng cao](06-advanced-reference.md), [bài tự chọn](07-optional-exercises.md) và [mentor guide cũ](05-deep-dive-study-guide.md).
+Wildcard/PECS, type erasure, nested class, repository tổng quát và cache. Chưa bắt buộc làm hết.
 
-Tiếp theo: qua checklist cơ bản rồi học [record/exception](../week-03/README.md) khi tới tuần 5 mới.
+- [03-exercises](03-exercises.md)
+- [04-checklist-and-ai-review](04-checklist-and-ai-review.md)
+- [05-deep-dive-study-guide](05-deep-dive-study-guide.md)
+- [06-advanced-reference](06-advanced-reference.md)
+- [07-optional-exercises](07-optional-exercises.md)
+
+## Đọc thêm sau
+
+Chọn một bài mở rộng khi gặp vấn đề thật. [Chuẩn đầu ra](../../COURSE_OUTCOMES.md) giúp quyết định đã đủ để đi tiếp hay chưa.

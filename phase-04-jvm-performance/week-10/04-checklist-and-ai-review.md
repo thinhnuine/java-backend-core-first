@@ -1,30 +1,25 @@
 # Checklist Và AI Review Tuần 10
 
-> **Chọn phạm vi:** làm phần được chỉ định trong [README module](README.md) và roadmap. Benchmark, log processor lớn, tự viết pool/queue/rate limiter, GC/reflection/proxy là bài mở rộng; checklist đầy đủ dưới đây không bắt buộc trước khi qua mốc học mới.
+Checklist (danh sách tự kiểm) cho phần đang học: **Tìm nguyên nhân lỗi**.
+
+Chỉ đánh dấu khi có code và kết quả làm bằng chứng.
 
 ## Checklist
 
-- [ ] Dùng được `jcmd` để xem JVM process.
-- [ ] Lấy được heap dump.
-- [ ] Giải thích được leak là object còn reachable.
-- [ ] Viết được custom annotation runtime.
-- [ ] Dùng reflection đọc annotation/method.
-- [ ] Viết được dynamic proxy đơn giản.
-- [ ] Proxy không làm mất root cause khi method lỗi.
-- [ ] Liên hệ được proxy với Spring transaction/security.
+- [ ] Chọn công cụ theo câu hỏi; hiểu dữ liệu bị giữ ngoài ý muốn.
+- [ ] Chỉ được object nào giữ reference cần giải phóng.
+- [ ] Có một đầu vào sai và giải thích cách code xử lý.
 
 ## Prompt AI Review
 
 ```text
-Bạn là mentor Java Backend. Hãy review bài JVM tooling/reflection/proxy của tôi.
-
-Tập trung vào:
-- phân tích memory leak có hợp lý không
-- heap dump observation có đủ bằng chứng không
-- annotation retention/target có đúng không
-- reflection code có xử lý exception ổn không
-- dynamic proxy có giữ được cause khi method lỗi không
-- liên hệ với Spring có đúng bản chất không
-
-Code và ghi chú:
+Tôi mới học Java, đã biết React/Next.js.
+Mục tiêu: Chỉ được object nào giữ reference cần giải phóng.
+Đây là code, dự đoán và kết quả thực tế của tôi: ...
+Chỉ ra tối đa 2 điểm cần sửa; giải thích thuật ngữ ngay khi dùng.
+Cho một gợi ý để tôi tự sửa, chưa viết lời giải.
 ```
+
+## Đọc thêm sau
+
+Heap dump sâu, scanner, dynamic proxy và tự mô phỏng Spring. Chỉ dùng checklist mở rộng khi bạn chủ động chọn học phần đó.

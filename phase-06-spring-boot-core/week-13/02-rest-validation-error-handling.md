@@ -1,105 +1,114 @@
 # REST API, Validation Và Error Handling
 
+> **Làm rõ trước khi học:** Các ví dụ record/validation ở đây là Java thuần, không tự tạo endpoint. @Size kiểm chuỗi hiện tại, không tự trim. Lỗi Spring Security có thể xảy ra trước controller advice.
+
+**Cách chạy ví dụ:** dùng JDK 21 (bộ công cụ Java). Mở terminal, gõ `jshell`; gõ từng khối Java độc lập, dùng `/reset` trước khối tiếp theo và `/exit` để thoát. JShell chạy được khai báo class, method (hàm của Java) và lệnh trực tiếp, không cần khung main. Các comment `//` giải thích dòng code và kết quả cần quan sát.
+
 ## Layer Gợi Ý
 
-- Controller: HTTP mapping, request/response DTO.
-- Service: business logic, transaction boundary.
-- Repository: persistence.
+Layer là nhóm code theo vai trò: controller nhận/trả HTTP, service xử lý quy tắc, repository đọc/ghi dữ liệu.
 
-Controller không nên chứa business logic dài.
+**Quy tắc ngón tay cái:** Theo luồng request, mỗi phần có nhiệm vụ rõ.
+
+**Tự làm:** Vẽ đường tạo task qua ba phần. **Gợi ý:** Chưa có database thì repository có thể lưu trong bộ nhớ.
 
 ## DTO
 
-Request DTO:
+DTO là object mang dữ liệu đi vào hoặc đi ra một ranh giới, chẳng hạn API.
 
 ```java
-public record CreateTaskRequest(
-    @NotBlank String title,
-    String description
-) {
-}
+record CreateTaskRequest(String title) {} // Chỉ mang dữ liệu đầu vào
+record TaskResponse(long id, String title) {} // Dữ liệu trả về
+var input = new CreateTaskRequest("Java");
+System.out.println(new TaskResponse(1L, input.title())); // TaskResponse[id=1, title=Java]
 ```
 
-Response DTO:
+**Khi nào dùng**
 
-```java
-public record TaskResponse(
-    Long id,
-    String title,
-    String status
-) {
-}
-```
+- Khi cần thao tác này trong bài thực hành.
+- Khi đọc code có cùng cách viết.
+
+**Lỗi hay gặp**
+
+- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+
+**Tự gõ, không dùng AI sinh code:** Tạo response chỉ có id và title, không có dữ liệu nội bộ. **Gợi ý:** Record không tự kiểm tra title.
 
 ## Controller
 
-```java
-@RestController
-@RequestMapping("/tasks")
-public class TaskController {
-    private final TaskService taskService;
+Controller là nơi đổi request HTTP thành lời gọi nghiệp vụ và đổi kết quả thành response.
 
-    public TaskController(TaskService taskService) {
-        this.taskService = taskService;
-    }
+**Quy tắc ngón tay cái:** Controller mỏng, quy tắc nghiệp vụ ở service.
 
-    @PostMapping
-    public ResponseEntity<TaskResponse> create(@Valid @RequestBody CreateTaskRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(taskService.create(request));
-    }
-}
-```
+**Tự làm:** Viết contract POST /tasks với input và output mẫu. **Gợi ý:** Contract là thỏa thuận dữ liệu/status giữa FE và BE.
 
 ## Validation
 
-Annotation hay dùng:
+Validation là kiểm đầu vào có thỏa quy tắc trước khi sử dụng hay không.
 
-- `@NotBlank`.
-- `@NotNull`.
-- `@Size`.
-- `@Min`.
-- `@Email`.
+```java
+String validTitle(String title) {
+    if (title == null || title.isBlank()) throw new IllegalArgumentException("title required");
+    String cleaned = title.trim(); // Chuẩn hóa trước khi kiểm độ dài
+    if (cleaned.length() > 100) throw new IllegalArgumentException("title too long");
+    return cleaned;
+}
+System.out.println(validTitle(" Java ")); // Java
+```
+
+**Khi nào dùng**
+
+- Khi cần thao tác này trong bài thực hành.
+- Khi đọc code có cùng cách viết.
+
+**Lỗi hay gặp**
+
+- Chỉ kiểm ở FE.
+- Dùng @Size trên chuỗi thô rồi nghĩ đã kiểm sau trim.
+
+**Tự gõ, không dùng AI sinh code:** Thử title trắng, null và hơn 100 ký tự. **Gợi ý:** Ghi rõ quy tắc độ dài sau trim.
 
 ## Global Error Handling
 
-Dùng `@RestControllerAdvice`:
+Global error handling là nơi thống nhất cách đổi các lỗi ứng dụng thành response.
 
-```java
-@RestControllerAdvice
-public class ApiExceptionHandler {
-    @ExceptionHandler(TaskNotFoundException.class)
-    ResponseEntity<ApiError> handle(TaskNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-            .body(new ApiError("TASK_NOT_FOUND", ex.getMessage()));
-    }
-}
-```
+**Quy tắc ngón tay cái:** Cùng loại lỗi, cùng cấu trúc phản hồi.
+
+**Tự làm:** Chốt lỗi không tìm thấy task phải có status và code nào. **Gợi ý:** Không trả stack trace (chuỗi lời gọi dẫn tới lỗi) cho client.
 
 ## Error Response
 
-Nên nhất quán:
+Error response là dữ liệu lỗi để frontend hiển thị hoặc xử lý nhất quán.
 
-```json
-{
-  "code": "TASK_NOT_FOUND",
-  "message": "Task 1 was not found"
-}
+```java
+record ApiError(String code, String message) {}
+var error = new ApiError("TASK_NOT_FOUND", "Task không tồn tại");
+System.out.println(error.code()); // TASK_NOT_FOUND
 ```
+
+**Khi nào dùng**
+
+- Khi cần thao tác này trong bài thực hành.
+- Khi đọc code có cùng cách viết.
+
+**Lỗi hay gặp**
+
+- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+
+**Tự gõ, không dùng AI sinh code:** Thiết kế lỗi title không hợp lệ có thông tin field. **Gợi ý:** Tách mã lỗi ổn định với thông báo có thể đổi.
 
 ## Bài Tập Nhanh
 
-Thiết kế API:
+Chốt hợp đồng API trước khi gắn annotation.
 
-- `POST /tasks`.
-- `GET /tasks/{id}`.
-- `GET /tasks`.
-- `PUT /tasks/{id}`.
-- `DELETE /tasks/{id}`.
+- POST tạo trả 201, GET thành công trả 200.
+- Title sai trả 400, id không có trả 404.
+- Xóa thành công trả 204 không body.
 
-Ghi request/response/error mẫu vào README project.
+**Gợi ý:** Gọi trực tiếp API sau khi triển khai, không chỉ bấm UI.
 
-Các snippet cần import jakarta.validation.Valid và jakarta.validation.constraints.*, org.springframework.web.bind.annotation.*, org.springframework.http.*; TaskService/ApiError/TaskNotFoundException phải do project định nghĩa. @NotBlank cần Validation dependency và @Valid trên request để kích hoạt kiểm tra trong flow này.
+**Đạt khi:** FE phân biệt được lỗi dữ liệu và lỗi server. Tự gõ phần triển khai, không dùng AI sinh lời giải.
 
-Service chuẩn hóa title rồi kiểm độ dài 1–100, vì rule của project là độ dài sau trim. @Size(max=100) kiểm raw String, có thể cho kết quả khác; chọn contract nhất quán và test case chứa khoảng trắng hai đầu. Handler mẫu chỉ xử lý not found; bổ sung lỗi validation, JSON sai/status sai và lỗi ngoài dự kiến theo cùng schema.
+## Đọc thêm sau
 
-Nếu dùng Spring Security ở chặng sau, lỗi authentication/authorization/CSRF xảy ra ở filter chain có thể không đi qua controller advice; cấu hình error handling riêng ở tầng security. Khi tạo thành công, thêm Location tới resource vừa tạo như contract HTTP của project.
+Trong Spring: @Valid kích hoạt kiểm tra request theo cấu hình, @RestControllerAdvice gom xử lý lỗi controller; @NotBlank cần thư viện Validation. Thêm Location cho response tạo mới. Xem [Spring MVC validation](https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-controller/ann-validation.html).

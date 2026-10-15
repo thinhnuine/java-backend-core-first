@@ -1,29 +1,25 @@
 # Checklist Và AI Review Tuần 6
 
-> **Chọn phạm vi:** làm phần được chỉ định trong [README module](README.md) và roadmap. Benchmark, log processor lớn, tự viết pool/queue/rate limiter, GC/reflection/proxy là bài mở rộng; checklist đầy đủ dưới đây không bắt buộc trước khi qua mốc học mới.
+Checklist (danh sách tự kiểm) cho phần đang học: **Dữ liệu dùng chung**.
+
+Chỉ đánh dấu khi có code và kết quả làm bằng chứng.
 
 ## Checklist
 
-- [ ] Phân biệt `start()` và `run()`.
-- [ ] Giải thích được vì sao `count++` không atomic.
-- [ ] Dùng được `synchronized`.
-- [ ] Biết lock object nào đang được dùng.
-- [ ] Biết `volatile` giải quyết visibility nhưng không thay lock.
-- [ ] Có ví dụ race condition tự chạy được.
-- [ ] `wait` được gọi trong `while`.
+- [ ] Nhận diện field dùng chung và hiểu một lỗi cập nhật xen kẽ.
+- [ ] Vẽ được hai thao tác gây mất cập nhật; giải thích khóa bảo vệ bản sửa.
+- [ ] Có một đầu vào sai và giải thích cách code xử lý.
 
 ## Prompt AI Review
 
 ```text
-Bạn là mentor Java Backend. Hãy review bài concurrency tuần 6.
-
-Tập trung vào:
-- race condition còn tồn tại không
-- synchronized có lock đúng object không
-- volatile có bị dùng sai cho atomicity không
-- wait/notify có dùng trong while loop không
-- giải thích happens-before của tôi có đúng không
-- test/demo có đủ để quan sát bug không
-
-Code và learning log:
+Tôi mới học Java, đã biết React/Next.js.
+Mục tiêu: Vẽ được hai thao tác gây mất cập nhật; giải thích khóa bảo vệ bản sửa.
+Đây là code, dự đoán và kết quả thực tế của tôi: ...
+Chỉ ra tối đa 2 điểm cần sửa; giải thích thuật ngữ ngay khi dùng.
+Cho một gợi ý để tôi tự sửa, chưa viết lời giải.
 ```
+
+## Đọc thêm sau
+
+Java Memory Model đầy đủ, wait/notifyAll và bộ đệm tự viết. Chỉ dùng checklist mở rộng khi bạn chủ động chọn học phần đó.

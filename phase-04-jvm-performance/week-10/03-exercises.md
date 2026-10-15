@@ -1,57 +1,31 @@
 # Bài Tập Tuần 10
 
-> **Chọn phạm vi:** làm phần được chỉ định trong [README module](README.md) và roadmap. Benchmark, log processor lớn, tự viết pool/queue/rate limiter, GC/reflection/proxy là bài mở rộng; checklist đầy đủ dưới đây không bắt buộc trước khi qua mốc học mới.
+Đây là đề để tự làm, không phải đáp án. Chọn từng mục theo README module; không cần làm hết trong một buổi. Tự gõ code, dùng AI để xin gợi ý sau khi đã thử.
 
 ## Bài 1: Heap Dump Analysis
 
-Tạo app leak có chủ đích:
-
-- static list.
-- cache không eviction.
-- listener không unsubscribe.
-
-Chọn ít nhất 1 kiểu.
-
-Yêu cầu:
-
-- Chạy app.
-- Lấy heap dump.
-- Tìm object bị giữ.
-- Viết `memory-leak-analysis.md`.
+Heap dump là ảnh object trong bộ nhớ; analysis là tìm thứ giữ dữ liệu. **Tự làm trước:** vẽ một list giữ dữ liệu không còn cần. **Gợi ý:** tìm nơi xóa reference. Tạo dump là phần mở rộng cuối file.
 
 ## Bài 2: Mini Component Scanner
 
-Yêu cầu:
+Scanner đọc danh sách class và chọn class có annotation.
 
-- Annotation `@MyComponent`.
-- Class `UserService`, `OrderService` có annotation.
-- Class `PlainHelper` không có annotation.
-- Method scanner nhận `List<Class<?>>`.
-- Trả về list class có annotation.
+- Tạo dấu MyComponent có thể đọc lúc chạy.
+- Chuẩn bị ba class, chỉ hai class có dấu.
+- Lọc danh sách Class<?> có sẵn.
 
-Test:
+**Gợi ý:** Không quét cả package trước khi lọc danh sách đơn giản đúng.
 
-- Scanner tìm đúng class.
-- Scanner bỏ qua class không annotate.
+**Đạt khi:** Chọn đúng hai class, bỏ class không đánh dấu. Tự gõ phần triển khai, không dùng AI sinh lời giải.
 
 ## Bài 3: Dynamic Proxy Logger
 
-Yêu cầu:
-
-- Interface `Calculator`.
-- Implementation `DefaultCalculator`.
-- Proxy log method name, args, execution time.
-- Nếu target throw exception, proxy không nuốt cause.
-
-Test:
-
-- Method success.
-- Method throw exception.
+Dynamic proxy là object trung gian nhận rồi chuyển lời gọi. **Tự làm trước:** vẽ proxy ghi log quanh Calculator. **Gợi ý:** phải giữ kết quả và lỗi gốc của target (object thật).
 
 ## Bài 4: Spring Magic Note
 
-Viết note:
+Ghi Spring biết class nào cần quản lý bằng cách nào và lời gọi nào đi qua proxy. **Tự làm:** so gọi từ ngoài với tự gọi trong cùng object. **Gợi ý:** annotation không tự thay mọi lời gọi.
 
-- Spring biết class nào là bean bằng cách nào?
-- Transaction proxy làm gì quanh method?
-- Vì sao self-invocation có thể gây vấn đề với proxy?
+## Đọc thêm sau
+
+Tạo heap dump trên process bài tập còn chạy, xác định chuỗi reference giữ object. Proxy đầy đủ ghi tên method, tham số và thời gian; không nuốt lỗi gốc. Không cần thực hiện hai lab này để bắt đầu Spring.

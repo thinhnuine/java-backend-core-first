@@ -1,13 +1,13 @@
 # Nền Java
 
-Đọc ở **tuần 2–5** theo [roadmap](../ROADMAP.md). Mã phase/week giữ để tra cứu; không dùng lịch 14 tuần cũ để quyết định tiến độ.
+Đây là nhóm tài liệu theo chủ đề; số week là mã bài cũ. Đọc [roadmap](../ROADMAP.md) để chọn đúng phần trong lịch 24 tuần.
 
-| Module | Phạm vi |
-| --- | --- |
-| [week-01](week-01/README.md) | Type/class/composition/equality; đọc từng phần ở tuần 2–4 |
-| [week-02](week-02/README.md) | Generics và enum căn bản, tuần 4 |
-| [week-03](week-03/README.md) | Record/switch/exception căn bản, tuần 5 |
+- [week-01: Java căn bản](week-01/README.md) — Tạo Money có constructor kiểm tra dữ liệu; hiểu primitive/reference và public/private.
+- [week-02: Generics và enum](week-02/README.md) — Dùng Box<String>, List<String> và enum trạng thái.
+- [week-03: Record và exception](week-03/README.md) — Tạo record dữ liệu và kiểm đầu vào bằng exception.
 
-TaskService Java thuần có test. Parser/LRU/Event emitter và generics nâng cao là bài tự chọn.
+**Cách học:** một ví dụ, một lần tự sửa, một câu giải thích. Dừng khi hiểu, không cần hoàn thành mọi file trong một tuần.
 
-Tiếp theo: đối chiếu [Task Manager](../learning-path/03-task-manager-project.md) và [chuẩn đầu ra](../COURSE_OUTCOMES.md).
+## Đọc thêm sau
+
+Các bài mở rộng được đánh dấu ở cuối từng file. Ưu tiên hoàn thành Task Manager trước khi tự viết công cụ tổng quát.

@@ -1,70 +1,49 @@
 # Project Tuần 5: Log Processor
 
-> **Chọn phạm vi:** làm phần được chỉ định trong [README module](README.md) và roadmap. Benchmark, log processor lớn, tự viết pool/queue/rate limiter, GC/reflection/proxy là bài mở rộng; checklist đầy đủ dưới đây không bắt buộc trước khi qua mốc học mới.
+Đây là đề để tự làm, không phải đáp án. Chọn từng mục theo README module; không cần làm hết trong một buổi. Tự gõ code, dùng AI để xin gợi ý sau khi đã thử.
 
 ## Mục Tiêu
 
-Xử lý file log lớn bằng hai cách: vòng lặp và Stream. Sau đó so sánh rõ ràng thay vì kết luận cảm tính.
+Log processor là chương trình đọc thông tin hoạt động và tính thống kê. Bắt đầu 3 dòng; file lớn là mở rộng.
 
 ## Input Mẫu
 
 ```text
-2026-10-05T10:00:01Z INFO user=1 action=login latencyMs=32
-2026-10-05T10:00:03Z ERROR user=2 action=checkout latencyMs=180
-2026-10-05T10:00:04Z INFO user=1 action=view_product latencyMs=45
+2026-10-15T10:00:00Z INFO action=login latencyMs=20
+2026-10-15T10:00:01Z ERROR action=save latencyMs=50
+2026-10-15T10:00:02Z INFO action=login latencyMs=30
 ```
+
+latencyMs là thời gian thao tác tính bằng mili giây. **Tự làm:** thêm một dòng hợp lệ. **Gợi ý:** giữ cùng định dạng.
 
 ## Yêu Cầu
 
-Tạo domain:
+Tách đọc dòng và tính kết quả.
 
-- `LogLine`.
-- `LogSummary`.
-- `LogLineParser`.
-- `LoopLogProcessor`.
-- `StreamLogProcessor`.
+- Parse (đọc và chuyển) dòng thành dữ liệu.
+- Đếm theo INFO/ERROR.
+- Làm loop trước rồi Stream.
 
-Processor cần tính:
+**Gợi ý:** Đếm đúng trước khi thêm trung bình thời gian.
 
-- Số dòng theo level.
-- Top 5 action chậm nhất theo latency.
-- Latency trung bình theo action.
-- Tổng số dòng parse thành công.
-- Tổng số dòng parse lỗi.
+**Đạt khi:** Hai cách cho cùng thống kê. Tự gõ phần triển khai, không dùng AI sinh lời giải.
 
 ## Error Handling
 
-Bạn tự chọn:
-
-- Bỏ qua dòng lỗi và count vào parse error.
-- Hoặc fail-fast khi gặp dòng lỗi.
-
-Ghi rõ tradeoff trong report.
+Chọn rõ: gặp dòng sai thì dừng, hoặc bỏ qua và đếm lỗi. **Tự làm:** thêm dòng thiếu action. **Gợi ý:** báo vị trí dòng để tìm lỗi, không nuốt lỗi âm thầm.
 
 ## Report
 
-Tạo `log-processor-report.md`:
-
-- Cách chạy.
-- File test size bao nhiêu.
-- Loop version dễ đọc ở điểm nào.
-- Stream version dễ đọc ở điểm nào.
-- Bản nào dễ debug hơn.
-- Bản nào dùng memory tốt hơn.
-- Kết luận: lần sau bạn chọn cách nào cho case tương tự.
+Report là ghi chép kết quả và cách chạy. Ghi input, output, cách xử lý dòng sai và chỗ loop/Stream dễ đọc hơn. **Tự làm:** viết kết luận chỉ dựa trên điều đã đo. **Gợi ý:** chưa đo bộ nhớ thì không khẳng định bản nào ít bộ nhớ hơn.
 
 ## Test Gợi Ý
 
-- Parse line hợp lệ.
-- Parse line thiếu field.
-- Count level đúng.
-- Average latency đúng.
-- Top slow action đúng.
-- File rỗng.
-- File có dòng lỗi.
+Kiểm file rỗng, dòng đúng, dòng thiếu field và hỗn hợp. **Tự làm:** tự tính tổng ba dòng trước. **Gợi ý:** dùng kết quả tính tay làm expected, không gọi lại cùng implementation.
 
 ## Stretch
 
-- Generate file log 1M dòng.
-- Thêm CLI args: input file path, output report path.
-- Dùng `Files.newBufferedReader` và đo memory.
+Stretch là mục mở rộng, chưa cần làm ở lượt đầu; xem phần cuối file.
+
+## Đọc thêm sau
+
+Thêm trung bình theo action, top 5 chậm nhất, tham số dòng lệnh và file lớn khi bản nhỏ đúng. Files.lines cần đóng; không gom toàn bộ nếu muốn xử lý tiết kiệm bộ nhớ. Dữ liệu lớn không tự biến phép đo thành benchmark công bằng.

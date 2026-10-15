@@ -1,30 +1,31 @@
 # Từ Frontend Đến Fullstack Java
 
-Tài liệu dành cho lập trình viên frontend có khoảng 4 năm kinh nghiệm, mới bắt đầu Java và backend. Bạn đã biết lập trình; phần cần xây thêm là cách Java chạy, cách server xử lý yêu cầu và cách dữ liệu được bảo vệ trong database.
+Dành cho lập trình viên React/Next.js đã biết lập trình, đang bắt đầu Java. Dùng Java 21, học nền tảng trước rồi mở rộng Task Manager thành ứng dụng có backend.
 
 ## Bắt đầu ở đâu?
 
-1. Xem [chuẩn đầu ra](COURSE_OUTCOMES.md), rồi đọc [nhận xét tài liệu hiện tại](REVIEW.md) để hiểu những điểm cần đổi.
-2. Theo [lộ trình 24 tuần](ROADMAP.md), dự kiến 8 giờ/tuần và điều chỉnh theo kết quả thực hành.
-3. Làm [buổi đầu tiên: chạy và debug Java](learning-path/00-first-java-program.md).
-4. Phát triển [Task Manager xuyên suốt](learning-path/03-task-manager-project.md), từ Java thuần đến ứng dụng fullstack.
+1. Nếu mới chạy Java: [buổi đầu tiên](learning-path/00-first-java-program.md).
+2. Nếu đang học OOP: [Interface và object contract](phase-01-java-language/week-01/02-oop-and-object-contract.md).
+3. Nếu đang vướng Generics: [Box<T> cơ bản](phase-01-java-language/week-02/01-generics.md).
+4. Chọn bài tiếp theo theo [lịch 24 tuần](ROADMAP.md), không đọc toàn bộ repo một lượt.
 
 ## Cách dùng bộ bài cũ
 
-Các thư mục `phase-*` và `week-*` giữ nguyên địa chỉ để bạn tra cứu. **Số tuần trong tên thư mục là mã của giáo trình cũ, không phải lịch mới.** Dùng bảng trong [ROADMAP.md](ROADMAP.md) để biết lúc nào đọc phần nào. Lịch 8h và checklist cũ là tài liệu tham khảo, không phải yêu cầu hoàn thành hết trong một tuần mới.
+Các thư mục phase/week giữ nguyên địa chỉ; số week là mã giáo trình cũ, không phải lịch hiện tại. Mỗi bài giữ heading cấp 2 để đối chiếu; phần lớn ví dụ Java ngắn chạy độc lập bằng JShell. JShell là công cụ thử Java tương tác có sẵn trong JDK 21.
 
-| Bạn đang cần | Đọc |
-| --- | --- |
-| Cài đặt, compile, chạy, debug | [Buổi đầu tiên](learning-path/00-first-java-program.md) |
-| Hiểu request đi từ FE tới DB | [HTTP và trách nhiệm backend](learning-path/01-http-and-backend.md) |
-| Session, ownership và luồng security | [Security căn bản](learning-path/05-security-basics.md) |
-| JAR, config, container và CI | [Chạy ứng dụng](learning-path/06-running-and-ci.md) |
-| Học database trước ORM | [SQL căn bản](learning-path/02-sql-before-jpa.md) |
-| Biết phải làm và kiểm tra gì mỗi giai đoạn | [Project và tiêu chí nghiệm thu](learning-path/03-task-manager-project.md) |
-| Java, collections, Spring và các bài chuyên sâu | [Bản đồ đọc bài](ROADMAP.md) |
+- [HTTP: FE gọi server thế nào](learning-path/01-http-and-backend.md).
+- [SQL: đọc/ghi cơ sở dữ liệu](learning-path/02-sql-before-jpa.md).
+- [Task Manager: đề thực hành xuyên suốt](learning-path/03-task-manager-project.md).
+- [Kiểm quyền](learning-path/05-security-basics.md) và [chạy ứng dụng](learning-path/06-running-and-ci.md).
 
 ## Cách học
 
-Mỗi buổi: dự đoán kết quả → tự gõ ví dụ → chạy → sửa một đầu vào để tạo lỗi → giải thích lại bằng lời của bạn. Đọc 20–30 phút rồi viết code. Dùng AI để giải thích lỗi và review bài đã thử, tránh lấy nguyên lời giải trước khi làm.
+Một lượt 15–25 phút: đọc một ý → đoán output → tự gõ → chạy → đổi một đầu vào → tự giải thích. Các từ tiếng Anh được giải thích gần nơi dùng.
 
-Bản học này dùng Java 21 làm mốc cho ví dụ. Khi tạo Spring project, ghi rõ phiên bản vào README, dùng dependency management và Maven Wrapper của project. Không cần học đồng thời Java 17/21 hay nhiều major version Spring.
+Ví dụ thường tối đa 10 dòng, có comment chỉ thao tác/kết quả. Bài tập có gợi ý, không có lời giải đầy đủ. “Đọc thêm sau” là phần bạn có thể bỏ qua ở lượt đầu.
+
+Dùng AI để đọc lỗi hoặc góp ý bài đã thử. Không nhờ AI sinh toàn bộ bài tập. [Chuẩn đầu ra](COURSE_OUTCOMES.md) cho biết cần làm được gì, không yêu cầu đọc hết file.
+
+## Đọc thêm sau
+
+[Nhận xét và giới hạn kiểm chứng](REVIEW.md). Nội dung cấu trúc bên trong, tối ưu và framework nâng cao được tách ở cuối bài; không phải bài bắt buộc trước khi code. Không cần học đồng thời nhiều phiên bản Java/Spring.

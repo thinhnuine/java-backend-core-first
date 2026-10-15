@@ -1,86 +1,121 @@
 # CompletableFuture, Lock, Atomic Và ConcurrentHashMap
 
+**Cách chạy ví dụ:** dùng JDK 21 (bộ công cụ Java). Mở terminal, gõ `jshell`; gõ từng khối Java độc lập, dùng `/reset` trước khối tiếp theo và `/exit` để thoát. JShell chạy được khai báo class, method (hàm của Java) và lệnh trực tiếp, không cần khung main. Các comment `//` giải thích dòng code và kết quả cần quan sát.
+
 ## CompletableFuture
 
-Dùng khi cần compose async task.
+CompletableFuture nối các bước xử lý kết quả có thể đến sau, giúp diễn đạt việc A xong thì làm B.
 
 ```java
-CompletableFuture<User> userFuture =
-    CompletableFuture.supplyAsync(() -> userClient.getUser("u1"));
-
-CompletableFuture<List<Order>> ordersFuture =
-    CompletableFuture.supplyAsync(() -> orderClient.getOrders("u1"));
-
-CompletableFuture<UserProfile> profile =
-    userFuture.thenCombine(ordersFuture, UserProfile::new);
+var result = java.util.concurrent.CompletableFuture.completedFuture("Java")
+    .thenApply(text -> text + " backend"); // Biến đổi kết quả
+System.out.println(result.join()); // Java backend
 ```
 
-Method hay dùng:
+**Liên hệ FE:** thenApply gần then trong Promise, nhưng Java có quy tắc executor và chạy luồng riêng.
 
-- `thenApply`: transform result.
-- `thenCompose`: chain async result.
-- `thenCombine`: combine 2 future.
-- `exceptionally`: recover từ lỗi.
-- `handle`: xử lý success/failure.
-- `allOf`: chờ nhiều future.
+**Khi nào dùng**
+
+- Khi cần thao tác này trong bài thực hành.
+- Khi đọc code có cùng cách viết.
+
+**Lỗi hay gặp**
+
+- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+
+**Tự gõ, không dùng AI sinh code:** Nối thêm bước lấy độ dài chuỗi. **Gợi ý:** Ví dụ completedFuture có kết quả sẵn, không tạo thread mới.
 
 ## Lock
 
+Lock là khóa điều khiển quyền vào vùng dùng chung; ReentrantLock cho phép lấy và trả khóa chủ động.
+
 ```java
-Lock lock = new ReentrantLock();
-lock.lock();
-try {
-    // critical section
-} finally {
-    lock.unlock();
+{ // Một khối để JShell thực hiện lấy và trả khóa trong cùng lần chạy
+    var lock = new java.util.concurrent.locks.ReentrantLock();
+    lock.lock(); // Lấy khóa
+    try { System.out.println("protected"); }
+    finally { lock.unlock(); } // Luôn trả khóa cả khi có lỗi
 }
 ```
 
-Ưu điểm so với `synchronized`:
+**Khi nào dùng**
 
-- `tryLock`.
-- interruptible lock.
-- nhiều `Condition`.
+- Khi cần thao tác này trong bài thực hành.
+- Khi đọc code có cùng cách viết.
+
+**Lỗi hay gặp**
+
+- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+
+**Quy tắc ngón tay cái:** Lấy Lock xong phải có finally trả khóa.
+
+**Tự gõ, không dùng AI sinh code:** Đặt thao tác có thể lỗi trong try và kiểm tra lock đã được trả. **Gợi ý:** Giữ unlock trong finally.
 
 ## Atomic
 
+Atomic là thao tác không bị quan sát ở trạng thái nửa chừng; AtomicInteger hỗ trợ cập nhật một số nguyên an toàn.
+
 ```java
-AtomicInteger counter = new AtomicInteger();
-counter.incrementAndGet();
+var count = new java.util.concurrent.atomic.AtomicInteger();
+count.incrementAndGet(); // Tăng và đọc như một thao tác không bị xen ngang
+System.out.println(count.get()); // 1
 ```
 
-Atomic phù hợp cho state đơn giản. Với invariant nhiều field, lock thường rõ hơn.
+**Khi nào dùng**
+
+- Khi cần thao tác này trong bài thực hành.
+- Khi đọc code có cùng cách viết.
+
+**Lỗi hay gặp**
+
+- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+
+**Quy tắc ngón tay cái:** Một số đếm: atomic tiện; nhiều field liên quan cần thiết kế thêm.
+
+**Tự gõ, không dùng AI sinh code:** Tăng AtomicInteger từ hai thread rồi join trước khi đọc. **Gợi ý:** Dùng incrementAndGet, không tách get rồi set.
 
 ## ConcurrentHashMap
 
-Ưu tiên method atomic:
+ConcurrentHashMap hỗ trợ cập nhật theo khóa khi nhiều luồng cùng dùng map.
 
 ```java
-counts.merge(key, 1, Integer::sum);
+var counts = new java.util.concurrent.ConcurrentHashMap<String, Integer>();
+counts.merge("java", 1, Integer::sum); // :: dùng method sum để cộng
+counts.merge("java", 1, Integer::sum);
+System.out.println(counts.get("java")); // 2
 ```
 
-```java
-cache.computeIfAbsent(key, ignored -> loadValue(key));
-```
+**Khi nào dùng**
 
-Tránh check-then-act tách rời.
+- Khi cần thao tác này trong bài thực hành.
+- Khi đọc code có cùng cách viết.
+
+**Lỗi hay gặp**
+
+- Tưởng nhiều khóa cập nhật cùng nhau như một transaction (nhóm thay đổi cùng thành công/thất bại).
+
+**Tự gõ, không dùng AI sinh code:** Đếm hai từ bằng nhiều task. **Gợi ý:** Đợi mọi task kết thúc rồi so với bộ đếm một luồng.
 
 ## Deadlock
 
-Deadlock thường xuất hiện khi:
+Deadlock là tình huống các luồng giữ khóa và chờ khóa của nhau nên không thể đi tiếp.
 
-- Thread A giữ lock 1, chờ lock 2.
-- Thread B giữ lock 2, chờ lock 1.
+**Quy tắc ngón tay cái:** Nếu cần nhiều khóa, lấy chúng theo một thứ tự chung.
 
-Cách giảm:
-
-- lock ordering cố định.
-- giữ lock càng ngắn càng tốt.
-- tránh gọi code ngoài khi đang giữ lock.
-- dùng timeout với `tryLock` khi phù hợp.
+**Tự làm:** Vẽ A giữ khóa 1 đợi 2, B giữ 2 đợi 1; sau đó đổi cả hai cùng lấy 1 trước. **Gợi ý:** Dùng sơ đồ trước; không cần làm chương trình treo để hiểu vòng chờ.
 
 ## Bài Tập Nhanh
 
-Viết deadlock demo với 2 lock, sau đó sửa bằng lock ordering.
+Ghép hai kết quả có thể đến độc lập.
 
-Các supplyAsync không truyền executor ở ví dụ dùng common pool; bài gọi blocking I/O nên chọn executor phù hợp và có lifecycle rõ. Timeout của CompletableFuture không mặc nhiên hủy công việc I/O bên dưới; vẫn cần timeout ở HTTP/DB client. Bản đồ executor và chính sách timeout là một phần của thiết kế, không phải chỉ thêm exceptionally là xong.
+- Tạo hai CompletableFuture có kết quả nhỏ.
+- Ghép bằng thenCombine.
+- Thử một nhánh lỗi.
+
+**Gợi ý:** Trước hết dùng completedFuture; sau đó mới supplyAsync với executor được quản lý.
+
+**Đạt khi:** Giải thích kết quả thành công và lỗi được chuyển tới đâu. Tự gõ phần triển khai, không dùng AI sinh lời giải.
+
+## Đọc thêm sau
+
+thenCompose nối việc trả về Future; thenCombine ghép hai kết quả. Common pool là nhóm luồng dùng chung mặc định, không phù hợp mọi việc chờ I/O. tryLock, Condition, CAS (so sánh và cập nhật nguyên tử) và LongAdder để sau.

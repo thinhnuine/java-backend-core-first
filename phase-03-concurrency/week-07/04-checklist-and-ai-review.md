@@ -1,30 +1,25 @@
 # Checklist Và AI Review Tuần 7
 
-> **Chọn phạm vi:** làm phần được chỉ định trong [README module](README.md) và roadmap. Benchmark, log processor lớn, tự viết pool/queue/rate limiter, GC/reflection/proxy là bài mở rộng; checklist đầy đủ dưới đây không bắt buộc trước khi qua mốc học mới.
+Checklist (danh sách tự kiểm) cho phần đang học: **Giao và chờ công việc**.
+
+Chỉ đánh dấu khi có code và kết quả làm bằng chứng.
 
 ## Checklist
 
-- [ ] Executor được shutdown đúng.
-- [ ] Không block bừa bãi trong async pipeline.
-- [ ] Biết dùng `thenCombine`, `exceptionally`, `handle`.
-- [ ] Lock luôn unlock trong `finally`.
-- [ ] Dùng đúng `AtomicInteger` cho state đơn giản.
-- [ ] Dùng `merge/computeIfAbsent` với `ConcurrentHashMap`.
-- [ ] Tạo và sửa được deadlock demo.
+- [ ] Dùng ExecutorService, đọc Future và đóng executor.
+- [ ] Giao ba việc, lấy đủ kết quả và kết thúc chương trình.
+- [ ] Có một đầu vào sai và giải thích cách code xử lý.
 
 ## Prompt AI Review
 
 ```text
-Bạn là mentor Java Backend. Hãy review code Executor/CompletableFuture tuần 7 của tôi.
-
-Tập trung vào:
-- thread pool có shutdown đúng không
-- có nguy cơ deadlock/thread starvation không
-- CompletableFuture compose có hợp lý không
-- exception async được xử lý chưa
-- ConcurrentHashMap update có atomic không
-- Lock có unlock trong finally không
-- deadlock fix có thật sự giải quyết gốc vấn đề không
-
-Code:
+Tôi mới học Java, đã biết React/Next.js.
+Mục tiêu: Giao ba việc, lấy đủ kết quả và kết thúc chương trình.
+Đây là code, dự đoán và kết quả thực tế của tôi: ...
+Chỉ ra tối đa 2 điểm cần sửa; giải thích thuật ngữ ngay khi dùng.
+Cho một gợi ý để tôi tự sửa, chưa viết lời giải.
 ```
+
+## Đọc thêm sau
+
+CompletableFuture phức tạp, khóa nhiều tầng, LongAdder và tải cao. Chỉ dùng checklist mở rộng khi bạn chủ động chọn học phần đó.

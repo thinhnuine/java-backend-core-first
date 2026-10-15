@@ -1,29 +1,25 @@
 # Checklist Và AI Review Tuần 13
 
+Checklist (danh sách tự kiểm) cho phần đang học: **API đầu tiên**.
+
+Chỉ đánh dấu khi có code và kết quả làm bằng chứng.
+
 ## Checklist
 
-- [ ] Dùng constructor injection.
-- [ ] Controller không chứa business logic dài.
-- [ ] DTO tách khỏi entity/domain.
-- [ ] Có validation request.
-- [ ] Có global error handler.
-- [ ] Service không phụ thuộc HTTP.
-- [ ] Hiểu autoconfiguration đến từ dependency nào.
-- [ ] README có request/response mẫu.
+- [ ] Tạo một API lưu tạm, chia controller/service/repository theo vai trò.
+- [ ] Gọi tạo/lấy task và nhận đúng lỗi 400/404.
+- [ ] Có một đầu vào sai và giải thích cách code xử lý.
 
 ## Prompt AI Review
 
 ```text
-Bạn là mentor Java Spring Boot. Hãy review REST API tuần 13 của tôi.
-
-Tập trung vào:
-- layer controller/service/repository có tách đúng không
-- DI có dùng constructor injection không
-- DTO có tách khỏi domain/entity không
-- validation và error response có rõ không
-- service có bị phụ thuộc HTTP không
-- autoconfiguration tôi giải thích có đúng không
-- README có đủ cho người khác gọi API không
-
-Code và README:
+Tôi mới học Java, đã biết React/Next.js.
+Mục tiêu: Gọi tạo/lấy task và nhận đúng lỗi 400/404.
+Đây là code, dự đoán và kết quả thực tế của tôi: ...
+Chỉ ra tối đa 2 điểm cần sửa; giải thích thuật ngữ ngay khi dùng.
+Cho một gợi ý để tôi tự sửa, chưa viết lời giải.
 ```
+
+## Đọc thêm sau
+
+Bean lifecycle, auto-configuration sâu và nhiều cấu hình bean. Chỉ dùng checklist mở rộng khi bạn chủ động chọn học phần đó.

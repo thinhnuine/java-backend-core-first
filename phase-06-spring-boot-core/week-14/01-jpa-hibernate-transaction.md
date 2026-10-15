@@ -1,110 +1,84 @@
 # JPA, Hibernate Và Transaction
 
-Trước bài này, hoàn thành [SQL trước JPA](../../learning-path/02-sql-before-jpa.md): primary/foreign key, JOIN và COMMIT/ROLLBACK. Các code block dưới đây là snippet cần class/import/dependency tương ứng trong Spring project.
+> **Làm rõ trước khi học:** Record trong ví dụ chỉ minh họa DTO, không phải mẫu entity JPA. @Transactional không tự có hiệu lực trên object tự new hay mọi lời gọi bên trong cùng object.
+
+**Cách chạy ví dụ:** dùng JDK 21 (bộ công cụ Java). Mở terminal, gõ `jshell`; gõ từng khối Java độc lập, dùng `/reset` trước khối tiếp theo và `/exit` để thoát. JShell chạy được khai báo class, method (hàm của Java) và lệnh trực tiếp, không cần khung main. Các comment `//` giải thích dòng code và kết quả cần quan sát.
 
 ## Entity
 
-Entity là object được JPA quản lý và map với table.
+Entity là object được JPA (chuẩn Java ánh xạ dữ liệu) quản lý tương ứng với bản ghi database; Hibernate là công cụ thực hiện chuẩn đó.
 
-```java
-@Entity
-@Table(name = "tasks")
-public class TaskEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+**Quy tắc ngón tay cái:** Hiểu bảng trước khi ánh xạ thành entity.
 
-    private String title;
-
-    protected TaskEntity() {
-    }
-
-    public TaskEntity(String title) {
-        rename(title);
-    }
-
-    public void rename(String title) {
-        if (title == null || title.isBlank()) {
-            throw new IllegalArgumentException("title is required");
-        }
-        String normalized = title.trim();
-        if (normalized.length() > 100) {
-            throw new IllegalArgumentException("title is too long");
-        }
-        this.title = normalized;
-    }
-}
-```
-
-Entity cần constructor no-arg cho JPA, có thể protected.
+**Tự làm:** Vẽ cột id và title của bảng tasks. **Gợi ý:** Entity cần khớp schema (cấu trúc bảng), không chỉ khớp giao diện.
 
 ## Repository
 
-Repository thường extend Spring Data JPA interface:
+Repository là nơi gom thao tác đọc/ghi dữ liệu để service không tự xử lý từng truy vấn.
 
-```java
-public interface TaskRepository extends JpaRepository<TaskEntity, Long> {
-}
-```
+**Quy tắc ngón tay cái:** Nói rõ cần tìm gì, trả gì khi không có.
+
+**Tự làm:** Viết bằng lời hợp đồng findById. **Gợi ý:** Kết quả thiếu có thể biểu diễn bằng Optional; đó chưa phải quyền đọc dữ liệu.
 
 ## Entity Vs DTO
 
-Không trả entity trực tiếp ra API khi app bắt đầu nghiêm túc hơn.
+Entity phục vụ lưu trữ; DTO phục vụ dữ liệu cần trả cho bên gọi, giúp không lộ mọi field nội bộ.
 
-Lý do:
+```java
+record TaskData(long id, String title, String internalNote) {} // Dữ liệu mẫu
+record TaskResponse(long id, String title) {}
+var data = new TaskData(1, "Java", "private note");
+var response = new TaskResponse(data.id(), data.title()); // Chỉ chọn field công khai
+System.out.println(response); // Không có internalNote
+```
 
-- tránh expose field nội bộ.
-- tránh lazy loading bất ngờ khi serialize.
-- giữ API contract ổn định.
+**Khi nào dùng**
+
+- Khi cần thao tác này trong bài thực hành.
+- Khi đọc code có cùng cách viết.
+
+**Lỗi hay gặp**
+
+- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+
+**Tự gõ, không dùng AI sinh code:** Thêm một field nội bộ và giữ nguyên response. **Gợi ý:** Ví dụ không phải entity JPA; nó minh họa việc chọn dữ liệu.
 
 ## Transaction
 
-Transaction boundary thường đặt ở service method.
+Transaction là nhóm thao tác database cùng được xác nhận thành công hoặc hủy khi thất bại theo ranh giới đã chọn.
 
-```java
-@Transactional
-public TaskResponse updateTask(Long id, UpdateTaskRequest request) {
-    TaskEntity task = taskRepository.findById(id)
-        .orElseThrow(() -> new TaskNotFoundException(id));
-    task.rename(request.title());
-    return mapper.toResponse(task);
-}
-```
+**Quy tắc ngón tay cái:** Một nghiệp vụ nhiều bước ghi cần xác định ranh giới transaction.
 
-Trong cấu hình proxy mặc định, `@Transactional` có hiệu lực khi lời gọi đi qua Spring proxy. Tự `new` service hoặc gọi method annotated từ một method khác cùng object không tự tạo transaction mới qua proxy. Mặc định rollback với `RuntimeException`/`Error`; checked exception cần cấu hình rollback nếu nghiệp vụ yêu cầu. Đừng catch rồi nuốt lỗi và mặc nhiên kỳ vọng rollback.
-
-Transaction cũng không mặc định ngăn mọi lost update; học isolation/optimistic locking khi có concurrent requests. Xem [hướng dẫn @Transactional](https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/annotations.html).
+**Tự làm:** Vẽ tạo project rồi tạo task; nếu bước hai lỗi thì dữ liệu nào cần được hủy? **Gợi ý:** COMMIT xác nhận, ROLLBACK hủy các thay đổi chưa xác nhận.
 
 ## Dirty Checking
 
-Trong transaction, entity managed thay đổi field có thể được Hibernate flush xuống database khi transaction commit.
+Dirty checking là Hibernate theo dõi thay đổi của entity đang được quản lý để gửi cập nhật xuống database.
 
-Điều này tiện, nhưng cần hiểu để tránh "sao không gọi save mà DB vẫn đổi".
+**Quy tắc ngón tay cái:** Sửa object thường không đồng nghĩa dữ liệu đã commit.
+
+**Tự làm:** Nêu khác biệt giữa sửa field, flush và commit. **Gợi ý:** Flush gửi SQL; commit hoàn tất transaction. Object ngoài quản lý không tự được lưu.
 
 ## Relationship
 
-Ví dụ:
+Relationship là quan hệ giữa các dữ liệu, như nhiều task thuộc một project.
 
-- Project có nhiều Task.
-- Task thuộc một Project.
+**Quy tắc ngón tay cái:** Biết khóa liên kết nằm ở bảng nào trước khi thêm annotation.
 
-Chú ý:
-
-- owner side.
-- cascade.
-- fetch type.
-- orphan removal nếu dùng.
+**Tự làm:** Vẽ tasks.project_id trỏ tới projects.id. **Gợi ý:** Foreign key là ràng buộc khóa liên kết tới bản ghi ở bảng khác.
 
 ## Bài Tập Nhanh
 
-Chuyển Task API từ in-memory sang JPA:
+Đổi cách lưu sau khi API và SQL đã hiểu.
 
-- `TaskEntity`.
-- `ProjectEntity`.
-- `TaskJpaRepository`.
-- `ProjectJpaRepository`.
-- Service dùng transaction.
+- Ánh xạ Task vào bảng đã tạo.
+- Lưu rồi đọc lại.
+- Restart ứng dụng và xác nhận dữ liệu còn.
 
-Entity phía trên chỉ minh họa id/title ở bước đầu, chưa khớp schema task/project hoàn chỉnh: trước khi chạy migration của bước quan hệ, phải thêm status và project mapping. Không chép entity tối giản rồi kỳ vọng ghi được bảng có project_id/status NOT NULL.
+**Gợi ý:** Thêm từng field; không chép entity id/title vào bảng còn nhiều cột bắt buộc.
 
-Ở quan hệ Task → Project, owner side là phía giữ foreign key. @ManyToOne mặc định EAGER; nếu chọn LAZY hãy chỉ rõ fetch và cách lấy dữ liệu cho DTO trong transaction. EAGER không bảo đảm hết N+1. Không bật cascade ALL/REMOVE lên project từ task nếu việc xóa task không được phép xóa project. Flush gửi SQL, commit hoàn tất transaction; save không luôn đồng nghĩa commit ngay.
+**Đạt khi:** Giải thích được SQL tương ứng với thao tác chính. Tự gõ phần triển khai, không dùng AI sinh lời giải.
+
+## Đọc thêm sau
+
+Entity cần constructor không tham số theo yêu cầu JPA. Trong cấu hình proxy mặc định, lời gọi phải qua Spring proxy; mặc định rollback cho RuntimeException/Error, checked exception cần cấu hình theo nghiệp vụ. Isolation (mức cô lập), optimistic locking (phát hiện cập nhật dựa trên version), cascade (lan thao tác sang quan hệ), lazy loading (tải khi cần) học từng phần sau. [Spring transaction reference](https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/annotations.html).

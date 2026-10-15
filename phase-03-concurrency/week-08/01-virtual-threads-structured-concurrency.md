@@ -1,66 +1,77 @@
 # Virtual Threads Và Structured Concurrency
 
+> **Làm rõ trước khi học:** Ví dụ sleep chỉ mô phỏng chờ. Virtual thread không tự sửa race condition và không làm phép tính CPU chạy nhanh hơn.
+
+**Cách chạy ví dụ:** dùng JDK 21 (bộ công cụ Java). Mở terminal, gõ `jshell`; gõ từng khối Java độc lập, dùng `/reset` trước khối tiếp theo và `/exit` để thoát. JShell chạy được khai báo class, method (hàm của Java) và lệnh trực tiếp, không cần khung main. Các comment `//` giải thích dòng code và kết quả cần quan sát.
+
 ## Virtual Threads
 
-Virtual threads nhẹ hơn platform threads, phù hợp cho blocking I/O nhiều request.
+Virtual thread là luồng nhẹ do Java quản lý, giúp tổ chức nhiều công việc thường phải chờ đọc/ghi.
 
 ```java
-try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
-    Future<String> result = executor.submit(() -> blockingCall());
-    System.out.println(result.get());
+try (var pool = java.util.concurrent.Executors.newVirtualThreadPerTaskExecutor()) {
+    var result = pool.submit(() -> "done"); // Mỗi task dùng một virtual thread
+    System.out.println(result.get()); // done
 }
 ```
 
-Điểm cần nhớ:
+**Khi nào dùng**
 
-- Virtual thread không làm CPU-bound code nhanh hơn.
-- Blocking I/O là use case chính.
-- Vẫn cần hiểu race condition, lock, shared state.
+- Khi cần thao tác này trong bài thực hành.
+- Khi đọc code có cùng cách viết.
+
+**Lỗi hay gặp**
+
+- Dùng trước khi hiểu kiểu đầu vào và kết quả.
+
+**Quy tắc ngón tay cái:** Nhiều việc chờ I/O: cân nhắc virtual thread, vẫn giới hạn tài nguyên bên ngoài.
+
+**Tự gõ, không dùng AI sinh code:** Submit ba task trả tên khác nhau. **Gợi ý:** Chờ kết quả và để khối try đóng executor.
 
 ## Platform Thread Vs Virtual Thread
 
-Platform thread map gần với OS thread, tốn tài nguyên hơn.
+Platform thread gắn với luồng hệ điều hành; virtual thread được JVM (máy thực thi Java) bố trí lên luồng thực thi bên dưới.
 
-Virtual thread được JVM schedule, tạo số lượng lớn dễ hơn. Code blocking đọc vẫn tự nhiên hơn so với callback/future chain trong nhiều case.
+**Quy tắc ngón tay cái:** Luồng nhẹ hơn không tạo thêm sức tính toán CPU.
+
+**Tự làm:** Phân loại tải: chờ HTTP và tính tổng hàng triệu số. **Gợi ý:** CPU là bộ xử lý thực hiện phép tính; I/O là chờ đọc/ghi bên ngoài.
 
 ## Khi Nào Dùng Virtual Thread
 
-Hợp:
+Virtual thread hữu ích cho nhiều task thường chờ HTTP, file hoặc database (cơ sở dữ liệu).
 
-- HTTP request handler có nhiều blocking I/O.
-- Gọi DB/service ngoài kiểu blocking.
-- Muốn code tuần tự dễ đọc.
+**Quy tắc ngón tay cái:** Database có ít kết nối thì virtual thread vẫn phải chờ kết nối.
 
-Không phải thuốc tiên cho:
-
-- CPU-bound computation.
-- Shared mutable state.
-- Lock contention nặng.
+**Tự làm:** Vẽ 100 task cùng cần 5 kết nối DB. **Gợi ý:** Không suy ra 100 task là 100 thao tác DB đang chạy.
 
 ## Structured Concurrency
 
-Structured concurrency giúp gom vòng đời nhiều task con vào một scope rõ ràng. Trong mốc Java 21 của khóa, StructuredTaskScope là preview; chỉ học concept và không dùng trong bài bắt buộc. Virtual threads đã có API chính thức ở Java 21. Luôn đọc tài liệu đúng phiên bản JDK trước khi thử code preview.
+Structured concurrency gom các task con trong một phạm vi có vòng đời chung để dễ chờ và xử lý lỗi.
 
-Ý tưởng:
+**Quy tắc ngón tay cái:** Java 21: virtual threads chính thức; StructuredTaskScope vẫn là preview (tính năng thử nghiệm).
 
-- Task con sống trong scope cha.
-- Nếu một task fail, có chính sách cancel task còn lại.
-- Code async dễ đọc hơn.
+**Tự làm:** Mô tả khi một trong hai tác vụ con lỗi thì tác vụ kia nên làm gì. **Gợi ý:** Chỉ nêu chính sách; chưa cần bật preview để học bài bắt buộc.
 
 ## Mental Model Cho FE Dev
 
-JS event loop giúp concurrency bằng non-blocking I/O trên một main thread.
+Java có thể chạy nhiều luồng cùng sửa object; JS trên một luồng thường xen kẽ các callback qua event loop (vòng điều phối công việc).
 
-Java có thể dùng nhiều OS/virtual threads, nên vấn đề shared memory rõ hơn. Bạn được viết blocking code dễ đọc hơn, nhưng phải quản lý thread safety.
+**Quy tắc ngón tay cái:** Promise không phải virtual thread; đừng suy ra cơ chế chia sẻ dữ liệu giống nhau.
+
+**Tự làm:** Chỉ ra một field dùng chung giữa hai request trong TaskService. **Gợi ý:** Dữ liệu riêng từng request nên đi qua tham số hoặc biến cục bộ.
 
 ## Bài Tập Nhanh
 
-Viết demo:
+Thử executor trước khi đo tốc độ.
 
-- Tạo 1000 task sleep 100ms bằng fixed thread pool nhỏ.
-- Tạo 1000 task sleep 100ms bằng virtual thread executor.
-- So sánh thời gian và giải thích.
+- Giao 10 task cho virtual thread executor.
+- Lấy đủ kết quả.
+- Đóng executor.
 
-Virtual threads không làm database có thêm connection hay dịch vụ ngoài có thêm quota. Vẫn cần connection pool, giới hạn số thao tác I/O đồng thời và timeout. Demo sleep chỉ mô phỏng chờ; không phải benchmark HTTP/DB thật. Trong Java 21, blocking khi giữ synchronized monitor có thể pin carrier thread; hành vi này phụ thuộc phiên bản, tránh suy rộng sang mọi JDK.
+**Gợi ý:** Nếu dùng sleep để giả lập chờ, gọi đó là mô phỏng.
 
-Đối chiếu theo mốc JDK 21: [virtual threads guide](https://docs.oracle.com/en/java/javase/21/core/virtual-threads.html) và [StructuredTaskScope preview API](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/StructuredTaskScope.html).
+**Đạt khi:** Không mất kết quả và không kết luận đây là benchmark DB thật. Tự gõ phần triển khai, không dùng AI sinh lời giải.
+
+## Đọc thêm sau
+
+Pinning (carrier thread bị giữ khi virtual thread chặn trong một số tình huống Java 21) và giới hạn số thao tác bên ngoài học khi đo tải thật. [Virtual threads Java 21](https://docs.oracle.com/en/java/javase/21/core/virtual-threads.html), [StructuredTaskScope Java 21 preview](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/StructuredTaskScope.html).

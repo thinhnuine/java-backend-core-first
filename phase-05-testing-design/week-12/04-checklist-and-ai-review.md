@@ -1,28 +1,25 @@
 # Checklist Và AI Review Tuần 12
 
+Checklist (danh sách tự kiểm) cho phần đang học: **Thiết kế vừa đủ**.
+
+Chỉ đánh dấu khi có code và kết quả làm bằng chứng.
+
 ## Checklist
 
-- [ ] Có test trước khi refactor.
-- [ ] Class sau refactor có responsibility rõ hơn.
-- [ ] Pattern được dùng vì giảm complexity thật.
-- [ ] Không tạo abstraction chỉ vì "best practice".
-- [ ] Public API không phình to.
-- [ ] Note giải thích tradeoff rõ.
-- [ ] Có danh sách điều chưa sửa.
+- [ ] Tách một trách nhiệm đang gây khó hiểu, giữ hành vi cũ.
+- [ ] Nêu được thay đổi nào giúp dễ sửa hơn và test vẫn bảo vệ rule.
+- [ ] Có một đầu vào sai và giải thích cách code xử lý.
 
 ## Prompt AI Review
 
 ```text
-Bạn là mentor Java Backend. Hãy review refactor của tôi.
-
-Tập trung vào:
-- SOLID áp dụng có thực dụng không
-- abstraction có cần thiết không
-- pattern dùng có đúng vấn đề không
-- refactor có làm API khó dùng hơn không
-- test có bảo vệ behavior đủ không
-- code smell còn lại là gì
-- note tradeoff có trung thực không
-
-Before/after code và note:
+Tôi mới học Java, đã biết React/Next.js.
+Mục tiêu: Nêu được thay đổi nào giúp dễ sửa hơn và test vẫn bảo vệ rule.
+Đây là code, dự đoán và kết quả thực tế của tôi: ...
+Chỉ ra tối đa 2 điểm cần sửa; giải thích thuật ngữ ngay khi dùng.
+Cho một gợi ý để tôi tự sửa, chưa viết lời giải.
 ```
+
+## Đọc thêm sau
+
+Áp mọi design pattern, abstraction nhiều tầng và kiến trúc lớn. Chỉ dùng checklist mở rộng khi bạn chủ động chọn học phần đó.

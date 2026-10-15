@@ -1,50 +1,43 @@
 # Bài Tập Tuần 11
 
+Đây là đề để tự làm, không phải đáp án. Chọn từng mục theo README module; không cần làm hết trong một buổi. Tự gõ code, dùng AI để xin gợi ý sau khi đã thử.
+
 ## Bài 1: Test LRU Cache
 
-Test:
-
-- put/get.
-- key không tồn tại.
-- eviction order.
-- get làm item trở thành recently used.
-- capacity invalid.
+LRU cache chỉ kiểm nếu bạn đã làm bài cache. **Tự làm:** với capacity 2, ghi chuỗi put/get để xác định mục bị loại. **Gợi ý:** get có thể đổi thứ tự gần đây; chưa có cache thì test TaskService trước.
 
 ## Bài 2: Test Event Emitter
 
-Test:
-
-- listener được gọi theo thứ tự đăng ký.
-- unsubscribe xong không gọi nữa.
-- emit event không có listener không lỗi.
-- listener throw exception thì policy là gì.
+Event emitter gọi các listener (bên nghe sự kiện). **Tự làm:** kiểm đăng ký, gọi, gỡ đăng ký. **Gợi ý:** quy định một listener lỗi có dừng các listener sau không trước khi viết test.
 
 ## Bài 3: Parameterized Validation
 
-Chọn class có validation.
+Parameterized validation dùng nhiều input cho cùng quy tắc kiểm.
 
-Viết parameterized test cho:
+- Chọn title của Task.
+- Liệt kê null, trắng, hợp lệ, quá 100 ký tự.
+- Tạo test cho từng case.
 
-- null.
-- blank.
-- negative number.
-- invalid format.
+**Gợi ý:** Lượt đầu viết test riêng; gộp parameterized sau.
+
+**Đạt khi:** Expected rõ cho từng input. Tự gõ phần triển khai, không dùng AI sinh lời giải.
 
 ## Bài 4: Mock/Fake Comparison
 
-Với một service phụ thuộc interface:
+So fake tự viết với mock được cấu hình bằng thư viện.
 
-- viết test bằng Mockito.
-- viết test bằng fake.
-- ghi nhận bản nào rõ hơn và vì sao.
+- Chọn service nhận Sender.
+- Fake lưu message đã gửi.
+- Nếu đã học Mockito, viết kiểm tra tương đương.
+
+**Gợi ý:** Không cần làm cả hai khi fake đã đủ rõ.
+
+**Đạt khi:** Nêu cách nào dễ đọc hơn trong đúng tình huống này. Tự gõ phần triển khai, không dùng AI sinh lời giải.
 
 ## Learning Log
 
-Trả lời:
+Ghi test nào bắt được lỗi khi bạn cố ý làm hỏng code. **Gợi ý:** một test kiểm input/output có giá trị hơn nhiều test chỉ gọi method mà không kiểm kết quả.
 
-- Test nào bắt được bug thật?
-- Test nào quá phụ thuộc implementation?
-- Bạn có mock quá tay không?
-- Assertion fail có dễ hiểu không?
+## Đọc thêm sau
 
-Theo lịch mới, ưu tiên test/refactor TaskService và TaskRepository của Task Manager đang có. LRU, parser, event emitter và log processor chỉ là lựa chọn nếu bạn đã làm các project đó; không cần tạo thêm project để học testing/design.
+Chỉ mở rộng sau khi bài nhỏ chạy đúng. Ghi một lỗi đã gặp và cách bạn tự tìm nguyên nhân.

@@ -1,28 +1,25 @@
 # Checklist Và AI Review Tuần 11
 
+Checklist (danh sách tự kiểm) cho phần đang học: **Kiểm thử hành vi**.
+
+Chỉ đánh dấu khi có code và kết quả làm bằng chứng.
+
 ## Checklist
 
-- [ ] Test name mô tả behavior.
-- [ ] Test có arrange/act/assert rõ.
-- [ ] Có test exception.
-- [ ] Có parameterized test cho input variation.
-- [ ] Không mock mọi thứ.
-- [ ] Assertion khi fail dễ hiểu.
-- [ ] Có ít nhất một fake để so sánh với mock.
+- [ ] Viết kiểm tra đúng/sai và chạy test thực sự.
+- [ ] Làm hỏng một rule khiến test fail rồi sửa để test pass.
+- [ ] Có một đầu vào sai và giải thích cách code xử lý.
 
 ## Prompt AI Review
 
 ```text
-Bạn là mentor Java Backend. Hãy review test của tôi.
-
-Tập trung vào:
-- test có kiểm behavior không
-- test name có rõ không
-- mock có bị lạm dụng không
-- thiếu edge case nào
-- assertion fail có dễ hiểu không
-- setup test có quá phức tạp không
-- fake hay mock phù hợp hơn trong case này không
-
-Test code:
+Tôi mới học Java, đã biết React/Next.js.
+Mục tiêu: Làm hỏng một rule khiến test fail rồi sửa để test pass.
+Đây là code, dự đoán và kết quả thực tế của tôi: ...
+Chỉ ra tối đa 2 điểm cần sửa; giải thích thuật ngữ ngay khi dùng.
+Cho một gợi ý để tôi tự sửa, chưa viết lời giải.
 ```
+
+## Đọc thêm sau
+
+Mockito, test nhiều tham số và benchmark test. Chỉ dùng checklist mở rộng khi bạn chủ động chọn học phần đó.

@@ -1,82 +1,47 @@
 # Bài Tập Tự Chọn Sau Collections
 
-Không nằm trong checklist lượt đầu. Cần học List/Map, Optional, unit test trước repository; học LinkedHashMap trước LRU. Workflow dưới đây có rule riêng, không thay thế rule Task Manager cơ bản.
+Đây là đề để tự làm, không phải đáp án. Chọn từng mục theo README module; không cần làm hết trong một buổi. Tự gõ code, dùng AI để xin gợi ý sau khi đã thử.
 
 ## Bài 1: Generic In-Memory Repository
 
-Implement generic repository.
+Repository tổng quát là kho dùng được với nhiều kiểu id và dữ liệu.
 
-Interface:
+- Thiết kế save/findById/deleteById/findAll/existsById.
+- Lưu bằng HashMap<ID,T>.
+- Từ chối id/value null.
 
-```java
-public interface Repository<ID, T> {
-    void save(ID id, T value);
-    Optional<T> findById(ID id);
-    List<T> findAll();
-    boolean existsById(ID id);
-    void deleteById(ID id);
-}
-```
+**Gợi ý:** Optional<T> biểu thị không tìm thấy; copy danh sách khi trả ra.
 
-Implementation:
-
-- `InMemoryRepository<ID, T>`.
-- Dùng `HashMap<ID, T>`.
-- Không trả mutable internal collection trực tiếp.
-- Validate id/value không null.
-
-Test cần có:
-
-- Save rồi find được.
-- Find id không tồn tại trả `Optional.empty`.
-- Delete id xong không còn tồn tại.
-- `findAll` không cho caller sửa state bên trong.
+**Đạt khi:** Lưu-đọc-xóa đúng, caller không sửa cấu trúc kho qua findAll. Tự gõ phần triển khai, không dùng AI sinh lời giải.
 
 ## Bài 2: LRU Cache
 
-Viết `LruCache<K, V>`.
+LRU cache là bộ lưu tạm loại mục ít được dùng gần đây khi đầy.
 
-Yêu cầu:
+- Chọn capacity (số mục tối đa) dương.
+- Viết put/get.
+- Chốt get và cập nhật khóa cũ có đổi thứ tự dùng không.
 
-- Constructor nhận `capacity`.
-- `put(K key, V value)`.
-- `Optional<V> get(K key)`.
-- Khi quá capacity, remove item ít được dùng gần đây nhất.
-- Không nhận null key.
-- Có test cho eviction order.
+**Gợi ý:** LinkedHashMap có access order, phải chọn chế độ đó rõ ràng.
 
-Gợi ý:
-
-- Cách dễ: dùng `LinkedHashMap`.
-- Cách học sâu hơn: tự viết doubly linked list + `HashMap<K, Node<K, V>>`.
-- Nếu muốn port thư viện nhỏ cuối giai đoạn, bài này là ứng viên tốt.
+**Đạt khi:** Kiểm một chuỗi đọc/ghi khiến mục cần loại khác với mục thêm đầu tiên. Tự gõ phần triển khai, không dùng AI sinh lời giải.
 
 ## Bài 3: Workflow Status
 
-Dùng enum để mô hình hóa trạng thái task.
+Workflow là các bước trạng thái được phép chuyển.
 
-Yêu cầu:
+- Vẽ TODO → IN_PROGRESS → DONE.
+- Thêm CANCELLED theo quy tắc bạn chọn.
+- Viết canMoveTo.
 
-- Enum `WorkflowStatus`.
-- Method `canMoveTo(WorkflowStatus next)`.
-- Method `isTerminal()`.
-- Method `label()` trả text hiển thị.
-- Test state transition.
+**Gợi ý:** Đây là bài mở rộng; không áp nhầm quy tắc mới lên Task Manager cơ bản.
 
-Rule gợi ý:
-
-- `TODO -> IN_PROGRESS/CANCELLED`.
-- `IN_PROGRESS -> BLOCKED/DONE/CANCELLED`.
-- `BLOCKED -> IN_PROGRESS/CANCELLED`.
-- `DONE` không chuyển nữa.
-- `CANCELLED` không chuyển nữa.
+**Đạt khi:** Có ví dụ được chuyển và bị từ chối. Tự gõ phần triển khai, không dùng AI sinh lời giải.
 
 ## Learning Log Cuối Tuần
 
-Trả lời:
+Ghi một giới hạn của generic repository và một quyết định về cache. **Gợi ý:** dữ liệu trả ra có dùng chung reference hay là bản sao?
 
-- Khi nào dùng generic class, khi nào dùng generic method?
-- `? extends T` khác `? super T` ở đâu?
-- Type erasure ảnh hưởng gì tới runtime?
-- Enum Java mạnh hơn enum/string union trong TypeScript ở điểm nào?
-- Bạn chọn cách nào cho LRU cache và vì sao?
+## Đọc thêm sau
+
+Wildcard/PECS và tự viết danh sách liên kết cho cache chỉ học khi cần. Không cần hoàn thành ba bài này trước Spring.

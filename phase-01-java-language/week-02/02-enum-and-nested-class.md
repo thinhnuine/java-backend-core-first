@@ -1,110 +1,57 @@
 # Enum: Chọn Trạng Thái Từ Một Tập Hợp Cố Định
 
-**Lượt đầu: khoảng 45–60 phút.** Cần biết class, method, `if` và cách chạy Java. Tên file giữ nguyên để không làm hỏng liên kết, nhưng nested class chuyển sang phần đọc sau.
+> **Làm rõ trước khi học:** Enum chỉ giới hạn lựa chọn, không tự định nghĩa “DONE không được đổi nữa”. Quy tắc chuyển trạng thái phải được viết riêng.
+
+Học một ví dụ rồi dừng để tự sửa đầu vào. Các heading giữ nguyên để đối chiếu bản trước.
+
+**Cách chạy ví dụ:** dùng JDK 21 (bộ công cụ Java). Mở terminal, gõ `jshell`; gõ từng khối Java độc lập, dùng `/reset` trước khối tiếp theo và `/exit` để thoát. JShell chạy được khai báo class, method (hàm của Java) và lệnh trực tiếp, không cần khung main. Các comment `//` giải thích dòng code và kết quả cần quan sát.
 
 ## 1. Ý chính
 
-Enum định nghĩa một kiểu chỉ có những giá trị đã đặt tên. Task của bài này có ba trạng thái: TODO, IN_PROGRESS và DONE. Viết thành enum giúp compiler phát hiện việc dùng sai kiểu thay vì để một chuỗi sai chính tả đi sâu vào chương trình.
+Enum là kiểu có một tập giá trị đặt tên sẵn, giúp trạng thái không bị sai do gõ nhầm chuỗi.
 
 ## 2. Giải thích code
 
-Trong một thư mục ví dụ mới, tạo `TaskStatus.java`:
-
 ```java
-public enum TaskStatus {
-    TODO,
-    IN_PROGRESS,
-    DONE
-}
+enum TaskStatus { TODO, IN_PROGRESS, DONE } // Ba lựa chọn hợp lệ
+TaskStatus status = TaskStatus.TODO;
+status = TaskStatus.DONE; // Đổi lựa chọn của biến
+System.out.println(status == TaskStatus.DONE); // true: enum so bằng ==
 ```
-
-Tạo `EnumDemo.java` cùng thư mục:
-
-```java
-public class EnumDemo {
-    public static void main(String[] args) {
-        TaskStatus status = TaskStatus.TODO;
-        System.out.println(status);
-
-        status = TaskStatus.DONE;
-        System.out.println(isFinished(status));
-    }
-
-    static boolean isFinished(TaskStatus status) {
-        return status == TaskStatus.DONE;
-    }
-}
-```
-
-Chạy:
-
-```sh
-javac -encoding UTF-8 TaskStatus.java EnumDemo.java
-java EnumDemo
-```
-
-Kết quả:
-
-```text
-TODO
-true
-```
-
-- `public enum TaskStatus`: khai báo một kiểu enum tên TaskStatus, giống như `class` khai báo một kiểu class.
-- `TODO`, `IN_PROGRESS`, `DONE`: ba hằng enum được đặt tên; cách viết hoa là quy ước.
-- `TaskStatus status`: biến có kiểu TaskStatus, không còn là String.
-- `TaskStatus.TODO`: truy cập một giá trị đã định nghĩa; không viết `new TaskStatus()`.
-- `status = TaskStatus.DONE`: đổi giá trị mà biến status giữ, không sửa định nghĩa enum.
-- `static boolean isFinished(...)`: method không cần tạo EnumDemo để gọi, trả true hoặc false.
-- Với enum, dùng `==` so sánh các hằng là đúng. Điều này không thay quy tắc dùng `.equals()` để so nội dung String.
 
 ## 3. Vì sao thiết kế như vậy
 
-Ví dụ dùng chuỗi sai chính tả, đặt trong main để thử:
-
-```java
-String status = "DONNE";
-System.out.println("DONE".equals(status));
-```
-
-Java vẫn compile, nhưng in false. Chương trình không biết DONNE là lỗi đánh máy.
-
-Còn đoạn dưới cố ý không compile:
-
-```java
-TaskStatus status = TaskStatus.DONNE;
-```
-
-Vì enum không khai báo DONNE, compiler chỉ ra lỗi ngay. Tuy nhiên reference enum vẫn có thể null; khi đọc JSON vào Java, bạn vẫn phải validate đầu vào.
+String "DONNE" vẫn là chuỗi hợp lệ; TaskStatus.DONNE không tồn tại nên compiler báo lỗi. **Quy tắc ngón tay cái:** lựa chọn cố định do code quyết định thì cân nhắc enum.
 
 ## 4. Liên hệ với frontend
 
-Trong TS, bạn có thể viết `type TaskStatus = "TODO" | "IN_PROGRESS" | "DONE"`. Mục đích giới hạn giá trị khá giống nhau. Java enum tồn tại ở runtime và có thể có method; string union của TS không tự tạo một object runtime hay validate dữ liệu từ mạng.
+Gần với TS union `"TODO" | "DONE"`. Enum Java tồn tại khi chạy; TS union không tự kiểm tra dữ liệu nhận từ mạng.
 
 ## 5. Khi nào dùng và không dùng
 
-Dùng enum cho status hoặc tập lựa chọn ổn định do code định nghĩa. Không dùng enum cho danh sách project, người dùng hay danh mục mà người quản trị có thể thêm tùy ý trong DB.
+**Khi nào dùng**
 
-Lượt đầu chỉ cần biết khai báo, truyền tham số và so sánh enum. Constructor, field riêng và state transition trong enum có thể học sau. Task Manager cơ bản vẫn cho chuyển qua lại giữa ba trạng thái; chưa có rule “DONE không bao giờ đổi được”.
+- Trạng thái task có số lựa chọn rõ.
+- Loại thao tác cố định trong chương trình.
 
 ## 6. Bẫy hay gặp
 
-- Gán `"DONE"` cho biến TaskStatus: String và TaskStatus là hai kiểu khác nhau.
-- Lưu `ordinal()` làm mã trạng thái bền vững: đổi thứ tự hằng có thể làm thay đổi ý nghĩa số cũ.
-- Gọi `TaskStatus.valueOf("done")` và mong tự đổi chữ hoa: tên không khớp gây IllegalArgumentException. Chưa cần dùng valueOf trong bài đầu.
-- Ghép enum, switch expression và workflow phức tạp vào một bài khi chưa hiểu từng thứ.
+**Lỗi hay gặp**
+
+- Gán chuỗi "DONE" vào biến TaskStatus.
+- Nghĩ enum không thể null.
+- Lưu ordinal (vị trí hằng) làm mã bền vững.
 
 ## 7. Thuật ngữ mới
 
-**Enum constant** là một giá trị đặt tên trong enum. **Tập hữu hạn** là tập có số lựa chọn xác định. **Runtime** là lúc code chạy, khác compile time là lúc kiểm tra và dịch code.
+**Enum constant** là một giá trị có tên như DONE. **Runtime** là lúc chương trình chạy. **Nested class** là class khai báo bên trong class khác; để sau.
 
 ## 8. Bài tập nhỏ để tự gõ lại
 
-1. Đoán rồi chạy `isFinished` với cả ba status.
-2. Viết `label(TaskStatus status)` trả “Cần làm”, “Đang làm”, “Hoàn thành”; dùng if/else bạn đã biết.
-3. Tự chọn cách xử lý null rõ ràng cho label; viết test cho lựa chọn đó nếu đã học JUnit.
-4. Viết một method nhận TaskStatus, cố gọi bằng String rồi giải thích lỗi compile.
+**Tự gõ, không dùng AI sinh code:** Viết method label nhận TaskStatus và trả nhãn tiếng Việt.
 
-**Đạt khi:** truyền được enum qua method và giải thích vì sao nó chặn typo tốt hơn String.
+**Gợi ý:** Dùng if/else; tự quy định cách xử lý null. Task Manager cơ bản cho đổi qua lại ba trạng thái.
 
-Tiếp theo: [bài tập cơ bản](03-exercises.md). Nested/inner/anonymous class nằm trong [tra cứu nâng cao](06-advanced-reference.md), chưa phải điều kiện qua bài.
+## Đọc thêm sau
+
+[Nested class và enum có hành vi](06-advanced-reference.md). valueOf yêu cầu tên khớp chính xác; chỉ học chuyển từ chuỗi khi cần nhận dữ liệu ngoài.

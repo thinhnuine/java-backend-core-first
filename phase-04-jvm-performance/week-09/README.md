@@ -1,25 +1,28 @@
 # Module week-09: JVM Để Đọc Lỗi Và Debug
 
-Tên week trong đường dẫn là mã tài liệu, không phải tuần theo lịch mới. Vị trí học: **tuần 23 ở mức căn bản** trong [ROADMAP.md](../../ROADMAP.md). Mỗi tuần mới có tổng 8 giờ cho mọi tài liệu được chọn, không phải 8 giờ cho mỗi module.
+Tên week-09 là mã module cũ. Học ở **tuần 23, phần cơ bản** theo [lịch 24 tuần](../../ROADMAP.md). Tổng thời gian dự kiến vẫn là 8 giờ/tuần cho các bài được chọn.
 
 ## Cần biết trước
 
-Compile/run Java, object/reference, stack trace.
+Biến reference, object và method. Nếu chưa tự làm được, quay lại ví dụ trước thay vì đọc tiếp.
 
 ## Lượt học bắt buộc hoặc phạm vi được chọn
 
-Heap/stack/metaspace; phân biệt heap OOM và stack overflow; đọc classpath error.
+Phân biệt heap chứa dữ liệu object và stack theo dõi lời gọi.
 
-Bắt đầu [bài thứ nhất](01-jvm-memory-classloading.md), sau đó [bài thứ hai](02-jit-gc-logs.md) theo phần roadmap chỉ định. Đọc một ví dụ → đoán output → tự chạy → đổi input → giải thích bằng lời của mình. Có thể dành thêm buổi khi chưa qua mốc; không đọc hết để chạy theo thời hạn.
+- [01-jvm-memory-classloading](01-jvm-memory-classloading.md)
+- [02-jit-gc-logs](02-jit-gc-logs.md)
+
+Mỗi lượt 15–25 phút: đọc một ý → tự gõ → đoán kết quả → chạy → sửa một đầu vào. **Qua bài khi:** Vẽ object được giữ bởi reference nào; đọc được một thông tin JVM.
 
 ## Đọc sau hoặc tự chọn
 
-GC collector, allocation/OOM lab và microbenchmark/JIT là mở rộng; chưa cần tuning GC.
+JIT/GC tuning, benchmark và classloader internals. Chưa bắt buộc làm hết.
 
-Các file bài tập/checklist/mentor guide bên dưới dùng trong phạm vi được chọn, không phải yêu cầu làm hết:
+- [03-exercises](03-exercises.md)
+- [04-checklist-and-ai-review](04-checklist-and-ai-review.md)
+- [05-deep-dive-study-guide](05-deep-dive-study-guide.md)
 
-- [03-exercises.md](03-exercises.md)
-- [04-checklist-and-ai-review.md](04-checklist-and-ai-review.md)
-- [05-deep-dive-study-guide.md](05-deep-dive-study-guide.md)
+## Đọc thêm sau
 
-Tiếp theo: đối chiếu đầu ra tuần trong [roadmap](../../ROADMAP.md) và [chuẩn đầu ra](../../COURSE_OUTCOMES.md).
+Chọn một bài mở rộng khi gặp vấn đề thật. [Chuẩn đầu ra](../../COURSE_OUTCOMES.md) giúp quyết định đã đủ để đi tiếp hay chưa.

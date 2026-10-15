@@ -1,25 +1,21 @@
 # Checklist Cơ Bản: Generics Và Enum
 
-Chỉ đánh dấu khi đã tự chạy code để chứng minh. Bounded type, wildcard/PECS, erasure và LRU không phải điều kiện qua lượt học đầu.
+Checklist (danh sách tự kiểm) cho phần đang học: **Generics và enum**.
 
-- [ ] Đọc được List<String> và Box<TaskTitle> bằng lời của mình.
-- [ ] Viết được Box<T> có constructor/get và sử dụng với hai kiểu khác nhau.
-- [ ] Thử sai kiểu và thấy lỗi compile; phân biệt với ClassCastException lúc chạy.
-- [ ] Biết vì sao dùng Integer thay vì int làm type argument.
-- [ ] Khai báo và truyền TaskStatus qua method, viết được label.
-- [ ] Ghép List<Task> với enum để in hai task.
-- [ ] Có test label cho status hợp lệ và null sau khi học JUnit.
+- [ ] Dùng Box<String>, List<String> và enum trạng thái.
+- [ ] Giải thích T được chọn là kiểu gì và enum chặn lỗi gõ nhầm nào.
+- [ ] Có một đầu vào sai và giải thích cách code xử lý.
 
 ## Prompt review
 
 ```text
-Tôi có 4 năm làm FE nhưng mới học Java. Tôi vừa học List<T>, Box<T> và enum.
-Đây là code, kết quả tôi dự đoán, và kết quả thực tế.
-Hãy chọn tối đa 2 vấn đề quan trọng. Với mỗi vấn đề:
-1. Chỉ ra dòng liên quan và hỏi tôi dự đoán kết quả.
-2. Giải thích bằng một ví dụ nhỏ, chưa dùng wildcard/PECS hoặc design pattern.
-3. Cho một gợi ý sửa, chưa viết toàn bộ lời giải.
-Nếu bài đã ổn, đưa một biến thể nhỏ để tôi tự làm.
+Tôi mới học Java, đã biết React/Next.js.
+Mục tiêu: Giải thích T được chọn là kiểu gì và enum chặn lỗi gõ nhầm nào.
+Đây là code, dự đoán và kết quả thực tế của tôi: ...
+Chỉ ra tối đa 2 điểm cần sửa; giải thích thuật ngữ ngay khi dùng.
+Cho một gợi ý để tôi tự sửa, chưa viết lời giải.
 ```
 
-Tiếp theo: [module record và exception](../week-03/README.md). Khi cần tự thiết kế API generic, quay lại [tra cứu nâng cao](06-advanced-reference.md).
+## Đọc thêm sau
+
+Wildcard/PECS, type erasure, nested class, repository tổng quát và cache. Chỉ dùng checklist mở rộng khi bạn chủ động chọn học phần đó.

@@ -1,118 +1,28 @@
 # Capstone: Port Một Thư Viện Nhỏ Sang Java
 
-> **Tự chọn sau nền collections.** Project bắt buộc theo lịch mới là [Task Manager](../../learning-path/03-task-manager-project.md). Không cần tự viết parser/LRU trước khi bắt đầu HTTP và Spring.
+Đây là đề để tự làm, không phải đáp án. Chọn từng mục theo README module; không cần làm hết trong một buổi. Tự gõ code, dùng AI để xin gợi ý sau khi đã thử.
 
 ## Mục Tiêu
 
-Bạn chọn một thư viện nhỏ từng quen ở JS/Python, rồi viết lại bằng Java. Mục tiêu không phải làm nhiều feature, mà là luyện API design, type system, OOP, generics, exception và test.
+Capstone là bài tổng hợp; port là viết lại hành vi thư viện từ ngôn ngữ khác. Chỉ chọn một phần nhỏ có input/output rõ sau Task Manager cơ bản.
 
 ## Chọn 1 Trong 3 Đề
 
-### Option A: JSON Parser Đơn Giản
-
-Scope:
-
-- Parse object: `{ "name": "Java" }`.
-- Parse array: `[1, 2, 3]`.
-- Parse string, number, boolean, null.
-- Không cần full JSON spec ngay từ đầu.
-
-Java concepts nên dùng:
-
-- Sealed interface cho `JsonValue`.
-- Record cho `JsonString`, `JsonNumber`, `JsonBoolean`, `JsonNull`, `JsonArray`, `JsonObject`.
-- Custom exception `JsonParseException`.
-- Text block cho test sample.
-
-Public API gợi ý:
-
-```java
-JsonValue value = JsonParser.parse("""
-    { "name": "Java", "version": 21 }
-    """);
-```
-
-### Option B: LRU Cache
-
-Scope:
-
-- Generic `LruCache<K, V>`.
-- `put`, `get`, `containsKey`, `size`, `clear`.
-- Evict least recently used item khi quá capacity.
-
-Java concepts nên dùng:
-
-- Generics.
-- `Optional<V>`.
-- `HashMap`.
-- Có thể tự viết doubly linked list để học sâu.
-- Override `toString` để debug state.
-
-Public API gợi ý:
-
-```java
-LruCache<String, Integer> cache = new LruCache<>(2);
-cache.put("a", 1);
-cache.put("b", 2);
-cache.get("a");
-cache.put("c", 3); // evict b
-```
-
-### Option C: Event Emitter
-
-Scope:
-
-- Subscribe listener theo event name.
-- Emit event với payload.
-- Unsubscribe.
-- Listener chạy theo thứ tự đăng ký.
-
-Java concepts nên dùng:
-
-- Generic payload type nếu muốn.
-- Functional interface.
-- Composition.
-- Custom exception nếu event name invalid.
-
-Public API gợi ý:
-
-```java
-EventEmitter emitter = new EventEmitter();
-Subscription sub = emitter.on("user.created", event -> {
-    System.out.println(event.payload());
-});
-emitter.emit("user.created", new UserCreated("u1"));
-sub.unsubscribe();
-```
+Chọn **một**: cache LRU (loại dữ liệu ít dùng gần đây), event emitter (đăng ký và gọi bên nghe sự kiện), hoặc parser JSON (đọc văn bản thành dữ liệu). **Tự làm:** viết 3 ví dụ input/output trước code. **Gợi ý:** chọn event emitter đơn giản nếu chưa biết cấu trúc dữ liệu cho cache.
 
 ## Cấu Trúc Project Gợi Ý
 
-```text
-src/
-  main/
-    java/
-      dev/thinh/javacore/
-  test/
-    java/
-      dev/thinh/javacore/
-```
-
-README cần có:
-
-- Thư viện này làm gì.
-- Cách dùng API public.
-- Ví dụ code ngắn.
-- Những scope chưa làm.
-- Tradeoff thiết kế.
+Trong Maven project: code ở src/main/java, test ở src/test/java. README ghi mục đích, cách chạy, giới hạn và ví dụ sử dụng. **Tự làm:** tạo một public method nhỏ trước. **Gợi ý:** API public là phần bên ngoài được gọi, không cần mở mọi method.
 
 ## Checklist Capstone
 
-- [ ] Có Maven project.
-- [ ] Có package name rõ.
-- [ ] Public API nhỏ và dễ đọc.
-- [ ] Có validation input.
-- [ ] Có exception rõ nghĩa.
-- [ ] Có unit test happy path.
-- [ ] Có unit test edge case.
-- [ ] Có `README.md`.
-- [ ] Có learning log giải thích 3 quyết định thiết kế.
+- [ ] Chỉ làm phạm vi đã chọn.
+- [ ] Có input đúng, sai và trường hợp biên.
+- [ ] Test thất bại khi cố ý làm sai hành vi.
+- [ ] README đủ để chạy lại.
+
+**Tự làm:** nhờ một người đọc README thử chạy. **Gợi ý:** ghi lại bước họ phải hỏi thêm.
+
+## Đọc thêm sau
+
+Parser đầy đủ cần xử lý escape (ký tự thoát), số, lồng nhau và lỗi vị trí. Event emitter cần quy định thứ tự gọi, gỡ đăng ký và lỗi listener. Cache cần xác định thứ tự truy cập và cập nhật khóa cũ. Không ngầm hứa tương thích toàn bộ thư viện gốc.

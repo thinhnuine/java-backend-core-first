@@ -1,60 +1,59 @@
 # Các Lỗi Concurrency Kinh Điển
 
+Đây là trang nhận diện lỗi, không phải yêu cầu học hết năm lỗi trong một buổi.
+
 ## Race Condition
 
-Nhiều thread đọc/ghi shared state mà không có coordination đúng.
+Race condition: hai lần cập nhật xen nhau làm kết quả phụ thuộc thời điểm.
 
-Dấu hiệu:
+**Quy tắc ngón tay cái:** Bảo vệ toàn bộ thao tác đọc-sửa-ghi.
 
-- Test thỉnh thoảng fail.
-- Kết quả nhỏ hơn expected.
-- Log nhìn "không thể xảy ra" nhưng vẫn xảy ra.
+**Tự làm:** Vẽ hai lần tăng cùng đọc 0. **Gợi ý:** Dùng synchronized hoặc AtomicInteger sau khi xác định dữ liệu chung.
 
 ## Deadlock
 
-Các thread chờ lock của nhau mãi.
+Deadlock: các luồng chờ khóa của nhau mãi.
 
-Cách debug:
+**Quy tắc ngón tay cái:** Lấy nhiều khóa theo cùng thứ tự.
 
-- thread dump.
-- tìm thread BLOCKED/WAITING.
-- xem lock đang giữ và đang chờ.
+**Tự làm:** Vẽ vòng chờ hai khóa rồi phá vòng đó. **Gợi ý:** Không cần chạy code treo; nếu tự thử phải có cách kết thúc process riêng.
 
 ## Visibility Bug
 
-Thread A ghi, thread B không thấy.
+Visibility bug: luồng đọc không được bảo đảm thấy thay đổi từ luồng ghi.
 
-Thường gặp với:
+**Quy tắc ngón tay cái:** Có cơ chế đồng bộ rõ mới dựa vào dữ liệu mới.
 
-- stop flag không volatile.
-- publish object chưa an toàn.
-- cache state không có synchronization.
+**Tự làm:** Tìm field cờ được đọc ở một luồng và ghi ở luồng khác. **Gợi ý:** Đối chiếu volatile, synchronized hoặc join; sleep không thay chúng.
 
 ## Thread Starvation
 
-Task không có cơ hội chạy vì thread pool bị chiếm.
+Thread starvation: công việc chờ lâu vì không có luồng xử lý rảnh.
 
-Ví dụ:
+**Quy tắc ngón tay cái:** Đừng để worker chờ task con bị kẹt trong chính pool đã đầy.
 
-- Task trong fixed pool chờ task khác cũng submit vào chính pool đó.
-- Blocking call quá lâu trong pool nhỏ.
+**Tự làm:** Vẽ pool một worker: task cha chờ task con ở cùng pool. **Gợi ý:** Chỉ ra ai có thể lấy task con ra chạy.
 
 ## Lock Contention
 
-Nhiều thread tranh cùng lock, throughput giảm.
+Lock contention: nhiều luồng tranh một khóa nên phải xếp hàng.
 
-Cách giảm:
+**Quy tắc ngón tay cái:** Giữ vùng khóa đủ bảo vệ dữ liệu nhưng tránh việc chậm không cần thiết.
 
-- giảm critical section.
-- chia lock theo shard.
-- dùng concurrent structure phù hợp.
-- tránh shared mutable state.
+**Tự làm:** Đánh dấu lời gọi mạng trong vùng synchronized. **Gợi ý:** Tìm cách chuẩn bị dữ liệu trước hoặc xử lý ngoài khóa, rồi kiểm lại tính đúng.
 
 ## Bài Tập Nhanh
 
-Tạo `concurrency-bugs.md`:
+Viết ghi chú về một lỗi bạn hiểu rõ.
 
-- Mỗi bug có code snippet hoặc mô tả.
 - Ghi triệu chứng.
-- Ghi nguyên nhân.
-- Ghi cách sửa.
+- Vẽ thứ tự thao tác gây lỗi.
+- Ghi cách sửa và lý do.
+
+**Gợi ý:** Không chỉ ghi “thêm synchronized”; nêu object khóa và field được bảo vệ.
+
+**Đạt khi:** Một người khác đọc ghi chú có thể giải thích lại lỗi. Tự gõ phần triển khai, không dùng AI sinh lời giải.
+
+## Đọc thêm sau
+
+Thread dump là ảnh chụp trạng thái các luồng; dùng khi cần tìm vòng chờ. Fairness (độ công bằng khi cấp quyền chạy) và phân chia khóa chỉ tối ưu sau khi code đúng.

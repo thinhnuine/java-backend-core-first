@@ -1,86 +1,51 @@
 # Bài Tập Tuần 1
 
-> Theo [lộ trình mới](../../ROADMAP.md), đây là ngân hàng bài tập/checklist cho tuần 2–4. Ưu tiên Task Manager và test title trước; Money/Notification là bài thêm, ShoppingCart và abstract class có thể học sau. Không cần hoàn thành tất cả để qua tuần 1 mới.
+Đây là đề để tự làm, không phải đáp án. Chọn từng mục theo README module; không cần làm hết trong một buổi. Tự gõ code, dùng AI để xin gợi ý sau khi đã thử.
 
 ## Bài 1: Money Value Object
 
-Tạo class `Money`.
+Money là value object: object có ý nghĩa bằng nhau theo dữ liệu tiền.
 
-Yêu cầu:
+- Field private final: amount kiểu long, currency kiểu String.
+- Constructor chặn số âm và currency null/trắng.
+- add, subtract, multiply trả kết quả mới; cộng/trừ phải cùng currency.
 
-- Immutable.
-- Field:
-  - `amount`: `long`.
-  - `currency`: `String`.
-- Constructor validate:
-  - amount không âm.
-  - currency không null, không blank.
-- Method:
-  - `add(Money other)`.
-  - `subtract(Money other)`.
-  - `multiply(int factor)`.
-- Chỉ cộng/trừ được cùng currency.
-- Override `equals`, `hashCode`, `toString`.
+**Gợi ý:** Làm add trước; viết một ví dụ đúng, một ví dụ khác currency, một ví dụ âm.
 
-Test cần có:
-
-- Tạo money hợp lệ.
-- Không cho amount âm.
-- Không cho currency blank.
-- Cộng cùng currency thành công.
-- Cộng khác currency thất bại.
-- Hai object cùng amount/currency thì equals true.
+**Đạt khi:** Hai Money cùng amount/currency equals nhau; object cũ không đổi. Tự gõ phần triển khai, không dùng AI sinh lời giải.
 
 ## Bài 2: Notification Sender
 
-Thiết kế notification module nhỏ.
+Notification Sender luyện thay cách gửi qua interface (cam kết về method).
 
-Yêu cầu:
+- Tạo interface send.
+- Hai implementation (cách thực hiện) Email và SMS chỉ in console.
+- Service nhận sender qua constructor.
 
-- Interface `NotificationSender`.
-- Implementation:
-  - `EmailNotificationSender`.
-  - `SmsNotificationSender`.
-- Class `NotificationService` nhận `NotificationSender` qua constructor.
-- Không dùng inheritance nếu không cần.
+**Gợi ý:** Thay sender ở chỗ tạo service.
 
-Câu hỏi tự trả lời:
-
-- Vì sao `NotificationService` phụ thuộc interface thay vì concrete class?
-- Nếu thêm Slack sender thì sửa file nào?
-- Test `NotificationService` thế nào nếu không muốn gửi email thật?
+**Đạt khi:** Không sửa service khi đổi Email sang SMS. Tự gõ phần triển khai, không dùng AI sinh lời giải.
 
 ## Bài 3: Shopping Cart
 
-Thiết kế giỏ hàng đơn giản.
+Shopping Cart là giỏ chứa các item (mục hàng), học sau Money.
 
-Yêu cầu:
+- Tạo ProductId, CartItem có quantity dương và unitPrice.
+- Cart có thêm/xóa item và tính total.
+- Chọn rõ cart mutable (có thể đổi) hay immutable (trả object mới).
 
-- `ProductId` là value object immutable.
-- `CartItem` chứa product id, name, quantity, unit price.
-- `ShoppingCart` có danh sách item.
-- Không expose mutable list trực tiếp.
-- Có method:
-  - `addItem`.
-  - `removeItem`.
-  - `total`.
+**Gợi ý:** Làm tổng một item trước rồi hai item; không trộn currency.
 
-Điểm cần chú ý:
-
-- Nếu dùng `List`, khi trả list ra ngoài phải tránh bị caller sửa internal state.
-- Nếu `ShoppingCart` immutable, mỗi method trả cart mới.
-- Nếu `ShoppingCart` mutable, API phải rõ ràng và test side effect.
+**Đạt khi:** Caller không sửa list nội bộ ngoài API được cho phép. Tự gõ phần triển khai, không dùng AI sinh lời giải.
 
 ## Learning Log Cuối Tuần
 
-Viết ngắn vào file note riêng của bạn:
-
-- Java type system khác TypeScript ở đâu?
-- Bạn đã dùng interface ở bài nào và vì sao?
-- Bài nào nên dùng composition?
-- Bug khó nhất tuần này là gì?
-- Có đoạn code nào AI gợi ý nhưng bạn không dùng không? Vì sao?
+Learning log là ghi chú sau buổi học. Viết ba câu: tôi làm được gì, ví dụ nào khiến tôi hiểu sai, lần sau tôi sẽ thử gì. **Gợi ý:** dùng input/output thật, không chép định nghĩa.
 
 ## Quy ước Money cho lab
 
-amount dùng đơn vị nhỏ nhất đã thống nhất (USD: cent, VND: đồng), không phải số dollar có phần thập phân. multiply không nhận factor âm; subtract không cho số dư âm. Dùng Math.addExact/subtractExact/multiplyExact để phát hiện overflow, rồi kiểm điều kiện nghiệp vụ. Thêm test null, khác currency, factor âm, kết quả trừ âm và giá trị biên long khi chọn bài tự luyện này.
+Quy ước lab: amount là số nguyên theo đơn vị tiền nhỏ nhất đã chọn; currency phải khớp khi tính. Giữ cùng quy tắc chuẩn hóa currency trong constructor và phép so sánh. **Tự làm:** ghi quy ước vào README code của bạn. **Gợi ý:** nêu 100 nghĩa là 100 đồng hay 100 xu, không để caller tự đoán.
+
+## Đọc thêm sau
+
+Overflow là kết quả vượt giới hạn long: dùng Math.addExact/subtractExact/multiplyExact khi hoàn thiện và kiểm ArithmeticException. Cần phân biệt overflow với kết quả âm không được phép. Thêm equals/hashCode/toString sau khi hiểu [object contract](02-oop-and-object-contract.md).

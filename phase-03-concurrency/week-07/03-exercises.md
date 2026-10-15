@@ -1,54 +1,47 @@
 # Bài Tập Tuần 7
 
-> **Chọn phạm vi:** làm phần được chỉ định trong [README module](README.md) và roadmap. Benchmark, log processor lớn, tự viết pool/queue/rate limiter, GC/reflection/proxy là bài mở rộng; checklist đầy đủ dưới đây không bắt buộc trước khi qua mốc học mới.
+Đây là đề để tự làm, không phải đáp án. Chọn từng mục theo README module; không cần làm hết trong một buổi. Tự gõ code, dùng AI để xin gợi ý sau khi đã thử.
 
 ## Bài 1: Async User Profile
 
-Viết `AsyncUserProfileService`.
+Async profile ghép hai kết quả độc lập có thể đến sau.
 
-Fake dependency:
+- Tạo fake client trả user và order.
+- Chạy hai việc bằng executor rõ vòng đời.
+- Ghép kết quả, thử một nhánh lỗi.
 
-- `UserClient#getUser(userId)`.
-- `OrderClient#getOrders(userId)`.
+**Gợi ý:** Fake là implementation đơn giản không gọi mạng thật.
 
-Yêu cầu:
-
-- Gọi user và order song song bằng `CompletableFuture`.
-- Combine thành `UserProfile`.
-- Có timeout hoặc error handling rõ.
-- Không dùng common pool nếu muốn kiểm soát executor.
+**Đạt khi:** Thành công và lỗi đều có cách xử lý; executor đóng được. Tự gõ phần triển khai, không dùng AI sinh lời giải.
 
 ## Bài 2: Concurrent Word Counter
 
-Yêu cầu:
+Đếm từ nhiều luồng trên dữ liệu nhỏ.
 
-- Nhận list dòng text.
-- Chia cho nhiều task xử lý.
-- Dùng `ConcurrentHashMap<String, Integer>` hoặc `LongAdder`.
-- Dùng `merge`, `compute` hoặc atomic update đúng.
+- Tạo bản một luồng làm mốc.
+- Chia dòng thành task.
+- Gộp count theo khóa bằng merge.
+
+**Gợi ý:** Đợi mọi task rồi so với mốc.
+
+**Đạt khi:** Từ lặp được đếm đủ và giải thích được thao tác atomic. Tự gõ phần triển khai, không dùng AI sinh lời giải.
 
 ## Bài 3: Deadlock Lab
 
-Tạo deadlock có chủ đích:
-
-- 2 lock.
-- 2 thread acquire ngược thứ tự.
-
-Sau đó sửa:
-
-- lock ordering.
-- hoặc `tryLock` timeout.
+Deadlock lab là bài các luồng chờ khóa lẫn nhau. **Tự làm:** vẽ hai khóa bị lấy ngược thứ tự, rồi sửa thứ tự chung. **Gợi ý:** mô hình giấy trước; nếu chạy demo treo thì process riêng và có cách dừng.
 
 ## Bài 4: Atomic Counter
 
-So sánh:
+So cách bảo vệ một bộ đếm.
 
-- `synchronized`.
-- `AtomicInteger`.
-- `LongAdder` nếu muốn đọc thêm.
+- Làm synchronized và AtomicInteger.
+- Dùng cùng số lần tăng.
+- So độ dễ giải thích trước tốc độ.
 
-Ghi nhận:
+**Gợi ý:** AtomicInteger gộp phép tăng; không tách get/set.
 
-- code clarity.
-- performance cảm tính có đo nhẹ.
-- tradeoff.
+**Đạt khi:** Hai bản đúng và nêu được dữ liệu được bảo vệ. Tự gõ phần triển khai, không dùng AI sinh lời giải.
+
+## Đọc thêm sau
+
+LongAdder, timeout ở client thật và thử nghiệm tải cao sau. Timeout Future không tự hủy công việc I/O bên dưới.

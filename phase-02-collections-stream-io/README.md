@@ -1,12 +1,12 @@
 # Collection Và Xử Lý Dữ Liệu
 
-Đọc ở **tuần 4–5; I/O tại chặng JDBC** theo [roadmap](../ROADMAP.md). Mã phase/week giữ để tra cứu; không dùng lịch 14 tuần cũ để quyết định tiến độ.
+Đây là nhóm tài liệu theo chủ đề; số week là mã bài cũ. Đọc [roadmap](../ROADMAP.md) để chọn đúng phần trong lịch 24 tuần.
 
-| Module | Phạm vi |
-| --- | --- |
-| [week-04](week-04/README.md) | Bắt đầu collection cơ bản, rồi equality/key và internals cần thiết |
-| [week-05](week-05/README.md) | Loop/Stream, Optional, Instant/LocalDate; file/collector đọc sau |
+- [week-04: List, Set, Map](week-04/README.md) — Chọn List cho danh sách, Set cho loại trùng, Map cho tra id.
+- [week-05: Stream và ngày giờ](week-05/README.md) — Lọc bằng loop rồi Stream; dùng Optional cho kết quả có thể thiếu, LocalDate cho ngày.
 
-Repository in-memory và lọc task có test. Log Processor/benchmark chỉ là mở rộng.
+**Cách học:** một ví dụ, một lần tự sửa, một câu giải thích. Dừng khi hiểu, không cần hoàn thành mọi file trong một tuần.
 
-Tiếp theo: đối chiếu [Task Manager](../learning-path/03-task-manager-project.md) và [chuẩn đầu ra](../COURSE_OUTCOMES.md).
+## Đọc thêm sau
+
+Các bài mở rộng được đánh dấu ở cuối từng file. Ưu tiên hoàn thành Task Manager trước khi tự viết công cụ tổng quát.
